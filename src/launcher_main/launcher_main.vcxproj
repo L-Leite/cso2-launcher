@@ -63,8 +63,8 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
-      <Command>
-      </Command>
+      <Command>cd "$(SolutionDir)"
+powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps1"</Command>
     </PreBuildEvent>
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -140,8 +140,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PreBuildEvent>
-      <Command>
-      </Command>
+      <Command>cd "$(SolutionDir)"
+powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps1"</Command>
     </PreBuildEvent>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
