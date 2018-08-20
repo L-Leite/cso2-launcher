@@ -135,7 +135,7 @@ powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps
     <PostBuildEvent>
       <Message>
       </Message>
-      <Command>copy /Y "$(OutDir)$(TargetName)$(TargetExt)" "C:\cso2_korea\Bin"</Command>
+      <Command>copy /Y "$(OutDir)$(TargetName)$(TargetExt)" "C:\cso2\cso2_korea\Bin"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -214,7 +214,7 @@ powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps
     <PostBuildEvent>
       <Message>
       </Message>
-      <Command>copy /Y "$(OutDir)$(TargetName)$(TargetExt)" "C:\cso2\Bin"</Command>
+      <Command>copy /Y "$(OutDir)$(TargetName)$(TargetExt)" "C:\cso2\cso2_korea\Bin"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

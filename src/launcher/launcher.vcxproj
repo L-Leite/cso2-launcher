@@ -133,8 +133,8 @@ xcopy /A /E /K /Y "$(SolutionDir)prebuilt\libs\$(Platform)" "$(SolutionDir)out\l
     <PostBuildEvent>
       <Message>
       </Message>
-      <Command>copy /Y "$(OutDir)$(TargetName)$(TargetExt)" "C:\cso2_korea\Bin"
-copy /Y "$(OutDir)PolyHook_2.dll" "C:\cso2_korea\Bin"</Command>
+      <Command>copy /Y "$(OutDir)$(TargetName)$(TargetExt)" "C:\cso2\cso2_korea\Bin"
+copy /Y "$(OutDir)PolyHook_2.dll" "C:\cso2\cso2_korea\Bin"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -213,8 +213,8 @@ xcopy /A /E /K /Y "$(SolutionDir)prebuilt\libs\$(Platform)" "$(SolutionDir)out\l
     <PostBuildEvent>
       <Message>
       </Message>
-      <Command>copy /Y "$(OutDir)$(TargetName)$(TargetExt)" "C:\cso2_korea\Bin"
-copy /Y "$(OutDir)PolyHook_2.dll" "C:\cso2_korea\Bin"</Command>
+      <Command>copy /Y "$(OutDir)$(TargetName)$(TargetExt)" "C:\cso2\cso2_korea\Bin"
+copy /Y "$(OutDir)PolyHook_2.dll" "C:\cso2\cso2_korea\Bin"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
