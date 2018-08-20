@@ -1,0 +1,11 @@
+EXPORTS
+NMCO_CallNMFunc
+NMCO_CallNMFunc2
+NMCO_MemoryFree
+NMCO_SetLocale
+NMCO_SetLocaleAndRegion
+NMCO_SetPatchOption
+NMCO_SetUseFriendModuleOption
+NMCO_SetUseNGMOption
+NMCO_SetVersionFileUrlA
+NMCO_SetVersionFileUrlW

@@ -1,0 +1,282 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{99ACCA4E-8748-4AAF-A38D-36DCD6F95A23}</ProjectGuid>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>14.0.24720.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)out\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)tmp\$(ProjectName)\$(Platform)-$(Configuration)\</IntDir>
+    <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
+    <PreLinkEventUseInBuild>true</PreLinkEventUseInBuild>
+    <LinkIncremental>true</LinkIncremental>
+    <GenerateManifest>false</GenerateManifest>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <LibraryPath>$(SolutionDir)out\libs\$(Platform)-$(Configuration);$(SolutionDir)out\libs\$(Platform)-$(Configuration)\common;$(SolutionDir)out\libs\$(Platform)-$(Configuration)\public;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)libs\PolyHook_2_0;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)out\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)tmp\$(ProjectName)\$(Platform)-$(Configuration)\</IntDir>
+    <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
+    <PreLinkEventUseInBuild>true</PreLinkEventUseInBuild>
+    <LinkIncremental>false</LinkIncremental>
+    <GenerateManifest>false</GenerateManifest>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <LibraryPath>$(SolutionDir)out\libs\$(Platform)-$(Configuration);$(SolutionDir)out\libs\$(Platform)-$(Configuration)\common;$(SolutionDir)out\libs\$(Platform)-$(Configuration)\public;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)libs\PolyHook_2_0;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PreBuildEvent>
+      <Command>mkdir "$(SolutionDir)out\bin\$(Platform)\$(Configuration)"
+mkdir "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"
+xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\capstone\build32\$(Configuration)\capstone.lib" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"
+xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\$(Configuration)\PolyHook_2.lib" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"
+xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\$(Configuration)\PolyHook_2.dll" "$(SolutionDir)out\bin\$(Platform)\$(Configuration)"
+xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\$(Configuration)\PolyHook_2.pdb" "$(SolutionDir)out\bin\$(Platform)\$(Configuration)"
+xcopy /A /E /K /Y "$(SolutionDir)libs\source-sdk-cso2\lib" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"
+xcopy /A /E /K /Y "$(SolutionDir)prebuilt\libs\$(Platform)" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)libs\source-sdk-cso2;$(SolutionDir)libs\source-sdk-cso2\common;$(SolutionDir)libs\source-sdk-cso2\public;$(SolutionDir)libs\source-sdk-cso2\public\tier0;$(SolutionDir)libs\source-sdk-cso2\public\tier1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32;_DEBUG;DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;LAUNCHERONLY;_DLL_EXT=.dll;NO_VCR;WIN32_LEAN_AND_MEAN;VC_EXTRALEAN;_ITERATOR_DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <BasicRuntimeChecks>UninitializedLocalUsageCheck</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader />
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <BrowseInformation />
+      <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ErrorReporting>Prompt</ErrorReporting>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <PreprocessToFile>false</PreprocessToFile>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>capstone.lib;nmcogame.lib;PolyHook_2.lib;shlwapi.lib;winmm.lib;wsock32.lib;odbc32.lib;odbccp32.lib;dinput8.lib;ddraw.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ShowProgress>NotSet</ShowProgress>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libc.lib;libcd.lib;libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>$(IntDir)$(TargetName).map</MapFileName>
+      <SubSystem>Windows</SubSystem>
+      <BaseAddress>
+      </BaseAddress>
+      <TargetMachine>MachineX86</TargetMachine>
+      <LinkErrorReporting>PromptImmediately</LinkErrorReporting>
+      <ImageHasSafeExceptionHandlers />
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
+    </Link>
+    <Xdcmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Xdcmake>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>$(OutDir)launcher.bsc</OutputFile>
+    </Bscmake>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+      <Command>copy /Y "$(OutDir)$(TargetName)$(TargetExt)" "C:\cso2_korea\Bin"
+copy /Y "$(OutDir)PolyHook_2.dll" "C:\cso2_korea\Bin"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Command>mkdir "$(SolutionDir)out\bin\$(Platform)\$(Configuration)"
+mkdir "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"
+xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\capstone\build32\$(Configuration)\capstone.lib" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"
+xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\$(Configuration)\PolyHook_2.lib" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"
+xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\$(Configuration)\PolyHook_2.dll" "$(SolutionDir)out\bin\$(Platform)\$(Configuration)"
+xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\$(Configuration)\PolyHook_2.pdb" "$(SolutionDir)out\bin\$(Platform)\$(Configuration)"
+xcopy /A /E /K /Y "$(SolutionDir)libs\source-sdk-cso2\lib" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"
+xcopy /A /E /K /Y "$(SolutionDir)prebuilt\libs\$(Platform)" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)libs\source-sdk-cso2;$(SolutionDir)libs\source-sdk-cso2\common;$(SolutionDir)libs\source-sdk-cso2\public;$(SolutionDir)libs\source-sdk-cso2\public\tier0;$(SolutionDir)libs\source-sdk-cso2\public\tier1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;LAUNCHERONLY;_DLL_EXT=.dll;WIN32_LEAN_AND_MEAN;VC_EXTRALEAN;_ITERATOR_DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader />
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <BrowseInformation />
+      <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ErrorReporting>Prompt</ErrorReporting>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>capstone.lib;nmcogame.lib;PolyHook_2.lib;shlwapi.lib;winmm.lib;wsock32.lib;odbc32.lib;odbccp32.lib;dinput8.lib;ddraw.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ShowProgress>NotSet</ShowProgress>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libc.lib;libcd.lib;libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>$(IntDir)$(TargetName).map</MapFileName>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <BaseAddress>
+      </BaseAddress>
+      <TargetMachine>MachineX86</TargetMachine>
+      <LinkErrorReporting>PromptImmediately</LinkErrorReporting>
+      <ImageHasSafeExceptionHandlers />
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
+    </Link>
+    <Xdcmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Xdcmake>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>$(OutDir)launcher.bsc</OutputFile>
+    </Bscmake>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+      <Command>copy /Y "$(OutDir)$(TargetName)$(TargetExt)" "C:\cso2_korea\Bin"
+copy /Y "$(OutDir)PolyHook_2.dll" "C:\cso2_korea\Bin"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2automatchmodinfo.cpp" />
+    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2gamemanager.cpp" />
+    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2gameroom.cpp" />
+    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2mapinfo.cpp" />
+    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2modinfo.cpp" />
+    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2modmapinfo.cpp" />
+    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\optionlist.cpp" />
+    <ClCompile Include="..\..\libs\source-sdk-cso2\public\client\cso2\consolethread.cpp" />
+    <ClCompile Include="..\..\libs\source-sdk-cso2\public\client\cso2\icso2msghandlerclient.cpp" />
+    <ClCompile Include="filesystem_init.cpp" />
+    <ClCompile Include="hooks\client.cpp" />
+    <ClCompile Include="hooks\engine.cpp">
+      <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</PreprocessToFile>
+    </ClCompile>
+    <ClCompile Include="hooks\tier0.cpp" />
+    <ClCompile Include="hooks\vgui2.cpp" />
+    <ClCompile Include="hooks\winapi.cpp" />
+    <ClCompile Include="launcher.cpp" />
+    <ClCompile Include="modulelist.cpp" />
+    <ClCompile Include="reslistgenerator.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\sdk\common\engine_launcher_api.h" />
+    <ClInclude Include="..\..\sdk\public\appframework\IAppSystem.h" />
+    <ClInclude Include="..\..\sdk\public\tier0\commonmacros.h" />
+    <ClInclude Include="..\..\sdk\public\mathlib\vector2d.h" />
+    <ClInclude Include="..\..\sdk\public\tier0\protected_things.h" />
+    <ClInclude Include="..\..\sdk\public\string_t.h" />
+    <ClInclude Include="..\..\sdk\public\tier0\basetypes.h" />
+    <ClInclude Include="..\..\sdk\public\tier0\dbg.h" />
+    <ClInclude Include="..\..\sdk\public\tier0\fasttimer.h" />
+    <ClInclude Include="..\..\sdk\public\tier0\mem.h" />
+    <ClInclude Include="..\..\sdk\public\tier0\memalloc.h" />
+    <ClInclude Include="..\..\sdk\public\tier0\platform.h" />
+    <ClInclude Include="..\..\sdk\public\tier0\vcrmode.h" />
+    <ClInclude Include="..\..\sdk\public\tier0\vcr_shared.h" />
+    <ClInclude Include="..\..\sdk\public\tier1\interface.h" />
+    <ClInclude Include="..\..\sdk\public\vgui\IHTML.h" />
+    <ClInclude Include="..\..\sdk\public\vgui\IImage.h" />
+    <ClInclude Include="..\..\sdk\public\vgui\ISurface.h" />
+    <ClInclude Include="..\..\sdk\public\vgui\KeyCode.h" />
+    <ClInclude Include="..\..\sdk\public\vgui\MouseCode.h" />
+    <ClInclude Include="..\..\sdk\public\vgui\VGUI.h" />
+    <ClInclude Include="..\..\sdk\public\tier0\ICommandLine.h" />
+    <ClInclude Include="..\..\sdk\public\tier1\strtools.h" />
+    <ClInclude Include="..\..\sdk\public\vstdlib\vstdlib.h" />
+    <ClInclude Include="hooks.h" />
+    <ClInclude Include="ifilesystem.h" />
+    <ClInclude Include="reslistgenerator.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\out\libs\Win32-Debug\public\appframework.lib" />
+    <Library Include="..\..\out\libs\Win32-Debug\public\tier0.lib" />
+    <Library Include="..\..\out\libs\Win32-Debug\public\tier1.lib" />
+    <Library Include="..\..\out\libs\Win32-Debug\public\tier2.lib" />
+    <Library Include="..\..\out\libs\Win32-Debug\public\tier3.lib" />
+    <Library Include="..\..\out\libs\Win32-Debug\public\vstdlib.lib" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

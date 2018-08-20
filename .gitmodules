@@ -1,0 +1,6 @@
+[submodule "libs/PolyHook_2_0"]
+	path = libs/PolyHook_2_0
+	url = https://github.com/Ochii/PolyHook_2_0
+[submodule "libs/source-sdk-cso2"]
+	path = libs/source-sdk-cso2
+	url = https://github.com/Ochii/source-sdk-cso2
