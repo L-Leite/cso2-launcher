@@ -5,7 +5,7 @@ This tool can start a game match in Nexon's (South Korea) Counter-Strike: Online
 You may download the latest build of it **[here](https://github.com/Ochii/cso2-launcher/releases/latest)**.
 
 ## How to use
-**This tool requires a copy of Nexon's Counter-Strike: Online 2.** You may get one [here](https://mega.nz/#!nhgnBJgD!iR57D5Mf3_1GCcAR36tqFQ7H7KN_F0e3XicD2JBoSN4).
+**This tool requires a copy of Nexon's Counter-Strike: Online 2.** You may get one [here](https://mega.nz/#!nhgnBJgD!iR57D5Mf3_1GCcAR36tqFQ7H7KN_F0e3XicD2JBoSN4) (SHA-256: 02F76DBDD083EF78ECC92EB963C7C7A7576FF2E2C695671A4F358C2580584965).
 
 [Download](https://github.com/Ochii/cso2-launcher/releases/latest) the tool archive file, then extract its contents inside ```[your CSO2 game path]/Bin```.
 
