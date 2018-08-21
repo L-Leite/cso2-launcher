@@ -5,7 +5,7 @@ This tool can start a game match in Nexon's (South Korea) Counter-Strike: Online
 You may download the latest build of it **[here](https://github.com/Ochii/cso2-launcher/releases/latest)**.
 
 ## How to use
-**This tool requires a copy of Nexon's Counter-Strike: Online 2.**
+**This tool requires a copy of Nexon's Counter-Strike: Online 2.** You may get one [here](https://mega.nz/#!nhgnBJgD!iR57D5Mf3_1GCcAR36tqFQ7H7KN_F0e3XicD2JBoSN4).
 
 [Download](https://github.com/Ochii/cso2-launcher/releases/latest) the tool archive file, then extract its contents inside ```[your CSO2 game path]/Bin```.
 
@@ -43,9 +43,9 @@ Start a PowerShell instance in the project directory and run ```./setuplibs.ps1`
 The script will setup PolyHook, its dependency Capstone and the Source SDK. It also sets a flag required to make PolyHook compatible with the tool.
 
 ### Building
-Open the solution *CSO2Launcher.sln* and build it in your preferred configuration.
+Open the solution ```CSO2Launcher.sln``` and build it in your preferred configuration.
 
-If built successfully, you will find your binary inside the ```out/bin/Win32/[your configuration]``` directory.
+If built successfully, you will find your binaries inside ```out/bin/Win32/[your configuration]```.
 
 ## Used libraries
 - **[PolyHook](https://github.com/stevemk14ebr/PolyHook)** by [stevemk14ebr](https://github.com/stevemk14ebr)
@@ -62,3 +62,5 @@ If built successfully, you will find your binary inside the ```out/bin/Win32/[yo
 
 ## License
 Read ```LICENSE``` for license information.
+
+I'm not affiliated with neither Valve or Nexon, just like I don't own Counter-Strike Online 2.
