@@ -1,5 +1,6 @@
 # cso2-launcher
-This tool can start a game match in Nexon's (South Korea) Counter-Strike: Online 2.
+**This user is only a proof of concept that you can host your own match, it does not emulate every game feature.**
+You can use this to start a game match in Nexon's (South Korea) Counter-Strike: Online 2.
 
 ## Download 
 You may download the latest build of it **[here](https://github.com/Ochii/cso2-launcher/releases/latest)**.
