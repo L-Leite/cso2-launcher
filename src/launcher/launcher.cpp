@@ -57,8 +57,9 @@
 // cso2 includes
 #include <string>
 
-#include "cso2/log.h"
-#include "cso2/messagebox.h"
+#include "tier0/cso2/log.h"
+#include "tier0/cso2/messagebox.h"
+#include "tier0/cso2/iprecommandlineparser.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"

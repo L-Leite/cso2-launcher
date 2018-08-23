@@ -103,7 +103,7 @@ xcopy /A /E /K /Y "$(SolutionDir)prebuilt\libs\$(Platform)" "$(SolutionDir)out\l
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>capstone.lib;nmcogame.lib;PolyHook_2.lib;shlwapi.lib;winmm.lib;wsock32.lib;odbc32.lib;odbccp32.lib;dinput8.lib;ddraw.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>capstone.lib;PolyHook_2.lib;shlwapi.lib;winmm.lib;wsock32.lib;odbc32.lib;odbccp32.lib;dinput8.lib;ddraw.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -181,7 +181,7 @@ xcopy /A /E /K /Y "$(SolutionDir)prebuilt\libs\$(Platform)" "$(SolutionDir)out\l
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>capstone.lib;nmcogame.lib;PolyHook_2.lib;shlwapi.lib;winmm.lib;wsock32.lib;odbc32.lib;odbccp32.lib;dinput8.lib;ddraw.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>capstone.lib;PolyHook_2.lib;shlwapi.lib;winmm.lib;wsock32.lib;odbc32.lib;odbccp32.lib;dinput8.lib;ddraw.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -225,8 +225,8 @@ copy /Y "$(OutDir)PolyHook_2.dll" "C:\cso2\cso2_korea\Bin"</Command>
     <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2modinfo.cpp" />
     <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2modmapinfo.cpp" />
     <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\optionlist.cpp" />
-    <ClCompile Include="..\..\libs\source-sdk-cso2\public\client\cso2\consolethread.cpp" />
     <ClCompile Include="..\..\libs\source-sdk-cso2\public\client\cso2\icso2msghandlerclient.cpp" />
+    <ClCompile Include="consolethread.cpp" />
     <ClCompile Include="filesystem_init.cpp" />
     <ClCompile Include="hooks\client.cpp" />
     <ClCompile Include="hooks\engine.cpp">

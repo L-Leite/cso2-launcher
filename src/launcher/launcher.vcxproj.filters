@@ -72,7 +72,7 @@
     <ClCompile Include="..\..\libs\source-sdk-cso2\public\client\cso2\icso2msghandlerclient.cpp">
       <Filter>Source Files\cso2</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libs\source-sdk-cso2\public\client\cso2\consolethread.cpp">
+    <ClCompile Include="consolethread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

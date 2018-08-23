@@ -3,7 +3,7 @@
 #include "tier0/icommandline.h"
 #include "tier0/memdbgon.h"
 
-extern bool g_bPrintDebugInfo;
+extern bool g_bPrintMoreDebugInfo;
 
 HOOK_EXPORT_DECLARE(hkCOM_TimestampedLog);
 
@@ -14,7 +14,7 @@ NOINLINE void hkCOM_TimestampedLog(char const *fmt, ...)
 	static bool s_bChecked = false;
 	static bool	s_bFirstWrite = false;
 
-	if (!g_bPrintDebugInfo)
+	if (!g_bPrintMoreDebugInfo)
 		return;
 
 	if (!s_bChecked)
@@ -61,19 +61,8 @@ static char s_szMsgBuffer[512] = { 0 };
 
 NOINLINE void hkMsg(const tchar* pMsg, ...)
 {
-	if (!g_bPrintDebugInfo)
+	if (!g_bPrintMoreDebugInfo)
 		return;
-
-	size_t iMsgLength = strlen(pMsg);
-	assert((iMsgLength + 1) <= sizeof(s_szMsgBuffer));
-
-	if (pMsg[iMsgLength - 1] != '\n')
-	{	
-		V_strcpy(s_szMsgBuffer, pMsg);
-		s_szMsgBuffer[iMsgLength] = '\n';
-		s_szMsgBuffer[iMsgLength + 1] = '\0';
-		pMsg = s_szMsgBuffer;
-	}
 	
 	va_list va;
 	va_start(va, pMsg);
@@ -85,19 +74,8 @@ HOOK_EXPORT_DECLARE(hkWarning);
 
 NOINLINE void hkWarning(const tchar* pMsg, ...)
 {
-	if (!g_bPrintDebugInfo)
-		return;
-
-	size_t iMsgLength = strlen(pMsg);
-	assert((iMsgLength + 1) <= sizeof(s_szMsgBuffer));
-
-	if (pMsg[iMsgLength - 1] != '\n')
-	{
-		V_strcpy(s_szMsgBuffer, pMsg);
-		s_szMsgBuffer[iMsgLength] = '\n';
-		s_szMsgBuffer[iMsgLength + 1] = '\0';
-		pMsg = s_szMsgBuffer;
-	}
+	if (!g_bPrintMoreDebugInfo)
+		return;	   
 
 	va_list va;
 	va_start(va, pMsg);

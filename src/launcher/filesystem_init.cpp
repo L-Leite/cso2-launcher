@@ -313,7 +313,7 @@ bool FileSystem_GetExecutableDir( char *exedir, int exeDirLen )
 		return false;
 	}
 
-	V_snprintf( exedir, exeDirLen, "%s", GetCSO2PreCommandLineParser()->GetAnsiFullDirectoryCstr() );
+	V_snprintf( exedir, exeDirLen, "%s", GetCSO2PreCommandLineParser()->GetAnsiBinDirectory() );
 
 	if ( IsX360() )
 	{
