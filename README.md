@@ -35,6 +35,7 @@ If you have any improvements that you would like to share, go ahead and [open a 
 ## How to build
 
 ### Requirements
+- [CMake](https://cmake.org/download/)
 - [Visual Studio 2017](https://www.visualstudio.com/downloads/)
 - [Windows PowerShell](https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-windows-powershell)
 
