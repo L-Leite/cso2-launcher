@@ -40,6 +40,9 @@ If you have any improvements that you would like to share, go ahead and [open a 
 
 Only **Windows** is supported.
 
+### Downloading the source code
+Clone the project with ```git clone --recursive https://github.com/Ochii/cso2-launcher.git```.
+
 ### Before building
 Start a PowerShell instance and change directory to the project's directory, then, run ```./setuplibs.ps1```.
 
