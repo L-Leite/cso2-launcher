@@ -5,7 +5,9 @@ This tool can start a game match in Nexon's (South Korea) Counter-Strike: Online
 You may download the latest build of it **[here](https://github.com/Ochii/cso2-launcher/releases/latest)**.
 
 ## How to use
-**This tool requires a copy of Nexon's Counter-Strike: Online 2.** You may get one [here](https://mega.nz/#!nhgnBJgD!iR57D5Mf3_1GCcAR36tqFQ7H7KN_F0e3XicD2JBoSN4) (SHA-256: 02F76DBDD083EF78ECC92EB963C7C7A7576FF2E2C695671A4F358C2580584965).
+**This tool requires a copy of Nexon's Counter-Strike: Online 2.**
+
+You may get one [here](https://mega.nz/#!nhgnBJgD!iR57D5Mf3_1GCcAR36tqFQ7H7KN_F0e3XicD2JBoSN4) (SHA-256: 02F76DBDD083EF78ECC92EB963C7C7A7576FF2E2C695671A4F358C2580584965).
 
 [Download](https://github.com/Ochii/cso2-launcher/releases/latest) the tool archive file, then extract its contents inside ```[your CSO2 game path]/Bin```.
 
@@ -25,9 +27,9 @@ Some useful ingame commands:
 You may also use this console as if it was an ingame console (you can enable ```cl_showfps```, for example).
 
 ## Bug reporting and improvements
-Feel free [to open an issue](https://github.com/Ochii/cso2-launcher/issues) if you find a bug in the tool.
+Have a look at the [issues](https://github.com/Ochii/cso2-launcher/issues) for a list of bugs found or to report them yourself.
 
-If you have any improvements, [open a pull request](https://github.com/Ochii/cso2-launcher/pulls).
+If you have any improvements that you would like to share, go ahead and [open a pull request](https://github.com/Ochii/cso2-launcher/pulls).
 
 ## How to build
 
@@ -38,9 +40,9 @@ If you have any improvements, [open a pull request](https://github.com/Ochii/cso
 Only **Windows** is supported.
 
 ### Before building
-Start a PowerShell instance in the project directory and run ```./setuplibs.ps1```.
+Start a PowerShell instance and change directory to the project's directory, then, run ```./setuplibs.ps1```.
 
-The script will setup PolyHook, its dependency Capstone and the Source SDK. It also sets a flag required to make PolyHook compatible with the tool.
+The script will setup PolyHook, its dependency Capstone and the Source SDK.
 
 ### Building
 Open the solution ```CSO2Launcher.sln``` and build it in your preferred configuration.

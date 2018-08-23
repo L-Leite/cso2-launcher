@@ -8,12 +8,12 @@
 #define HOOK_DETOUR_DECLARE(trampoline) static PLH::x86Detour* _##trampoline = nullptr; \
 										static uint64_t _##trampoline##Orig = NULL
 
-#define HOOK_DETOUR(original, trampoline) PLH::CapstoneDisassembler _##trampolineDis(PLH::Mode::x86); \
-										_##trampoline = new PLH::x86Detour((char*)(original), (char*)&trampoline, &_##trampoline##Orig, _##trampolineDis); \
+#define HOOK_DETOUR(original, trampoline) PLH::CapstoneDisassembler _##trampoline##Dis(PLH::Mode::x86); \
+										_##trampoline = new PLH::x86Detour((char*)(original), (char*)&trampoline, &_##trampoline##Orig, _##trampoline##Dis); \
 										_##trampoline->hook();
 
-#define HOOK_DETOUR_MODULE(mod, original, trampoline) PLH::CapstoneDisassembler _##trampolineDis(PLH::Mode::x86); \
-										_##trampoline = new PLH::x86Detour((char*)(g_ModuleList.Get(mod) + (original)), (char*)trampoline, &_##trampoline##Orig, _##trampolineDis); \
+#define HOOK_DETOUR_MODULE(mod, original, trampoline) PLH::CapstoneDisassembler _##trampoline##Dis(PLH::Mode::x86); \
+										_##trampoline = new PLH::x86Detour((char*)(g_ModuleList.Get(mod) + (original)), (char*)trampoline, &_##trampoline##Orig, _##trampoline##Dis); \
 										_##trampoline->hook();
 
 #define HOOK_DETOUR_GET_ORIG(trampoline) ((decltype(&trampoline))_##trampoline##Orig)
