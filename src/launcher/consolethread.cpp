@@ -95,7 +95,7 @@ void ListMaps()
 }
 
 bool g_bEnableLocalization = true;
-bool g_bPrintMoreDebugInfo = false;
+bool g_bPrintMoreDebugInfo = true;
 
 DWORD WINAPI ConsoleThread(LPVOID lpArguments)
 {
