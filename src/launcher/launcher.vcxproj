@@ -230,6 +230,7 @@ copy /Y "$(OutDir)PolyHook_2.dll" "C:\cso2\cso2_korea\Bin"</Command>
     <ClCompile Include="hooks\engine.cpp">
       <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</PreprocessToFile>
     </ClCompile>
+    <ClCompile Include="hooks\server.cpp" />
     <ClCompile Include="hooks\tier0.cpp" />
     <ClCompile Include="hooks\vgui2.cpp" />
     <ClCompile Include="hooks\winapi.cpp" />
