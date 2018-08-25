@@ -1,6 +1,7 @@
 # cso2-launcher
 A modified client for Nexon's (South Korea) Counter-Strike: Online 2.
-If you're looking to the proof of concept, go [here](https://github.com/Ochii/cso2-launcher/tree/master).
+
+If you're looking for the proof of concept, go [here](https://github.com/Ochii/cso2-launcher/tree/master).
 
 ## Download 
 You may download the latest build of it **[here](https://github.com/Ochii/cso2-launcher/releases/latest)**.
