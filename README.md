@@ -1,6 +1,9 @@
 # cso2-launcher
 **This user is only a proof of concept that you can host your own match, it does not emulate every game feature.**
+
 You can use this to start a game match in Nexon's (South Korea) Counter-Strike: Online 2.
+
+If you wish to see the client that connects to an emulated server, go [here](https://github.com/Ochii/cso2-launcher/tree/server_emulator).
 
 ## Download 
 You may download the latest build of it **[here](https://github.com/Ochii/cso2-launcher/releases/latest)**.
