@@ -45,7 +45,8 @@
     <PreLinkEventUseInBuild>true</PreLinkEventUseInBuild>
     <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
-    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>
+    </PostBuildEventUseInBuild>
     <LibraryPath>$(SolutionDir)out\libs\$(Platform)-$(Configuration);$(SolutionDir)out\libs\$(Platform)-$(Configuration)\common;$(SolutionDir)out\libs\$(Platform)-$(Configuration)\public;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)libs\PolyHook_2_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
@@ -56,7 +57,8 @@
     <PreLinkEventUseInBuild>true</PreLinkEventUseInBuild>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
-    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>
+    </PostBuildEventUseInBuild>
     <LibraryPath>$(SolutionDir)out\libs\$(Platform)-$(Configuration);$(SolutionDir)out\libs\$(Platform)-$(Configuration)\common;$(SolutionDir)out\libs\$(Platform)-$(Configuration)\public;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)libs\PolyHook_2_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
@@ -133,8 +135,8 @@ xcopy /A /E /K /Y "$(SolutionDir)libs\source-sdk-cso2\lib" "$(SolutionDir)out\li
     <PostBuildEvent>
       <Message>
       </Message>
-      <Command>copy /Y "$(OutDir)$(TargetName)$(TargetExt)" "C:\cso2\cso2_korea\Bin"
-copy /Y "$(OutDir)PolyHook_2.dll" "C:\cso2\cso2_korea\Bin"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -213,8 +215,8 @@ xcopy /A /E /K /Y "$(SolutionDir)libs\source-sdk-cso2\lib" "$(SolutionDir)out\li
     <PostBuildEvent>
       <Message>
       </Message>
-      <Command>copy /Y "$(OutDir)$(TargetName)$(TargetExt)" "C:\cso2\cso2_korea\Bin"
-copy /Y "$(OutDir)PolyHook_2.dll" "C:\cso2\cso2_korea\Bin"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
