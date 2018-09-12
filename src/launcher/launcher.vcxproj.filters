@@ -4,9 +4,6 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{2f3b2bd6-a387-4b72-ab19-05accf48e420}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Link Libraries">
-      <UniqueIdentifier>{c6820bca-492a-4a0f-aa6b-8b5bac7ce596}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources">
       <UniqueIdentifier>{fe457a73-51e8-42a9-87c2-a7288460f03f}</UniqueIdentifier>
     </Filter>
@@ -161,25 +158,5 @@
     <ClInclude Include="hooks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\..\out\libs\Win32-Debug\public\tier1.lib">
-      <Filter>Link Libraries</Filter>
-    </Library>
-    <Library Include="..\..\out\libs\Win32-Debug\public\tier2.lib">
-      <Filter>Link Libraries</Filter>
-    </Library>
-    <Library Include="..\..\out\libs\Win32-Debug\public\tier3.lib">
-      <Filter>Link Libraries</Filter>
-    </Library>
-    <Library Include="..\..\out\libs\Win32-Debug\public\appframework.lib">
-      <Filter>Link Libraries</Filter>
-    </Library>
-    <Library Include="..\..\out\libs\Win32-Debug\public\tier0.lib">
-      <Filter>Link Libraries</Filter>
-    </Library>
-    <Library Include="..\..\out\libs\Win32-Debug\public\vstdlib.lib">
-      <Filter>Link Libraries</Filter>
-    </Library>
   </ItemGroup>
 </Project>

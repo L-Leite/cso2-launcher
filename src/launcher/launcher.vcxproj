@@ -102,13 +102,14 @@ xcopy /A /E /K /Y "$(SolutionDir)libs\source-sdk-cso2\lib" "$(SolutionDir)out\li
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>capstone.lib;PolyHook_2.lib;shlwapi.lib;winmm.lib;wsock32.lib;odbc32.lib;odbccp32.lib;dinput8.lib;ddraw.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>capstone.lib;PolyHook_2.lib;appframework.lib;tier0.lib;tier1.lib;tier2.lib;tier3.lib;vstdlib.lib;shlwapi.lib;winmm.lib;wsock32.lib;odbc32.lib;odbccp32.lib;dinput8.lib;ddraw.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libc.lib;libcd.lib;libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>
@@ -179,13 +180,14 @@ xcopy /A /E /K /Y "$(SolutionDir)libs\source-sdk-cso2\lib" "$(SolutionDir)out\li
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>capstone.lib;PolyHook_2.lib;shlwapi.lib;winmm.lib;wsock32.lib;odbc32.lib;odbccp32.lib;dinput8.lib;ddraw.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>capstone.lib;PolyHook_2.lib;appframework.lib;tier0.lib;tier1.lib;tier2.lib;tier3.lib;vstdlib.lib;shlwapi.lib;winmm.lib;wsock32.lib;odbc32.lib;odbccp32.lib;dinput8.lib;ddraw.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libc.lib;libcd.lib;libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>
@@ -266,14 +268,6 @@ copy /Y "$(OutDir)PolyHook_2.dll" "C:\cso2\cso2_korea\Bin"</Command>
     <ClInclude Include="hooks.h" />
     <ClInclude Include="ifilesystem.h" />
     <ClInclude Include="reslistgenerator.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\..\out\libs\Win32-Debug\public\appframework.lib" />
-    <Library Include="..\..\out\libs\Win32-Debug\public\tier0.lib" />
-    <Library Include="..\..\out\libs\Win32-Debug\public\tier1.lib" />
-    <Library Include="..\..\out\libs\Win32-Debug\public\tier2.lib" />
-    <Library Include="..\..\out\libs\Win32-Debug\public\tier3.lib" />
-    <Library Include="..\..\out\libs\Win32-Debug\public\vstdlib.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
