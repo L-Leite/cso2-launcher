@@ -28,10 +28,8 @@
 #define HOOK_EXPORT_GET_ORIG(trampoline) ((decltype(&trampoline))_##trampoline##Orig)
 
 template<size_t iDataSize>
-inline void WriteProtectedMemory(uint8_t (&pData)[iDataSize], uintptr_t pDestination)
-{ 
-	DWORD dwOldProtect = NULL;
-	VirtualProtect((void*)pDestination, iDataSize, PAGE_EXECUTE_READWRITE, &dwOldProtect);
-	memcpy((void*)pDestination, pData, iDataSize);
-	VirtualProtect((void*)pDestination, iDataSize, dwOldProtect, &dwOldProtect);
+inline void WriteProtectedMemory( const std::array<uint8_t, iDataSize>& data, uintptr_t pDestination )
+{
+	PLH::MemoryProtector mp( pDestination, iDataSize, PLH::R | PLH::W | PLH::X );
+	std::copy(data.begin(), data.end(), reinterpret_cast<uint8_t*>(pDestination));
 }

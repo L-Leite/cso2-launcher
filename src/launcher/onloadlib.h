@@ -17,28 +17,28 @@ using LoadLibCallbackfn_t = void(*)(uintptr_t);
 class CLoadLibCallbacks
 {	
 public:
-	CLoadLibCallbacks(std::string szModuleName, LoadLibCallbackfn_t pCallback)
+	CLoadLibCallbacks(const std::string& szModuleName, LoadLibCallbackfn_t pCallback)
 	{
-		printf("CLoadLibCallback: adding %p to %s callbacks\n", pCallback, szModuleName.c_str());
 		GetCallbacks()[szModuleName] = pCallback;
 	}
 
 	~CLoadLibCallbacks() = default;
+	CLoadLibCallbacks(CLoadLibCallbacks&&) = delete;
 
-	// forces the static map to be initialized before any other static objects
-	inline static std::map<std::string, LoadLibCallbackfn_t>& GetCallbacks()
+	// forces the static map to be initialized when needed
+	inline static std::map<const std::string, LoadLibCallbackfn_t>& GetCallbacks()
 	{
-		static std::map<std::string, LoadLibCallbackfn_t> s_Callbacks;
+		static std::map<const std::string, LoadLibCallbackfn_t> s_Callbacks;
 		return s_Callbacks;
 	}
 
-	inline static void OnLoadLibrary(std::string szModuleName, uintptr_t dwModuleBase)
+	inline static void OnLoadLibrary(const std::string& szModuleName, uintptr_t dwModuleBase)
 	{
-		std::map<std::string, LoadLibCallbackfn_t>& callbacks = GetCallbacks();
+		auto& callbacks = GetCallbacks();
 
 		if (callbacks.find(szModuleName) != callbacks.end())
 		{
-			callbacks[szModuleName]((uintptr_t)dwModuleBase);
+			callbacks[szModuleName](dwModuleBase);
 			callbacks.erase(szModuleName);
 		}
 	}
