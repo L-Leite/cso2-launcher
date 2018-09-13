@@ -3,7 +3,7 @@ A modified client for Nexon's (South Korea) Counter-Strike: Online 2.
 
 If you're looking for the proof of concept, go [here](https://github.com/Ochii/cso2-launcher/tree/master).
 
-**It needs this [imcomplete emulated master server](https://github.com/Ochii/cso2-master-server/) running in order to work.**
+**It needs this [incomplete emulated master server](https://github.com/Ochii/cso2-master-server/) running in order to work.**
 
 ## How to use
 **This tool requires a copy of Nexon's Counter-Strike: Online 2.**
