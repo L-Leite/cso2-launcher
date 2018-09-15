@@ -1,4 +1,7 @@
 # cso2-launcher
+
+[![Build status](https://ci.appveyor.com/api/projects/status/ajl6d1ir9s3l4lyu/branch/server_emulator?svg=true)](https://ci.appveyor.com/project/Ochii/cso2-launcher/branch/server_emulator)
+
 A modified client for Nexon's (South Korea) Counter-Strike: Online 2.
 
 If you're looking for the proof of concept, go [here](https://github.com/Ochii/cso2-launcher/tree/master).

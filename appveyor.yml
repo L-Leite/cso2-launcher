@@ -1,0 +1,35 @@
+version: 0.1.{build}-{branch}
+image: Visual Studio 2017
+configuration: Release
+platform: x86
+clone_script:
+- cmd: >-
+    git clone -q --branch=%APPVEYOR_REPO_BRANCH% https://github.com/%APPVEYOR_REPO_NAME%.git %APPVEYOR_BUILD_FOLDER%
+          && cd %APPVEYOR_BUILD_FOLDER%
+          && git checkout -qf %APPVEYOR_REPO_COMMIT%
+          && git submodule update --init --recursive
+install:
+- ps: ./setuplibs.ps1
+build:
+  project: CSO2Launcher.sln
+  verbosity: minimal
+after_build:
+- cmd: >-
+    7z a binaries.zip %APPVEYOR_BUILD_FOLDER%\out\bin\Win32\Release\*.dll
+
+    7z a binaries.zip %APPVEYOR_BUILD_FOLDER%\out\bin\Win32\Release\*.exe
+
+    7z a symbols.zip %APPVEYOR_BUILD_FOLDER%\out\bin\Win32\Release\*.pdb
+artifacts:
+- path: binaries.zip
+  name: binaries
+- path: symbols.zip
+  name: symbols
+deploy:
+- provider: GitHub
+  tag: v$(appveyor_build_version)
+  auth_token:
+    secure: GZAWVZYfnwGkupEer996vyRz8yg+JwPVKnVZzgwNSIfzj7vgUoHz7sPRBt/LX2Ak
+  artifact: binaries,symbols
+  draft: false
+  prerelease: true
