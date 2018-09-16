@@ -1,4 +1,3 @@
-#include "strtools.h"
 #include "hooks.h"
 #include "tier1/interface.h"
 #include "client/cso2/icso2msghandlerclient.h"
