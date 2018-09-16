@@ -83,8 +83,21 @@ NOINLINE void hkWarning(const tchar* pMsg, ...)
 	va_end(va);
 }
 
+void BytePatchTier(const uintptr_t dwTierBase)
+{
+	//
+	// disable hard coded command line argument check
+	//
+	// jmp near 0x1D8 bytes forward
+	uint8_t addArgPatch[] = { 0xE9, 0xD8, 0x01, 0x00, 0x00 };
+	WriteProtectedMemory(addArgPatch, (dwTierBase + 0x1D63));
+}
+
 void HookTier0()
-{						
+{	
+	const uintptr_t dwTierBase = g_ModuleList.Get("tier0.dll");
+	BytePatchTier(dwTierBase);
+
 	HOOK_EXPORT(L"tier0.dll", "COM_TimestampedLog", hkMsg);
 	HOOK_EXPORT(L"tier0.dll", "Msg", hkCOM_TimestampedLog);
 	HOOK_EXPORT(L"tier0.dll", "Warning", hkWarning);
