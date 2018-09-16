@@ -1,4 +1,8 @@
-version: 0.1-{branch}-{build}
+version: 0.1.4-{build}
+branches:
+  only:
+  - master
+skip_tags: true
 image: Visual Studio 2017
 configuration: Release
 platform: x86
@@ -27,9 +31,9 @@ artifacts:
   name: symbols
 deploy:
 - provider: GitHub
-  tag: v$(appveyor_build_version)
+  tag: v$(APPVEYOR_BUILD_VERSION)
+  release: Build $(APPVEYOR_BUILD_VERSION)
   auth_token:
-    secure: GZAWVZYfnwGkupEer996vyRz8yg+JwPVKnVZzgwNSIfzj7vgUoHz7sPRBt/LX2Ak
+    secure: XnUsE3jqzulQ4cWVkK2ALBR7qfnfwbBdoMDChmcnx1RcGtRgXV0QLMPo+GcIf8YU
   artifact: binaries,symbols
-  draft: false
-  prerelease: true
+  prerelease: false
