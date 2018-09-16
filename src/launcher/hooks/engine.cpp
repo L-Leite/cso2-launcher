@@ -105,12 +105,11 @@ extern DWORD WINAPI ConsoleThread( LPVOID lpArguments );
 ON_LOAD_LIB( engine )
 {
 	const uintptr_t dwEngineBase = GET_LOAD_LIB_MODULE();
+	ConnectEngineLibraries( dwEngineBase );
+	BytePatchEngine( dwEngineBase );
 
 	HOOK_DETOUR( dwEngineBase + 0x155C80, hkSys_SpewFunc );
 	HOOK_DETOUR( dwEngineBase + 0x285FE0, hkGetServerIpAddressInfo );
-
-	ConnectEngineLibraries( dwEngineBase );
-	BytePatchEngine( dwEngineBase );
 
 	CloseHandle( CreateThread( nullptr, NULL, ConsoleThread, nullptr, NULL, nullptr ) );
 }
