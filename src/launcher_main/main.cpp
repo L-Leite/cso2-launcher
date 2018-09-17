@@ -1,12 +1,9 @@
-﻿#include <windows.h>
-#include <stdio.h>
+﻿#include <Windows.h>	   
+#include <string>
+#include <iostream>
+#include <sstream>
 
 #include "../githash.h"
-
-#define DLL_EXPORT extern "C" __declspec(dllexport)
-
-typedef int( *LauncherMain_t )(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-	LPSTR lpCmdLine, int nCmdShow);
 
 enum Sys_Flags
 {
@@ -14,56 +11,60 @@ enum Sys_Flags
 	SYS_NOLOAD = 0x01   // no loading, no ref-counting, only returns handle if lib is loaded. 
 };
 
-// aka InternalLoadLibrary
-DLL_EXPORT HMODULE _Init( const char *pName, Sys_Flags flags )
-{	
+// same as InternalLoadLibrary
+extern "C" __declspec(dllexport) HMODULE _Init(const char *pName, Sys_Flags flags)
+{
 	HMODULE hModule = nullptr;
 
-	if ( flags & SYS_NOLOAD )
-		hModule = GetModuleHandle( pName );
-	else
-		hModule = LoadLibraryEx( pName, NULL, LOAD_WITH_ALTERED_SEARCH_PATH );
+	if (flags & SYS_NOLOAD) {
+		hModule = GetModuleHandle(pName);
+	} else {
+		hModule = LoadLibraryExA(pName, nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
+	}
 
 	return hModule;
 }
 
-bool CreateDebugConsole()
+void CreateDebugConsole()
 {
-	BOOL result = AllocConsole();
-
-	if (!result)
-		return false;
+	AllocConsole();
 
 	freopen("CONIN$", "r", stdin);
 	freopen("CONOUT$", "w", stdout);
 	freopen("CONOUT$", "w", stderr);
 
-	SetConsoleTitleW(L"cso2-launcher commit: " GIT_COMMIT_HASH " -- Debug Console");
+	SetConsoleTitleA("cso2-launcher commit: " GIT_COMMIT_HASH " -- Debug Console");
 	SetConsoleCP(CP_UTF8);
 	SetConsoleOutputCP(CP_UTF8);
-
-	return true;
 }
 
-int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
-{			
+int WINAPI WinMain(_In_ HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_ LPSTR lpCmdLine,
+	_In_ int nShowCmd
+)
+{
 	CreateDebugConsole();
 
-	HINSTANCE launcher = LoadLibraryEx( "launcher.dll", NULL, LOAD_WITH_ALTERED_SEARCH_PATH );
-	if ( !launcher )
-	{
-		char *pszError;
-		FormatMessage( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, GetLastError(), MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), (LPTSTR) &pszError, 0, NULL );
+	HINSTANCE hLauncher = LoadLibraryExA("launcher.dll", nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
 
-		char szBuf[1024];
-		_snprintf( szBuf, sizeof( szBuf ), "Failed to load the launcher DLL:\n\n%s", pszError );
-		szBuf[sizeof( szBuf ) - 1] = '\0';
-		MessageBox( 0, szBuf, "Launcher Error", MB_OK );
+	if (!hLauncher) {
+		char* szError;
+		FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			nullptr, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), reinterpret_cast<LPTSTR>(&szError), 0, nullptr);
 
-		LocalFree( pszError );
+		std::ostringstream outStream;
+		outStream << "Failed to load the launcher DLL : \n\n" << szError << '\0';
+		std::string szOutErrorMessage = outStream.str();
+
+		std::cout << szOutErrorMessage;
+		MessageBoxA(nullptr, szOutErrorMessage.c_str(), "Launcher Error", MB_OK);
+
+		LocalFree(szError);
 		return 0;
 	}
 
-	LauncherMain_t main = (LauncherMain_t) GetProcAddress( launcher, "LauncherMain" );
-	return main( hInstance, hPrevInstance, lpCmdLine, nCmdShow );
+	using LauncherMain_t = int(*)(HINSTANCE, HINSTANCE, LPSTR, int);
+	auto main = reinterpret_cast<LauncherMain_t>(GetProcAddress(hLauncher, "LauncherMain"));
+	return main(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
 }

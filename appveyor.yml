@@ -1,35 +1,43 @@
-version: 0.1.{build}-{branch}
+version: 0.1.4-{build}
+branches:
+  only:
+  - master
+skip_tags: true
+skip_commits:
+  files:
+    - '*.md'
+    - '*.ps1'
 image: Visual Studio 2017
 configuration: Release
 platform: x86
-clone_script:
-- cmd: >-
-    git clone -q --branch=%APPVEYOR_REPO_BRANCH% https://github.com/%APPVEYOR_REPO_NAME%.git %APPVEYOR_BUILD_FOLDER%
-          && cd %APPVEYOR_BUILD_FOLDER%
-          && git checkout -qf %APPVEYOR_REPO_COMMIT%
-          && git submodule update --init --recursive
 install:
-- ps: ./setuplibs.ps1
+- ps: >-
+    git submodule update --init --recursive
+
+    $env:COMMIT_HASH_SHORT = $(git rev-parse --short=8 HEAD)
+
+    ./setuplibs.ps1
 build:
   project: CSO2Launcher.sln
   verbosity: minimal
 after_build:
-- cmd: >-
-    7z a binaries.zip %APPVEYOR_BUILD_FOLDER%\out\bin\Win32\Release\*.dll
+- ps: >-
+    7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-binaries.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\*.dll
 
-    7z a binaries.zip %APPVEYOR_BUILD_FOLDER%\out\bin\Win32\Release\*.exe
+    7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-binaries.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\*.exe
 
-    7z a symbols.zip %APPVEYOR_BUILD_FOLDER%\out\bin\Win32\Release\*.pdb
+    7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-symbols.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\*.pdb
+test: off
 artifacts:
-- path: binaries.zip
+- path: $(APPVEYOR_PROJECT_NAME)-$(CONFIGURATION)-$(COMMIT_HASH_SHORT)-binaries.zip
   name: binaries
-- path: symbols.zip
+- path: $(APPVEYOR_PROJECT_NAME)-$(CONFIGURATION)-$(COMMIT_HASH_SHORT)-symbols.zip
   name: symbols
 deploy:
 - provider: GitHub
-  tag: v$(appveyor_build_version)
+  tag: v$(APPVEYOR_BUILD_VERSION)
+  release: Build $(APPVEYOR_BUILD_VERSION)
   auth_token:
-    secure: GZAWVZYfnwGkupEer996vyRz8yg+JwPVKnVZzgwNSIfzj7vgUoHz7sPRBt/LX2Ak
+    secure: XnUsE3jqzulQ4cWVkK2ALBR7qfnfwbBdoMDChmcnx1RcGtRgXV0QLMPo+GcIf8YU
   artifact: binaries,symbols
-  draft: false
-  prerelease: true
+  prerelease: false

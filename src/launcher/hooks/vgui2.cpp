@@ -8,24 +8,25 @@
 
 extern bool g_bEnableLocalization;
 
-HOOK_DETOUR_DECLARE(hkStrTblFind);
+HOOK_DETOUR_DECLARE( hkStrTblFind );
 
 // CLocalizedStringTable::Find
-NOINLINE wchar_t* __fastcall hkStrTblFind(void* ecx, void* edx, const char* pName)
+NOINLINE wchar_t* __fastcall hkStrTblFind( void* ecx, void* edx, const char* pName )
 {
 	static wchar_t szBuffer[1024];
 
 	if (!g_bEnableLocalization)
 	{
-		size_t nameLength = strlen(pName);
-		MultiByteToWideChar(CP_ACP, NULL, pName, strlen(pName), szBuffer, nameLength + 1);
+		size_t nameLength = strlen( pName );
+		MultiByteToWideChar( CP_ACP, NULL, pName, strlen( pName ), szBuffer, nameLength + 1 );
 		szBuffer[nameLength] = '\0';
 		return szBuffer;
-	}			 
- 
-	return HOOK_DETOUR_GET_ORIG(hkStrTblFind)(ecx, edx, pName);
+	}
+
+	return HOOK_DETOUR_GET_ORIG( hkStrTblFind )(ecx, edx, pName);
 }
 
+<<<<<<< HEAD
 HOOK_DETOUR_DECLARE(hkStrTblAddFile);
 
 //CLocalizedStringTable::AddFile
@@ -88,5 +89,10 @@ ON_LOAD_LIB(vgui2)
 	uintptr_t dwVguiBase = GET_LOAD_LIB_MODULE();
 	HOOK_DETOUR(dwVguiBase + 0xAC80, hkStrTblFind);
 	HOOK_DETOUR(dwVguiBase + 0x8D90, hkStrTblAddFile);
+=======
+ON_LOAD_LIB( vgui2 )
+{
+	uintptr_t dwVguiBase = GET_LOAD_LIB_MODULE();
+	HOOK_DETOUR( dwVguiBase + 0xAC80, hkStrTblFind );
+>>>>>>> upstream/master
 }
-
