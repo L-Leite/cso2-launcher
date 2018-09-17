@@ -3,6 +3,9 @@ branches:
   only:
   - master
 skip_tags: true
+skip_commits:
+  files:
+    - *.md
 image: Visual Studio 2017
 configuration: Release
 platform: x86
