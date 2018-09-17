@@ -4,13 +4,14 @@
 A modified client launcher for Nexon's (South Korea) Counter-Strike: Online 2.
 
 ## How to use
-**This tool requires a copy of Nexon's Counter-Strike: Online 2.**
 
-**It also requires incomplete [emulated master server](https://github.com/Ochii/cso2-master-server/) running in order to work.**
+### Requirements
+- A copy of **Nexon's Counter-Strike: Online 2** (hosted in [MEGA](https://mega.nz/#!nhgnBJgD!iR57D5Mf3_1GCcAR36tqFQ7H7KN_F0e3XicD2JBoSN4) and [Google Drive](https://drive.google.com/open?id=1y0diL2nTERlOaJZQTA3xPb8owx82GjtB), SHA-256: 02F76DBDD083EF78ECC92EB963C7C7A7576FF2E2C695671A4F358C2580584965);
+- This incomplete [emulated master server](https://github.com/Ochii/cso2-master-server/) running in the background;
+- [Visual Studio 2017's C++ Redistributable](https://aka.ms/vs/15/release/vc_redist.x86.exe);
+- And the [launcher's files](https://github.com/Ochii/cso2-launcher/releases) in ```[your CSO2 game path]/Bin```.
 
-You may get one [here (MEGA)](https://mega.nz/#!nhgnBJgD!iR57D5Mf3_1GCcAR36tqFQ7H7KN_F0e3XicD2JBoSN4) or [here (Google Drive)](https://drive.google.com/open?id=1y0diL2nTERlOaJZQTA3xPb8owx82GjtB) (SHA-256: 02F76DBDD083EF78ECC92EB963C7C7A7576FF2E2C695671A4F358C2580584965).
-
-Then, download a copy of the project [here](https://github.com/Ochii/cso2-launcher/releases) (it will connect ```127.0.0.1```, or your local machine if you prefer) and copy the contents of the compressed file to ```[your CSO2 game path]/Bin```.
+Keep in mind that the launcher released here will connect 127.0.0.1 (for now).
 
 ### Getting ingame
 *The translations are a courtesy of **[Frostie](#thank-yous)**.*
