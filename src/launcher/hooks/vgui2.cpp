@@ -34,45 +34,14 @@ NOINLINE bool __fastcall hkStrTblAddFile(void* ecx, void* edx, const char *szFil
 	if (strcmp(szFileName, "resource/cso2_koreana.txt") == 0) 
 	{
 		char szFilePath[MAX_PATH];
-
 		const char *szLang = CommandLine()->ParmValue("-lang");
 
-		HKEY hKey;
-
-		if (RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\Nexon\\cso2\\cso2_launcher", NULL, KEY_READ | KEY_WRITE, &hKey) != ERROR_SUCCESS)
-		{
-			if (RegCreateKey(HKEY_CURRENT_USER, "Software\\Nexon\\cso2\\cso2_launcher", &hKey) != ERROR_SUCCESS)
-			{
-				snprintf(szFilePath, sizeof(szFilePath), "resource/cso2_%s.txt", szLang ? szLang : "koreana");
-				goto final;
-			}
-
-		}
-
 		if (szLang) 
-		{
 			snprintf(szFilePath, sizeof(szFilePath), "resource/cso2_%s.txt", szLang);
-			RegSetValueEx(hKey, "language", 0, REG_SZ, (unsigned char *)szLang, strlen(szLang));
-		}
 		else
-		{
-			char dwValue[256];
-			DWORD dwSize = sizeof(dwValue);
+			return HOOK_DETOUR_GET_ORIG(hkStrTblAddFile)(ecx, edx, szFileName, pPathID, bIncludeFallbackSearchPaths);
 
-			if (RegQueryValueEx(hKey, "language", NULL, NULL, (LPBYTE)&dwValue, &dwSize) == ERROR_SUCCESS)
-			{
-				snprintf(szFilePath, sizeof(szFilePath), "resource/cso2_%s.txt", dwValue);
-			}
-			else
-			{
-				snprintf(szFilePath, sizeof(szFilePath), "resource/cso2_%s.txt", "koreana");
-				RegSetValueEx(hKey, "language", 0, REG_SZ, (unsigned char *)"koreana", 7);
-			}
-		}
 
-		RegCloseKey(hKey);
-
-	final:
 		printf("Adding fallback(resource/cso2_koreana_fallback.txt) localized strings... \n");
 		HOOK_DETOUR_GET_ORIG(hkStrTblAddFile)(ecx, edx, "resource/cso2_koreana_fallback.txt", pPathID, true);
 
