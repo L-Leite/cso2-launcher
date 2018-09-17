@@ -1,5 +1,5 @@
 # cso2-launcher
-[![Build status](https://ci.appveyor.com/api/projects/status/ajl6d1ir9s3l4lyu/branch/master?svg=true)](https://ci.appveyor.com/project/Ochii/cso2-launcher/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/6ehjwfyekyfd9ipx/branch/master?svg=true)](https://ci.appveyor.com/project/Ochii/cso2-launcher/branch/master)
 
 A modified client launcher for Nexon's (South Korea) Counter-Strike: Online 2.
 
