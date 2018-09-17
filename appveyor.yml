@@ -10,6 +10,9 @@ skip_commits:
 image: Visual Studio 2017
 configuration: Release
 platform: x86
+environment:
+  VC17_REDIST_URL: https://aka.ms/vs/15/release/vc_redist.x86.exe
+  VC17_REDIST_SHA256: B194C31198E681A94AB1744D7704716CFC6E05CDEF157AB60367284192F6C088
 install:
 - ps: >-
     git submodule update --init --recursive
@@ -17,6 +20,8 @@ install:
     $env:COMMIT_HASH_SHORT = $(git rev-parse --short=8 HEAD)
 
     ./setuplibs.ps1
+before_build:
+- ps: "if (!(test-path vc_redist.x86.exe))\n{\n	irm $env:VC17_REDIST_URL -outfile vc_redist.x86.exe \n}\nif ($env:VC17_REDIST_SHA256 -ne $(Get-FileHash .\\vc_redist.x86.exe).Hash)\n{\n	Throw \"VC C++'s redist has a bad hash!\"\n}"
 build:
   project: CSO2Launcher.sln
   verbosity: minimal
@@ -25,6 +30,8 @@ after_build:
     7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-binaries.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\*.dll
 
     7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-binaries.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\*.exe
+
+    7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-binaries.zip $env:APPVEYOR_BUILD_FOLDER\vc_redist.x86.exe
 
     7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-symbols.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\*.pdb
 test: off
