@@ -1,10 +1,6 @@
-#include "strtools.h"
 #include "hooks.h"
 
-#include <atlbase.h>
 #include "tier0/icommandline.h"
-
-#include "tier0/memdbgon.h"
 
 extern bool g_bEnableLocalization;
 
