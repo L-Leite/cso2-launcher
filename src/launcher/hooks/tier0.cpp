@@ -57,6 +57,8 @@ NOINLINE void hkMsg( const tchar* pMsg, ... )
 	va_start( va, pMsg );
 	vprintf( pMsg, va );
 	va_end( va );
+
+	printf("\n");
 }
 
 HOOK_EXPORT_DECLARE( hkWarning );
@@ -72,6 +74,8 @@ NOINLINE void hkWarning( const tchar* pMsg, ... )
 	va_start( va, pMsg );
 	vprintf( pMsg, va );
 	va_end( va );
+
+	printf("\n");
 }
 
 void BytePatchTier( const uintptr_t dwTierBase )
@@ -84,27 +88,7 @@ void BytePatchTier( const uintptr_t dwTierBase )
 	WriteProtectedMemory( addArgPatch, (dwTierBase + 0x1D63) );
 }
 
-void BytePatchTier(const uintptr_t dwTierBase)
-{
-	//
-	// disable hard coded command line argument check
-	//
-	// jmp near 0x1D8 bytes forward
-	uint8_t addArgPatch[] = { 0xE9, 0xD8, 0x01, 0x00, 0x00 };
-	WriteProtectedMemory(addArgPatch, (dwTierBase + 0x1D63));
-}
-
 void HookTier0()
-<<<<<<< HEAD
-{	
-	const uintptr_t dwTierBase = g_ModuleList.Get("tier0.dll");
-	BytePatchTier(dwTierBase);
-
-	HOOK_EXPORT(L"tier0.dll", "COM_TimestampedLog", hkMsg);
-	HOOK_EXPORT(L"tier0.dll", "Msg", hkCOM_TimestampedLog);
-	HOOK_EXPORT(L"tier0.dll", "Warning", hkWarning);
-}
-=======
 {
 	const uintptr_t dwTierBase = g_ModuleList.Get( "tier0.dll" );
 	BytePatchTier( dwTierBase );
@@ -113,4 +97,3 @@ void HookTier0()
 	HOOK_EXPORT( L"tier0.dll", "Msg", hkCOM_TimestampedLog );
 	HOOK_EXPORT( L"tier0.dll", "Warning", hkWarning );
 }
->>>>>>> upstream/master
