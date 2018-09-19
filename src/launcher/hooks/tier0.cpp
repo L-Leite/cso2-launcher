@@ -57,6 +57,8 @@ NOINLINE void hkMsg( const tchar* pMsg, ... )
 	va_start( va, pMsg );
 	vprintf( pMsg, va );
 	va_end( va );
+
+	printf("\n");
 }
 
 HOOK_EXPORT_DECLARE( hkWarning );
@@ -72,6 +74,8 @@ NOINLINE void hkWarning( const tchar* pMsg, ... )
 	va_start( va, pMsg );
 	vprintf( pMsg, va );
 	va_end( va );
+
+	printf("\n");
 }
 
 void BytePatchTier( const uintptr_t dwTierBase )

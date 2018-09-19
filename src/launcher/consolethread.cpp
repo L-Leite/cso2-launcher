@@ -24,6 +24,7 @@ DWORD WINAPI ConsoleThread( LPVOID lpArguments )
 		std::string szCommand;
 		std::getline( std::cin, szCommand );
 
+
 		if (szCommand.find( "lessdebug" ) == 0)
 		{
 			g_bPrintMoreDebugInfo = !g_bPrintMoreDebugInfo;
