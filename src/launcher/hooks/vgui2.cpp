@@ -27,20 +27,59 @@ HOOK_DETOUR_DECLARE(hkStrTblAddFile);
 //CLocalizedStringTable::AddFile
 NOINLINE bool __fastcall hkStrTblAddFile(void* ecx, void* edx, const char *szFileName, const char *pPathID, bool bIncludeFallbackSearchPaths)
 {
-	if (strcmp(szFileName, "resource/cso2_koreana.txt") == 0) 
+	bool bNeedReplace = false;
+	char szFilePath[MAX_PATH];
+	if (strcmp(szFileName, "resource/cso2_koreana.txt") == 0)
 	{
-		char szFilePath[MAX_PATH];
+		bNeedReplace = true;
 		const char *szLang = CommandLine()->ParmValue("-lang");
 
 		if (szLang) 
 			snprintf(szFilePath, sizeof(szFilePath), "resource/cso2_%s.txt", szLang);
-		else
-			return HOOK_DETOUR_GET_ORIG(hkStrTblAddFile)(ecx, edx, szFileName, pPathID, bIncludeFallbackSearchPaths);
-
+		else {
+			bNeedReplace = false;
+		}
 
 		printf("Adding fallback(resource/cso2_koreana_fallback.txt) localized strings... \n");
 		HOOK_DETOUR_GET_ORIG(hkStrTblAddFile)(ecx, edx, "resource/cso2_koreana_fallback.txt", pPathID, true);
+	}
+	else if (strcmp(szFileName, "resource/cstrike_korean.txt") == 0)
+	{
+		bNeedReplace = true;
+		const char *szLang = CommandLine()->ParmValue("-lang");
 
+		if (szLang)
+			snprintf(szFilePath, sizeof(szFilePath), "resource/cstrike_%s.txt", szLang);
+		else {
+			bNeedReplace = false;
+		}
+	}
+	else if (strcmp(szFileName, "resource/chat_korean.txt") == 0)
+	{
+		bNeedReplace = true;
+		const char *szLang = CommandLine()->ParmValue("-lang");
+
+		if (szLang)
+			snprintf(szFilePath, sizeof(szFilePath), "resource/chat_%s.txt", szLang);
+		else {
+			bNeedReplace = false;
+		}
+	}
+	else if (strcmp(szFileName, "Resource/valve_korean.txt") == 0)
+	{
+		bNeedReplace = true;
+		const char *szLang = CommandLine()->ParmValue("-lang");
+
+		if (szLang)
+			snprintf(szFilePath, sizeof(szFilePath), "Resource/valve_%s.txt", szLang);
+		else {
+			bNeedReplace = false;
+		}
+	}
+	
+
+	if (bNeedReplace)
+	{
 		printf("Loading custom(%s) localized strings... \n", szFilePath);
 		return HOOK_DETOUR_GET_ORIG(hkStrTblAddFile)(ecx, edx, szFilePath, pPathID, true);
 	}

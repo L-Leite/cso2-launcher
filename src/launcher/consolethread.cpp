@@ -24,6 +24,45 @@ DWORD WINAPI ConsoleThread( LPVOID lpArguments )
 		std::string szCommand;
 		std::getline( std::cin, szCommand );
 
+<<<<<<< HEAD
+		std::vector<std::string> szArguments;
+
+		while (ss >> szTempArgBuffer)
+			szArguments.push_back(szTempArgBuffer);
+
+		if (szArguments[0].find("help") == 0)
+		{
+			printf("Available commands:\n"
+				"\n"
+				"joinroom [gamemode id] [map id]\t-\tCreates a room and starts the room match\n"
+				"listgamemodes\t-\tLists the available game modes\n"
+				"listmaps\t-\tLists the available maps\n"
+				"lessdebug\t-\tShortens the information printed here\n"
+				"togglelocal\t-\tToggles text localization\n"
+				"setlang\t-\tSet custom language (require restart to make effect)\n"
+				"\n"
+				"And when you're ingame:\n"
+				"jointeam [team number]\t-\tJoins you in a team, where 1 is spectator, 2 is terrorist and 3 is ct\n"
+				"disconnect\t-\tDisconnects you from your current match\n"
+				"You may also use this console as if it was an ingame console (you can enable 'cl_showfps', for example)\n");
+		}
+		else if (szArguments[0].find("joinroom") == 0)
+		{
+			if (szArguments.size() != 3)
+				printf("Usage: joinroom [gamemode id] [map id]\n");
+			else
+				HostRoom(std::stoi(szArguments[1]), std::stoi(szArguments[2]));
+		}
+		else if (szArguments[0].find("listgamemodes") == 0)
+		{
+			ListGamemodes();
+		}
+		else if (szArguments[0].find("listmaps") == 0)
+		{
+			ListMaps();
+		}
+		else if (szArguments[0].find("lessdebug") == 0)
+=======
 		if (szCommand.find( "lessdebug" ) == 0)
 		{
 			g_bPrintMoreDebugInfo = !g_bPrintMoreDebugInfo;
