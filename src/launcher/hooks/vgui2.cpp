@@ -1,96 +1,91 @@
-#include "hooks.h"
+#include <sstream>
+#include <string>
 
 #include "tier0/icommandline.h"
+#include "hooks.h"
 
 extern bool g_bEnableLocalization;
 
-HOOK_DETOUR_DECLARE(hkStrTblFind);
+HOOK_DETOUR_DECLARE( hkStrTblFind );
 
-// CLocalizedStringTable::Find
-NOINLINE wchar_t* __fastcall hkStrTblFind(void* ecx, void* edx, const char* pName)
+// Original function: CLocalizedStringTable::Find
+NOINLINE wchar_t* __fastcall hkStrTblFind( void* ecx, void* edx, const char* pName )
 {
 	static wchar_t szBuffer[1024];
 
 	if (!g_bEnableLocalization)
 	{
-		size_t nameLength = strlen(pName);
-		MultiByteToWideChar(CP_ACP, NULL, pName, strlen(pName), szBuffer, nameLength + 1);
+		size_t nameLength = strlen( pName );
+		MultiByteToWideChar( CP_ACP, NULL, pName, strlen( pName ), szBuffer, nameLength + 1 );
 		szBuffer[nameLength] = '\0';
 		return szBuffer;
-	}			 
- 
-	return HOOK_DETOUR_GET_ORIG(hkStrTblFind)(ecx, edx, pName);
+	}
+
+	return HOOK_DETOUR_GET_ORIG( hkStrTblFind )(ecx, edx, pName);
 }
 
-HOOK_DETOUR_DECLARE(hkStrTblAddFile);
-
-//CLocalizedStringTable::AddFile
-NOINLINE bool __fastcall hkStrTblAddFile(void* ecx, void* edx, const char *szFileName, const char *pPathID, bool bIncludeFallbackSearchPaths)
+//
+// Formats a string as "resource/[game prefix]_[language].txt"
+//
+std::string GetDesiredLangFile( const std::string& szGamePrefix, const char* szLanguage )
 {
-	bool bNeedReplace = false;
-	char szFilePath[MAX_PATH];
-	if (strcmp(szFileName, "resource/cso2_koreana.txt") == 0)
-	{
-		bNeedReplace = true;
-		const char *szLang = CommandLine()->ParmValue("-lang");
-
-		if (szLang) 
-			snprintf(szFilePath, sizeof(szFilePath), "resource/cso2_%s.txt", szLang);
-		else {
-			bNeedReplace = false;
-		}
-
-		printf("Adding fallback(resource/cso2_koreana_fallback.txt) localized strings... \n");
-		HOOK_DETOUR_GET_ORIG(hkStrTblAddFile)(ecx, edx, "resource/cso2_koreana_fallback.txt", pPathID, true);
-	}
-	else if (strcmp(szFileName, "resource/cstrike_korean.txt") == 0)
-	{
-		bNeedReplace = true;
-		const char *szLang = CommandLine()->ParmValue("-lang");
-
-		if (szLang)
-			snprintf(szFilePath, sizeof(szFilePath), "resource/cstrike_%s.txt", szLang);
-		else {
-			bNeedReplace = false;
-		}
-	}
-	else if (strcmp(szFileName, "resource/chat_korean.txt") == 0)
-	{
-		bNeedReplace = true;
-		const char *szLang = CommandLine()->ParmValue("-lang");
-
-		if (szLang)
-			snprintf(szFilePath, sizeof(szFilePath), "resource/chat_%s.txt", szLang);
-		else {
-			bNeedReplace = false;
-		}
-	}
-	else if (strcmp(szFileName, "Resource/valve_korean.txt") == 0)
-	{
-		bNeedReplace = true;
-		const char *szLang = CommandLine()->ParmValue("-lang");
-
-		if (szLang)
-			snprintf(szFilePath, sizeof(szFilePath), "Resource/valve_%s.txt", szLang);
-		else {
-			bNeedReplace = false;
-		}
-	}
-	
-
-	if (bNeedReplace)
-	{
-		printf("Loading custom(%s) localized strings... \n", szFilePath);
-		return HOOK_DETOUR_GET_ORIG(hkStrTblAddFile)(ecx, edx, szFilePath, pPathID, true);
-	}
-
-	return HOOK_DETOUR_GET_ORIG(hkStrTblAddFile)(ecx, edx, szFileName, pPathID, bIncludeFallbackSearchPaths);
+	std::ostringstream oss;
+	oss << "resource/" << szGamePrefix << "_" << szLanguage << ".txt";
+	return oss.str();
 }
 
-ON_LOAD_LIB(vgui2)
-{ 
+HOOK_DETOUR_DECLARE( hkStrTblAddFile );
+
+//
+// Allow the user to specify some language file through command line arguments
+// "-lang [desired language]"
+// And load the language file from "resource/cso2_[desired language].txt".
+//
+// Original function: CLocalizedStringTable::AddFile
+NOINLINE bool __fastcall hkStrTblAddFile( void* ecx, void* edx, const char *szFileName, const char *pPathID, bool bIncludeFallbackSearchPaths )
+{
+	const char* szDesiredLang = CommandLine()->ParmValue( "-lang" );
+
+	// Make sure we have a command argument
+	if (!szDesiredLang)
+	{
+		return HOOK_DETOUR_GET_ORIG( hkStrTblAddFile )(ecx, edx, szFileName, pPathID, bIncludeFallbackSearchPaths);
+	}
+
+	std::string_view fileNameView = szFileName;
+	std::string szDesiredFile;
+
+	// Verify if we want to replace the current language file
+	if (fileNameView == "resource/cso2_koreana.txt")
+	{
+		szDesiredFile = GetDesiredLangFile( "cso2", szDesiredLang );
+	}
+	else if (fileNameView == "resource/cstrike_korean.txt")
+	{
+		szDesiredFile = GetDesiredLangFile( "cstrike", szDesiredLang );
+	}
+	else if (fileNameView == "resource/chat_korean.txt")
+	{
+		szDesiredFile = GetDesiredLangFile( "chat", szDesiredLang );
+	}
+	else if (fileNameView == "resource/valve_korean.txt")
+	{
+		szDesiredFile = GetDesiredLangFile( "valve", szDesiredLang );
+	}
+	else
+	{
+		// if we don't want to replace the existing file, resume ordinary behavior
+		return HOOK_DETOUR_GET_ORIG( hkStrTblAddFile )
+			(ecx, edx, szFileName, pPathID, bIncludeFallbackSearchPaths);
+	}
+
+	// load our desired language file
+	return HOOK_DETOUR_GET_ORIG( hkStrTblAddFile )(ecx, edx, szDesiredFile.c_str(), pPathID, true);
+}
+
+ON_LOAD_LIB( vgui2 )
+{
 	uintptr_t dwVguiBase = GET_LOAD_LIB_MODULE();
-	HOOK_DETOUR(dwVguiBase + 0xAC80, hkStrTblFind);
-	HOOK_DETOUR(dwVguiBase + 0x8D90, hkStrTblAddFile);
+	HOOK_DETOUR( dwVguiBase + 0xAC80, hkStrTblFind );
+	HOOK_DETOUR( dwVguiBase + 0x8D90, hkStrTblAddFile );
 }
-
