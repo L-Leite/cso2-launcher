@@ -68,6 +68,8 @@ If you have any improvements that you would like to share or comment about, have
 
 ## Credits
 
+- [GEEKiDoS](https://github.com/GEEKiDoS)
+
 - [Valve Software](https://github.com/ValveSoftware/source-sdk-2013) for their SDK
 
 ## Thank you's
