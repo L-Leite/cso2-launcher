@@ -1,16 +1,6 @@
-#include "strtools.h"
-#include "hooks.h"
-#include "engine/cso2/cso2gamemanager.h"
+#include <array>	
 
-#include <array>
-
-void ConnectEngineLibraries( const uintptr_t dwEngineBase )
-{
-	if (!g_pCSO2GameManager)
-	{
-		g_pCSO2GameManager = reinterpret_cast<CSO2GameManager*>(dwEngineBase + 0xAA8D40);
-	}
-}
+#include "hooks.h"		   
 
 HOOK_DETOUR_DECLARE( hkSys_SpewFunc );
 
@@ -105,7 +95,6 @@ extern DWORD WINAPI ConsoleThread( LPVOID lpArguments );
 ON_LOAD_LIB( engine )
 {
 	const uintptr_t dwEngineBase = GET_LOAD_LIB_MODULE();
-	ConnectEngineLibraries( dwEngineBase );
 	BytePatchEngine( dwEngineBase );
 
 	HOOK_DETOUR( dwEngineBase + 0x155C80, hkSys_SpewFunc );

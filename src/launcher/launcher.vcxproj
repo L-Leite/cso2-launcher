@@ -220,17 +220,8 @@ xcopy /A /E /K /Y "$(SolutionDir)libs\source-sdk-cso2\lib" "$(SolutionDir)out\li
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2automatchmodinfo.cpp" />
-    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2gamemanager.cpp" />
-    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2gameroom.cpp" />
-    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2mapinfo.cpp" />
-    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2modinfo.cpp" />
-    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2modmapinfo.cpp" />
-    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\optionlist.cpp" />
-    <ClCompile Include="..\..\libs\source-sdk-cso2\public\client\cso2\icso2msghandlerclient.cpp" />
     <ClCompile Include="consolethread.cpp" />
     <ClCompile Include="filesystem_init.cpp" />
-    <ClCompile Include="hooks\client.cpp" />
     <ClCompile Include="hooks\engine.cpp">
       <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</PreprocessToFile>
     </ClCompile>

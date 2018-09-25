@@ -10,9 +10,6 @@
     <Filter Include="Header Files">
       <UniqueIdentifier>{6c58805f-e70f-490f-b0be-6456534ece58}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\cso2">
-      <UniqueIdentifier>{ef529168-13f7-4b02-8da9-5cb2d2339589}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\hooks">
       <UniqueIdentifier>{9a681c96-d4aa-4c11-8908-6a5149c2f025}</UniqueIdentifier>
     </Filter>
@@ -27,9 +24,6 @@
     <ClCompile Include="filesystem_init.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2gameroom.cpp">
-      <Filter>Source Files\cso2</Filter>
-    </ClCompile>
     <ClCompile Include="hooks\winapi.cpp">
       <Filter>Source Files\hooks</Filter>
     </ClCompile>
@@ -42,32 +36,8 @@
     <ClCompile Include="hooks\tier0.cpp">
       <Filter>Source Files\hooks</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\optionlist.cpp">
-      <Filter>Source Files\cso2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2modmapinfo.cpp">
-      <Filter>Source Files\cso2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2modinfo.cpp">
-      <Filter>Source Files\cso2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2automatchmodinfo.cpp">
-      <Filter>Source Files\cso2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2mapinfo.cpp">
-      <Filter>Source Files\cso2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\libs\source-sdk-cso2\engine\cso2\cso2gamemanager.cpp">
-      <Filter>Source Files\cso2</Filter>
-    </ClCompile>
     <ClCompile Include="modulelist.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="hooks\client.cpp">
-      <Filter>Source Files\hooks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\libs\source-sdk-cso2\public\client\cso2\icso2msghandlerclient.cpp">
-      <Filter>Source Files\cso2</Filter>
     </ClCompile>
     <ClCompile Include="consolethread.cpp">
       <Filter>Source Files</Filter>
