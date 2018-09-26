@@ -1,6 +1,9 @@
 #include <array>	
 
+#include "tier0/icommandline.h"
 #include "hooks.h"		   
+
+using namespace std::literals::string_literals;
 
 HOOK_DETOUR_DECLARE( hkSys_SpewFunc );
 
@@ -13,15 +16,39 @@ NOINLINE int hkSys_SpewFunc( int spewType, char* pMsg )
 struct IpAddressInfo
 {
 	std::string szIpAddress;
-	uint16_t uPort;
+	uint16_t iPort;
 };
 
 HOOK_DETOUR_DECLARE( hkGetServerIpAddressInfo );
 
+//
+// Allows the user to choose a specific master server's IP address and/or port number
+// through command line arguments.
+// Defaults to 127.0.0.1:30001 if no arguments are given
+// Usage: "-masterip [desired master IP address]" and/or "-masterport [desired master port number]"
+//
 NOINLINE void __fastcall hkGetServerIpAddressInfo( IpAddressInfo* pIpAddressInfo )
 {
-	pIpAddressInfo->szIpAddress = "127.0.0.1";
-	pIpAddressInfo->uPort = 30001;
+	const char* szMasterIp = CommandLine()->ParmValue( "-masterip" );
+	const char* szMasterPort = CommandLine()->ParmValue( "-masterport" );
+
+	if (szMasterIp)
+	{
+		pIpAddressInfo->szIpAddress = std::move( std::string( szMasterIp ) );
+	}
+	else
+	{
+		pIpAddressInfo->szIpAddress = std::move( "127.0.0.1"s );
+	}
+
+	if (szMasterPort)
+	{
+		pIpAddressInfo->iPort = static_cast<uint16_t>(atoi( szMasterPort ));
+	}
+	else
+	{
+		pIpAddressInfo->iPort = 30001;
+	}
 }
 
 void BytePatchEngine( const uintptr_t dwEngineBase )
@@ -65,6 +92,7 @@ void BytePatchEngine( const uintptr_t dwEngineBase )
 	// nops	
 	const std::array<uint8_t, 10> loginNMPatch3 = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
 	WriteProtectedMemory( loginNMPatch3, (dwEngineBase + 0x284A22) );
+
 	//
 	// don't get the nexon username from NM
 	//
@@ -80,7 +108,7 @@ void BytePatchEngine( const uintptr_t dwEngineBase )
 	// force direct UDP connection instead of relay connection
 	//		  
 	// mov dword ptr [eax], 2
-	const std::array<uint8_t, 6> relayPatch = {0xC7, 0x00, 0x02, 0x00, 0x00, 0x00};
+	const std::array<uint8_t, 6> relayPatch = { 0xC7, 0x00, 0x02, 0x00, 0x00, 0x00 };
 	WriteProtectedMemory( relayPatch, (dwEngineBase + 0x2BE552) );
 	// mov dword ptr [eax+8], 2
 	const std::array<uint8_t, 7> relayPatch2 = { 0xC7, 0x40, 0x08, 0x02, 0x00, 0x00, 0x00 };
