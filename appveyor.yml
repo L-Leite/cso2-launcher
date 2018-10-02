@@ -1,7 +1,4 @@
 version: 0.1.4-{build}
-branches:
-  only:
-  - master
 skip_tags: true
 skip_commits:
   files:
@@ -35,9 +32,10 @@ artifacts:
   name: symbols
 deploy:
 - provider: GitHub
-  tag: v$(APPVEYOR_BUILD_VERSION)
-  release: Build $(APPVEYOR_BUILD_VERSION)
+  release: Build $(APPVEYOR_REPO_TAG_NAME)
   auth_token:
     secure: XnUsE3jqzulQ4cWVkK2ALBR7qfnfwbBdoMDChmcnx1RcGtRgXV0QLMPo+GcIf8YU
   artifact: binaries,symbols
   prerelease: false
+  on:
+    APPVEYOR_REPO_TAG: true
