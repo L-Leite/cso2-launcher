@@ -30,8 +30,8 @@ There will be a console window where you can input commands just like a regular 
 
 ### Available command line arguments
 - ```-lang [some language]``` - Sets the game's language to *some language*'s (considering you have right language files)
-- ```-masterip [some ip]``` - Sets the master's IP address to *some ip*
-- ```-masterport [some port]``` - Sets the master's port number to *some port*
+- ```-masterip [some ip]``` - Sets the master server's IP address to *some ip*
+- ```-masterport [some port]``` - Sets the master server's port number to *some port*
 
 ## How to build
 
