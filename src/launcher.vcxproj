@@ -72,7 +72,9 @@ xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\capstone\build32\$(Configurat
 xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\$(Configuration)\PolyHook_2.lib" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"
 xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\$(Configuration)\PolyHook_2.dll" "$(SolutionDir)out\bin\$(Platform)\$(Configuration)"
 xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\$(Configuration)\PolyHook_2.pdb" "$(SolutionDir)out\bin\$(Platform)\$(Configuration)"
-xcopy /A /E /K /Y "$(SolutionDir)libs\source-sdk-cso2\lib" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"</Command>
+xcopy /A /E /K /Y "$(SolutionDir)libs\source-sdk-cso2\lib" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"
+cd "$(SolutionDir)"
+powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps1"</Command>
     </PreBuildEvent>
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -150,7 +152,9 @@ xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\capstone\build32\$(Configurat
 xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\RelWithDebInfo\PolyHook_2.lib" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"
 xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\RelWithDebInfo\PolyHook_2.dll" "$(SolutionDir)out\bin\$(Platform)\$(Configuration)"
 xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\RelWithDebInfo\PolyHook_2.pdb" "$(SolutionDir)out\bin\$(Platform)\$(Configuration)"
-xcopy /A /E /K /Y "$(SolutionDir)libs\source-sdk-cso2\lib" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"</Command>
+xcopy /A /E /K /Y "$(SolutionDir)libs\source-sdk-cso2\lib" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"~
+cd "$(SolutionDir)"
+powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps1"</Command>
     </PreBuildEvent>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
