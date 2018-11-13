@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "../githash.h"
+#include "githash.h"
 
 enum Sys_Flags
 {
@@ -38,6 +38,8 @@ void CreateDebugConsole()
 	SetConsoleOutputCP(CP_UTF8);
 }
 
+extern "C" int LauncherMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow );
+
 int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPSTR lpCmdLine,
@@ -45,26 +47,5 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 )
 {
 	CreateDebugConsole();
-
-	HINSTANCE hLauncher = LoadLibraryExA("launcher.dll", nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
-
-	if (!hLauncher) {
-		char* szError;
-		FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-			nullptr, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), reinterpret_cast<LPTSTR>(&szError), 0, nullptr);
-
-		std::ostringstream outStream;
-		outStream << "Failed to load the launcher DLL : \n\n" << szError << '\0';
-		std::string szOutErrorMessage = outStream.str();
-
-		std::cout << szOutErrorMessage;
-		MessageBoxA(nullptr, szOutErrorMessage.c_str(), "Launcher Error", MB_OK);
-
-		LocalFree(szError);
-		return 0;
-	}
-
-	using LauncherMain_t = int(*)(HINSTANCE, HINSTANCE, LPSTR, int);
-	auto main = reinterpret_cast<LauncherMain_t>(GetProcAddress(hLauncher, "LauncherMain"));
-	return main(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
+	return LauncherMain( hInstance, hPrevInstance, lpCmdLine, nShowCmd );
 }

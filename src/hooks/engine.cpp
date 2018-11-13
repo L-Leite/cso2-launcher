@@ -27,28 +27,13 @@ HOOK_DETOUR_DECLARE( hkGetServerIpAddressInfo );
 // Defaults to 127.0.0.1:30001 if no arguments are given
 // Usage: "-masterip [desired master IP address]" and/or "-masterport [desired master port number]"
 //
-NOINLINE void __fastcall hkGetServerIpAddressInfo( IpAddressInfo* pIpAddressInfo )
+NOINLINE void __fastcall hkGetServerIpAddressInfo( IpAddressInfo& info )
 {
 	const char* szMasterIp = CommandLine()->ParmValue( "-masterip" );
 	const char* szMasterPort = CommandLine()->ParmValue( "-masterport" );
 
-	if (szMasterIp)
-	{
-		pIpAddressInfo->szIpAddress = std::move( std::string( szMasterIp ) );
-	}
-	else
-	{
-		pIpAddressInfo->szIpAddress = std::move( "127.0.0.1"s );
-	}
-
-	if (szMasterPort)
-	{
-		pIpAddressInfo->iPort = static_cast<uint16_t>(atoi( szMasterPort ));
-	}
-	else
-	{
-		pIpAddressInfo->iPort = 30001;
-	}
+	info.szIpAddress = szMasterIp ? szMasterIp : "127.0.0.1"s;
+	info.iPort = szMasterPort ? static_cast<uint16_t>(atoi( szMasterPort )) : 30001;
 }
 
 void BytePatchEngine( const uintptr_t dwEngineBase )
