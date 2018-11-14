@@ -2,7 +2,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/6ehjwfyekyfd9ipx/branch/master?svg=true)](https://ci.appveyor.com/project/Ochii/cso2-launcher/branch/master)
 
-A modified client launcher for Nexon's (South Korea) Counter-Strike: Online 2.
+A custom client launcher for Nexon's (South Korea) Counter-Strike: Online 2.
 
 ## How to use
 
@@ -19,12 +19,17 @@ Keep in mind that the launcher released here will connect 127.0.0.1 (for now).
 
 *The translations are a courtesy of **[Frostie](#thank-yous)**.*
 
-- To start the launcher, run ```launcher_main.exe```;
+- Start the launcher with ```launcher_main.exe``` with the [optional arguments](#available-command-line-arguments) if necessary;
 - Once the game loads enter some login information - only your username will be used, and you can use any password ([example](https://puu.sh/Bw7hu/ffba6ca218.png));
-- In order to host a room, choose the second option in the menu that reads *공식전* (translation: *competitive game*) ([example](https://puu.sh/Bw7tM/7c8298a7eb.png)), then pick the first option ([example](https://puu.sh/Bw7CS/17addcee32.png));
-- If you wish to play with more players repeat the previous steps, otherwise you can start the match by pressing *게임 시작* (translation: *game start*) ([example](https://puu.sh/Bw7M3/9209eb7637.png)). 
+- Select *커스텀모드* (*custom mode*) to go to the channel menu ([example](https://puu.sh/C1Nno/7122e0fefd.png));
+- Pick a channel ([example](https://puu.sh/C1NpM/adead9596e.png))
+- Create your own room by pressing *방만들기* (*room*) ([example](https://puu.sh/C1NrH/5cbaa524f8.png)) then choosing game mode ([example](https://puu.sh/C1NSv/8023bd39e8.png));
+- If you wish, you can change **some** room options ([example](https://puu.sh/C1Nti/94a63556ee.png));
+- You can now start the match by pressing *게임 시작* (*game start*) ([example](https://puu.sh/Bw7M3/9209eb7637.png)). 
 
-The match options are unchangeable, and you can't do almost anything since the master server is incomplete.
+Again, some room options **cannot be changed** at the moment. 
+
+You **can't distinguish between rooms in menu or in the middle of a match**.
 
 There will be a console window where you can input commands just like a regular Source Engine console (you can enable ```cl_showfps```, for example).
 
@@ -74,8 +79,7 @@ If you have any improvements that you would like to share or comment about, have
 ## Credits
 
 - [GEEKiDoS](https://github.com/GEEKiDoS)
-
-- [Valve Software](https://github.com/ValveSoftware/source-sdk-2013) for their SDK
+- [Valve Software](https://github.com/ValveSoftware/source-sdk-2013)
 
 ## Thank you's
 
