@@ -96,7 +96,7 @@ powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps
       <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
       <BrowseInformation />
       <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CompileAs>CompileAsCpp</CompileAs>
       <ErrorReporting>Prompt</ErrorReporting>
@@ -178,7 +178,7 @@ powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps
       <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
       <BrowseInformation />
       <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>CompileAsCpp</CompileAs>
       <ErrorReporting>Prompt</ErrorReporting>
