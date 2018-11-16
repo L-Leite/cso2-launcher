@@ -8,13 +8,8 @@ if ($lastLine -ne "add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)")
 	Add-Content .\CMakeLists.txt "`nadd_definitions(-D_ITERATOR_DEBUG_LEVEL=0)"
 }
 
-Set-Location .\capstone
-mkdir build32
-mkdir build64
-Set-Location .\build32
-cmake -G "Visual Studio 15 2017" ..\
-Set-Location ..\..\
-cmake -G "Visual Studio 15 2017" -DBUILD_DLL=ON -DBUILD_STATIC=OFF .\
+# build capstone for PH
+.\BuildCapstone.bat
 
 # setup source sdk
 Set-Location ..\source-sdk-cso2
