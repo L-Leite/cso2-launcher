@@ -10,6 +10,8 @@ if ($lastLine -ne "add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)")
 
 # build capstone for PH
 .\BuildCapstone.bat
+# now PH
+cmake -G "Visual Studio 15 2017" -DBUILD_DLL=ON -DBUILD_STATIC=OFF .\
 
 # setup source sdk
 Set-Location ..\source-sdk-cso2

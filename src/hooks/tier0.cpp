@@ -90,7 +90,7 @@ void HookTier0()
 	const uintptr_t dwTierBase = g_ModuleList.Get( "tier0.dll" );
 	BytePatchTier( dwTierBase );
 
-	HOOK_EXPORT( L"tier0.dll", "COM_TimestampedLog", hkCOM_TimestampedLog );
-	HOOK_EXPORT( L"tier0.dll", "Msg", hkMsg );
-	HOOK_EXPORT( L"tier0.dll", "Warning", hkWarning );
+	HOOK_EXPORT( "COM_TimestampedLog", L"tier0.dll", hkCOM_TimestampedLog );
+	HOOK_EXPORT( "Msg", L"tier0.dll", hkMsg );
+	HOOK_EXPORT( "Warning", L"tier0.dll", hkWarning );
 }
