@@ -1,7 +1,7 @@
 #include <array>	
 
 #include "tier0/icommandline.h"
-#include "hooks.h"		   
+#include "hooks.hpp"		   
 
 using namespace std::literals::string_literals;
 

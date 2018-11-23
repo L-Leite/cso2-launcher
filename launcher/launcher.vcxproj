@@ -50,6 +50,8 @@
     <LibraryPath>$(SolutionDir)out\libs\$(Platform)-$(Configuration);$(SolutionDir)out\libs\$(Platform)-$(Configuration)\common;$(SolutionDir)out\libs\$(Platform)-$(Configuration)\public;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)libs\PolyHook_2_0;$(IncludePath)</IncludePath>
     <TargetExt>.exe</TargetExt>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)out\bin\$(Platform)\$(Configuration)\</OutDir>
@@ -78,14 +80,14 @@ powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps
     </PreBuildEvent>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)libs\source-sdk-cso2;$(SolutionDir)libs\source-sdk-cso2\common;$(SolutionDir)libs\source-sdk-cso2\public;$(SolutionDir)libs\source-sdk-cso2\public\tier0;$(SolutionDir)libs\source-sdk-cso2\public\tier1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)header;$(SolutionDir)libs\source-sdk-cso2;$(SolutionDir)libs\source-sdk-cso2\common;$(SolutionDir)libs\source-sdk-cso2\public;$(SolutionDir)libs\source-sdk-cso2\public\tier0;$(SolutionDir)libs\source-sdk-cso2\public\tier1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WIN32;_DEBUG;DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;LAUNCHERONLY;_DLL_EXT=.dll;NO_VCR;WIN32_LEAN_AND_MEAN;VC_EXTRALEAN;_ITERATOR_DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Sync</ExceptionHandling>
       <BasicRuntimeChecks>UninitializedLocalUsageCheck</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
       <FloatingPointModel>Fast</FloatingPointModel>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -103,6 +105,7 @@ powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PreprocessToFile>false</PreprocessToFile>
       <SDLCheck>true</SDLCheck>
+      <EnablePREfast>false</EnablePREfast>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -161,7 +164,7 @@ powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)libs\source-sdk-cso2;$(SolutionDir)libs\source-sdk-cso2\common;$(SolutionDir)libs\source-sdk-cso2\public;$(SolutionDir)libs\source-sdk-cso2\public\tier0;$(SolutionDir)libs\source-sdk-cso2\public\tier1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)header;$(SolutionDir)libs\source-sdk-cso2;$(SolutionDir)libs\source-sdk-cso2\common;$(SolutionDir)libs\source-sdk-cso2\public;$(SolutionDir)libs\source-sdk-cso2\public\tier0;$(SolutionDir)libs\source-sdk-cso2\public\tier1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WIN32;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;LAUNCHERONLY;_DLL_EXT=.dll;WIN32_LEAN_AND_MEAN;VC_EXTRALEAN;_ITERATOR_DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -228,19 +231,19 @@ powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="consolethread.cpp" />
-    <ClCompile Include="filesystem_init.cpp" />
-    <ClCompile Include="hooks\engine.cpp">
-      <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</PreprocessToFile>
-    </ClCompile>
-    <ClCompile Include="hooks\server.cpp" />
-    <ClCompile Include="hooks\tier0.cpp" />
-    <ClCompile Include="hooks\vgui2.cpp" />
-    <ClCompile Include="hooks\winapi.cpp" />
-    <ClCompile Include="launcher.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="modulelist.cpp" />
-    <ClCompile Include="reslistgenerator.cpp" />
+    <ClCompile Include="source\consolethread.cpp" />
+    <ClCompile Include="source\filesystem_init.cpp" />
+    <ClCompile Include="source\hooks\engine.cpp" />
+    <ClCompile Include="source\hooks\server.cpp" />
+    <ClCompile Include="source\hooks\tier0.cpp" />
+    <ClCompile Include="source\hooks\vgui2.cpp" />
+    <ClCompile Include="source\hooks\winapi.cpp" />
+    <ClCompile Include="source\launcher.cpp" />
+    <ClCompile Include="source\logallfiles.cpp" />
+    <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\modulelist.cpp" />
+    <ClCompile Include="source\reslistgenerator.cpp" />
+    <ClCompile Include="source\sourceapp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\sdk\common\engine_launcher_api.h" />
@@ -267,16 +270,28 @@ powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps
     <ClInclude Include="..\..\sdk\public\tier0\ICommandLine.h" />
     <ClInclude Include="..\..\sdk\public\tier1\strtools.h" />
     <ClInclude Include="..\..\sdk\public\vstdlib\vstdlib.h" />
-    <ClInclude Include="hooks.h" />
-    <ClInclude Include="ifilesystem.h" />
-    <ClInclude Include="reslistgenerator.h" />
-    <ClInclude Include="resource.h" />
+    <ClInclude Include="header\basedir.hpp" />
+    <ClInclude Include="header\hooks.hpp" />
+    <ClInclude Include="header\ifilesystem.hpp" />
+    <ClCompile Include="header\leakdump.hpp" />
+    <ClInclude Include="header\logallfiles.hpp" />
+    <ClInclude Include="header\reslistgenerator.hpp" />
+    <ClInclude Include="resource\resource.hpp" />
+    <ClInclude Include="header\sourceapp.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\launcher.ico" />
+    <Image Include="resource\launcher.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="launcher.rc" />
+    <ResourceCompile Include="resource/launcher.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\.clang-format" />
+    <None Include="..\appveyor.yml" />
+    <None Include="..\gengithash.ps1" />
+    <None Include="..\LICENSE" />
+    <None Include="..\README.md" />
+    <None Include="..\setuplibs.ps1" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

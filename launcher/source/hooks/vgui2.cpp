@@ -2,7 +2,7 @@
 #include <string>
 
 #include "tier0/icommandline.h"
-#include "hooks.h"
+#include "hooks.hpp"
 
 extern bool g_bEnableLocalization;
 

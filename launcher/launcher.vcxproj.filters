@@ -10,43 +10,52 @@
     <Filter Include="Header Files">
       <UniqueIdentifier>{6c58805f-e70f-490f-b0be-6456534ece58}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\hooks">
+    <Filter Include="Source Files\Hooks">
       <UniqueIdentifier>{9a681c96-d4aa-4c11-8908-6a5149c2f025}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="launcher.cpp">
+    <ClCompile Include="source\launcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="reslistgenerator.cpp">
+    <ClCompile Include="source\reslistgenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="filesystem_init.cpp">
+    <ClCompile Include="source\hooks\winapi.cpp">
+      <Filter>Source Files\Hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="source\hooks\vgui2.cpp">
+      <Filter>Source Files\Hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="source\hooks\tier0.cpp">
+      <Filter>Source Files\Hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="source\modulelist.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hooks\winapi.cpp">
-      <Filter>Source Files\hooks</Filter>
+    <ClCompile Include="source\hooks\server.cpp">
+      <Filter>Source Files\Hooks</Filter>
     </ClCompile>
-    <ClCompile Include="hooks\engine.cpp">
-      <Filter>Source Files\hooks</Filter>
-    </ClCompile>
-    <ClCompile Include="hooks\vgui2.cpp">
-      <Filter>Source Files\hooks</Filter>
-    </ClCompile>
-    <ClCompile Include="hooks\tier0.cpp">
-      <Filter>Source Files\hooks</Filter>
-    </ClCompile>
-    <ClCompile Include="modulelist.cpp">
+    <ClCompile Include="source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="consolethread.cpp">
+    <ClCompile Include="source\sourceapp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hooks\server.cpp">
-      <Filter>Source Files\hooks</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="source\logallfiles.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\consolethread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\hooks\engine.cpp">
+      <Filter>Source Files\Hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="source\filesystem_init.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="header\leakdump.hpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -65,7 +74,7 @@
     <ClInclude Include="..\..\sdk\public\appframework\IAppSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ifilesystem.h">
+    <ClInclude Include="header\ifilesystem.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sdk\public\vgui\IHTML.h">
@@ -95,7 +104,7 @@
     <ClInclude Include="..\..\sdk\public\tier0\platform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="reslistgenerator.h">
+    <ClInclude Include="header\reslistgenerator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sdk\public\string_t.h">
@@ -128,20 +137,37 @@
     <ClInclude Include="..\..\sdk\public\tier0\commonmacros.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hooks.h">
+    <ClInclude Include="header\hooks.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
+    <ClInclude Include="header\sourceapp.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="header\logallfiles.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="header\basedir.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\resource.hpp">
+      <Filter>Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\launcher.ico">
+    <Image Include="resource\launcher.ico">
       <Filter>Resources</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="launcher.rc">
+    <None Include="..\.clang-format" />
+    <None Include="..\appveyor.yml" />
+    <None Include="..\gengithash.ps1" />
+    <None Include="..\LICENSE" />
+    <None Include="..\README.md" />
+    <None Include="..\setuplibs.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource/launcher.rc">
       <Filter>Resources</Filter>
     </ResourceCompile>
   </ItemGroup>

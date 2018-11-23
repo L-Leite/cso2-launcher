@@ -4,7 +4,7 @@
 
 #include "tier0/platform.h"	
 
-#include "hooks.h"				
+#include "hooks.hpp"			
 
 extern bool g_bPrintMoreDebugInfo;
 

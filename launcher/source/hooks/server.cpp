@@ -1,5 +1,5 @@
 #include "convar.h"
-#include "hooks.h"
+#include "hooks.hpp"
 
 void BytePatchServer(uintptr_t dwServerBase)
 {

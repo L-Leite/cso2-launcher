@@ -1,6 +1,6 @@
 #include "strtools.h"
-#include "hooks.h"
-#include "onloadlib.h"
+#include "hooks.hpp"
+#include "onloadlib.hpp"
 
 HOOK_DETOUR_DECLARE( hkLoadLibraryExA );
 

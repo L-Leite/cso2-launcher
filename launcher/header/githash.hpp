@@ -1,0 +1,1 @@
+#define GIT_COMMIT_HASH "742d130"

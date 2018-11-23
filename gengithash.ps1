@@ -1,7 +1,7 @@
 $hash = git log --pretty=format:'%h' -n 1
 Write-Output "current git commit hash is $hash"
-if (Test-Path src/githash.h)
+if (Test-Path launcher/header/githash.hpp)
 {
-	Remove-Item src/githash.h
+	Remove-Item launcher/header/githash.hpp
 }
-Add-Content src/githash.h "#define GIT_COMMIT_HASH `"$hash`""
+Add-Content launcher/header/githash.hpp "#define GIT_COMMIT_HASH `"$hash`""

@@ -2,8 +2,8 @@
 #include <headers/CapstoneDisassembler.hpp>
 #include <headers/Detour/x86Detour.hpp>
 #include <headers/PE/EatHook.hpp>
-#include "modulelist.h"
-#include "onloadlib.h"
+#include "modulelist.hpp"
+#include "onloadlib.hpp"
 
 #define HOOK_DETOUR_DECLARE(trampoline) static PLH::x86Detour* _##trampoline = nullptr; \
 										static uint64_t _##trampoline##Orig = NULL
