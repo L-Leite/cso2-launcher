@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 
-#include "githash.h"
+#include "githash.hpp"
 
 enum Sys_Flags
 {

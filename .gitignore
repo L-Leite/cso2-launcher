@@ -394,15 +394,9 @@ CMakeLists.txt.user*
 *.out
 *.app
 
-# Git version header
-src/gitversion.h
-
 ## cso2-launcher
-# allow prebuilt bins
-!*.lib
-
 # ignore githash include file
-src/githash.h
+launcher/header/githash.hpp
 
 # ignore compiled files out directory
 out/
