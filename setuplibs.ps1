@@ -11,19 +11,18 @@ add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)'
 
 # ugly hack, find a way to pass this through command line
 $lastLine = (Get-Content -tail 1 .\CMakeLists.txt)
-if ($lastLine -ne '`nadd_definitions(-D_ITERATOR_DEBUG_LEVEL=0)')
-{
-	Add-Content .\CMakeLists.txt $extraCmakeCfg
+if ($lastLine -ne 'add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)') {
+    Add-Content .\CMakeLists.txt $extraCmakeCfg
 }
 
 # build capstone for PH
-#.\BuildCapstone.bat
+.\BuildCapstone.bat
 # now PH
-#cmake -G "Visual Studio 15 2017" -DBUILD_DLL=ON -DBUILD_STATIC=ON .\
+cmake -G "Visual Studio 15 2017" -DBUILD_DLL=ON -DBUILD_STATIC=ON .\
 
 # setup source sdk
-#Set-Location ..\source-sdk-cso2
-#.\createlauncher.bat
+Set-Location ..\source-sdk-cso2
+.\createlauncher.bat
 
 # get back to the project's root
 Set-Location ..\..
