@@ -1,7 +1,8 @@
 # setup PolyHook 2
 Set-Location .\libs\PolyHook_2_0
 
-$extraCmakeCfg = 'if(MSVC)
+$extraCmakeCfg = '
+if(MSVC)
  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
  set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} /MT")
  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
