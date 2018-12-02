@@ -6,21 +6,21 @@
 
 #include "filesystem.h"
 
-constexpr const char *ALL_RESLIST_FILE = "all.lst";
-constexpr const char *ENGINE_RESLIST_FILE = "engine.lst";
+constexpr const char* ALL_RESLIST_FILE = "all.lst";
+constexpr const char* ENGINE_RESLIST_FILE = "engine.lst";
 
 CLogAllFiles g_LogFiles;
 
-void SortResList( char const *pchFileName, char const *pchSearchPath );
+void SortResList( char const* pchFileName, char const* pchSearchPath );
 
-static bool AllLogLessFunc( CUtlString const &pLHS, CUtlString const &pRHS )
+static bool AllLogLessFunc( CUtlString const& pLHS, CUtlString const& pRHS )
 {
     return CaselessStringLessThan( pLHS.Get(), pRHS.Get() );
 }
 
 CLogAllFiles::CLogAllFiles() : m_ResListDir( "reslists" ) {}
 
-void CLogAllFiles::Init( const std::string &szBaseDir )
+void CLogAllFiles::Init( const std::string& szBaseDir )
 {
     m_szBaseDir = szBaseDir;
 
@@ -37,7 +37,7 @@ void CLogAllFiles::Init( const std::string &szBaseDir )
 
     m_bActive = true;
 
-    char const *pszDir = nullptr;
+    char const* pszDir = nullptr;
     if ( CommandLine()->CheckParm( "-reslistdir", &pszDir ) && pszDir )
     {
         m_ResListDir = pszDir;
@@ -92,7 +92,7 @@ void CLogAllFiles::Shutdown()
     SortResList( engineResFilePath.string().c_str(), "GAME" );
 }
 
-void CLogAllFiles::LogToAllReslist( char const *line )
+void CLogAllFiles::LogToAllReslist( char const* line )
 {
     std::filesystem::path allResFilePath = m_FullGamePath;
     allResFilePath += m_ResListDir;
@@ -113,7 +113,7 @@ void CLogAllFiles::LogToAllReslist( char const *line )
     }
 }
 
-void CLogAllFiles::LogFile( const char *fullPathFileName, const char *options )
+void CLogAllFiles::LogFile( const char* fullPathFileName, const char* options )
 {
     if ( !m_bActive )
     {
@@ -141,8 +141,8 @@ void CLogAllFiles::LogFile( const char *fullPathFileName, const char *options )
 //-----------------------------------------------------------------------------
 // Purpose: callback function from filesystem
 //-----------------------------------------------------------------------------
-void CLogAllFiles::LogAllFilesFunc( const char *fullPathFileName,
-                                    const char *options )
+void CLogAllFiles::LogAllFilesFunc( const char* fullPathFileName,
+                                    const char* options )
 {
     g_LogFiles.LogFile( fullPathFileName, options );
 }

@@ -10,18 +10,18 @@
 class CModuleList
 {
 public:
-	CModuleList() = default;
-	~CModuleList() = default;
-	CModuleList(const CModuleList&) = delete;
-	CModuleList& operator=(const CModuleList&) = delete;
+    CModuleList() = default;
+    ~CModuleList() = default;
+    CModuleList( const CModuleList& ) = delete;
+    CModuleList& operator=( const CModuleList& ) = delete;
 
-	uintptr_t Get(const std::string& szModuleName);
+    uintptr_t Get( const std::string& szModuleName );
 
 protected:
-	bool LookupModule(const std::string& szModuleName);
+    bool LookupModule( const std::string& szModuleName );
 
 private:
-	std::map<const std::string, uintptr_t> m_Modules;
+    std::map<const std::string, uintptr_t> m_Modules;
 };
 
 extern CModuleList g_ModuleList;

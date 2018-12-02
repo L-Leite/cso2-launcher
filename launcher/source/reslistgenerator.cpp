@@ -20,9 +20,8 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-bool SaveResList( const CUtlRBTree<CUtlString, int> &list,
-                  char const *pchFileName,
-                  char const *pchSearchPath )
+bool SaveResList( const CUtlRBTree<CUtlString, int>& list,
+                  char const* pchFileName, char const* pchSearchPath )
 {
     FileHandle_t fh =
         g_pFullFileSystem->Open( pchFileName, "wt", pchSearchPath );
@@ -42,9 +41,8 @@ bool SaveResList( const CUtlRBTree<CUtlString, int> &list,
     return false;
 }
 
-void LoadResList( CUtlRBTree<CUtlString, int> &list,
-                  char const *pchFileName,
-                  char const *pchSearchPath )
+void LoadResList( CUtlRBTree<CUtlString, int>& list, char const* pchFileName,
+                  char const* pchSearchPath )
 {
     CUtlBuffer buffer( 0, 0, CUtlBuffer::TEXT_BUFFER );
     if ( !g_pFullFileSystem->ReadFile( pchFileName, pchSearchPath, buffer ) )
@@ -91,12 +89,12 @@ void LoadResList( CUtlRBTree<CUtlString, int> &list,
     }
 }
 
-static bool ReslistLogLessFunc( CUtlString const &pLHS, CUtlString const &pRHS )
+static bool ReslistLogLessFunc( CUtlString const& pLHS, CUtlString const& pRHS )
 {
     return CaselessStringLessThan( pLHS.Get(), pRHS.Get() );
 }
 
-void SortResList( char const *pchFileName, char const *pchSearchPath )
+void SortResList( char const* pchFileName, char const* pchSearchPath )
 {
     CUtlRBTree<CUtlString, int> sorted( 0, 0, ReslistLogLessFunc );
     LoadResList( sorted, pchFileName, pchSearchPath );
@@ -105,9 +103,8 @@ void SortResList( char const *pchFileName, char const *pchSearchPath )
     SaveResList( sorted, pchFileName, pchSearchPath );
 }
 
-void MergeResLists( CUtlVector<CUtlString> &fileNames,
-                    char const *pchOutputFile,
-                    char const *pchSearchPath )
+void MergeResLists( CUtlVector<CUtlString>& fileNames,
+                    char const* pchOutputFile, char const* pchSearchPath )
 {
     CUtlRBTree<CUtlString, int> sorted( 0, 0, ReslistLogLessFunc );
     for ( int i = 0; i < fileNames.Count(); ++i )
@@ -138,7 +135,7 @@ public:
 
     CResListGenerator();
 
-    virtual void Init( char const *pchBaseDir, char const *pchGameDir );
+    virtual void Init( char const* pchBaseDir, char const* pchGameDir );
     virtual bool IsActive();
     virtual void Shutdown();
     virtual void Collate();
@@ -147,11 +144,10 @@ public:
     virtual bool ShouldContinue();
 
 private:
-    bool InitCommandFile( char const *pchGameDir, char const *pchCommandFile );
-    void LoadMapList( char const *pchGameDir,
-                      CUtlVector<CUtlString> &vecMaps,
-                      char const *pchMapFile );
-    void CollateFiles( char const *pchResListFilename );
+    bool InitCommandFile( char const* pchGameDir, char const* pchCommandFile );
+    void LoadMapList( char const* pchGameDir, CUtlVector<CUtlString>& vecMaps,
+                      char const* pchMapFile );
+    void CollateFiles( char const* pchResListFilename );
 
     bool m_bInitialized;
     bool m_bActive;
@@ -173,7 +169,7 @@ private:
 };
 
 static CResListGenerator g_ResListGenerator;
-IResListGenerator *reslistgenerator = &g_ResListGenerator;
+IResListGenerator* reslistgenerator = &g_ResListGenerator;
 
 CResListGenerator::CResListGenerator()
     : m_bInitialized( false ), m_bActive( false ), m_nCurrentWorkItem( 0 ),
@@ -185,7 +181,7 @@ CResListGenerator::CResListGenerator()
     m_sWorkingDir = "reslists_work";
 }
 
-void CResListGenerator::CollateFiles( char const *pchResListFilename )
+void CResListGenerator::CollateFiles( char const* pchResListFilename )
 {
     CUtlVector<CUtlString> vecReslists;
 
@@ -204,7 +200,7 @@ void CResListGenerator::CollateFiles( char const *pchResListFilename )
                    "GAME" );
 }
 
-void CResListGenerator::Init( char const *pchBaseDir, char const *pchGameDir )
+void CResListGenerator::Init( char const* pchBaseDir, char const* pchGameDir )
 {
     if ( IsX360() )
     {
@@ -231,7 +227,7 @@ void CResListGenerator::Init( char const *pchBaseDir, char const *pchGameDir )
     Q_strlower( path );
     m_sFullGamePath = path;
 
-    const char *pchCommandFile = NULL;
+    const char* pchCommandFile = NULL;
     if ( CommandLine()->CheckParm( "-makereslists", &pchCommandFile ) &&
          pchCommandFile )
     {
@@ -278,7 +274,7 @@ void CResListGenerator::SetupCommandLine()
         {
             Assert( m_nCurrentWorkItem < m_WorkItems.Count() );
 
-            const CWorkItem &work = m_WorkItems[m_nCurrentWorkItem];
+            const CWorkItem& work = m_WorkItems[m_nCurrentWorkItem];
 
             // Clean the working dir
             char szWorkingDir[512];
@@ -291,7 +287,7 @@ void CResListGenerator::SetupCommandLine()
             g_pFullFileSystem->CreateDirHierarchy( szFullWorkingDir, "GAME" );
 
             // Preserve startmap
-            char const *pszStartMap = NULL;
+            char const* pszStartMap = NULL;
             CommandLine()->CheckParm( "-startmap", &pszStartMap );
             char szMap[MAX_PATH] = { 0 };
             if ( pszStartMap )
@@ -385,9 +381,9 @@ bool CResListGenerator::ShouldContinue()
     return false;
 }
 
-void CResListGenerator::LoadMapList( char const *pchGameDir,
-                                     CUtlVector<CUtlString> &vecMaps,
-                                     char const *pchMapFile )
+void CResListGenerator::LoadMapList( char const* pchGameDir,
+                                     CUtlVector<CUtlString>& vecMaps,
+                                     char const* pchMapFile )
 {
     char fullpath[512];
     Q_snprintf( fullpath, sizeof( fullpath ), "%s/%s", pchGameDir, pchMapFile );
@@ -424,8 +420,8 @@ void CResListGenerator::LoadMapList( char const *pchGameDir,
     }
 }
 
-bool CResListGenerator::InitCommandFile( char const *pchGameDir,
-                                         char const *pchCommandFile )
+bool CResListGenerator::InitCommandFile( char const* pchGameDir,
+                                         char const* pchCommandFile )
 {
     if ( *pchCommandFile == '+' || *pchCommandFile == '-' )
     {
@@ -444,8 +440,8 @@ bool CResListGenerator::InitCommandFile( char const *pchGameDir,
         return false;
     }
 
-    KeyValues *kv = new KeyValues( "reslists" );
-    if ( !kv->LoadFromBuffer( "reslists", (const char *)buf.Base() ) )
+    KeyValues* kv = new KeyValues( "reslists" );
+    if ( !kv->LoadFromBuffer( "reslists", (const char*)buf.Base() ) )
     {
         Error( "Unable to parse keyvalues from '%s'\n", fullpath );
         kv->deleteThis();
@@ -462,7 +458,7 @@ bool CResListGenerator::InitCommandFile( char const *pchGameDir,
         return false;
     }
 
-    char const *pszSolo = NULL;
+    char const* pszSolo = NULL;
     if ( CommandLine()->CheckParm( "+map", &pszSolo ) && pszSolo )
     {
         m_MapList.Purge();
@@ -474,7 +470,7 @@ bool CResListGenerator::InitCommandFile( char const *pchGameDir,
 
     m_nCurrentWorkItem = CommandLine()->ParmValue( "-startstage", 0 );
 
-    char const *pszStartMap = NULL;
+    char const* pszStartMap = NULL;
     CommandLine()->CheckParm( "-startmap", &pszStartMap );
     if ( pszStartMap )
     {
@@ -504,7 +500,7 @@ bool CResListGenerator::InitCommandFile( char const *pchGameDir,
     {
         char sz[32];
         Q_snprintf( sz, sizeof( sz ), "%i", i );
-        KeyValues *subKey = kv->FindKey( sz, false );
+        KeyValues* subKey = kv->FindKey( sz, false );
         if ( !subKey )
             break;
 

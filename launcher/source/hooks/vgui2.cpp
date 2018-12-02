@@ -95,8 +95,8 @@ NOINLINE bool __fastcall hkStrTblAddFile( void* ecx, void* edx,
 // the game converts the szInput (as an UTF8 string) to a wide char string
 // and converts it back to a single byte string (using the OS's code page)
 //
-// example: converting string with hangul characters on an OS with a german code page
-// would result in gibberish
+// example: converting string with hangul characters on an OS with a german code
+// page would result in gibberish
 //
 // this fixes that by just copying the utf8 string to the out buffer
 int HandleLocalConvertion( const char* szInput, char* szOutBuffer,
@@ -104,9 +104,9 @@ int HandleLocalConvertion( const char* szInput, char* szOutBuffer,
 {
     const int iStrLen = std::strlen( szInput ) + 1;
 
-	// make sure we don't overflow
+    // make sure we don't overflow
     if ( iStrLen > iOutBufferSize )
-    {			          
+    {
         assert( false );
         return 0;
     }

@@ -14,8 +14,7 @@ class IFileSystem;
 class CSourceAppSystemGroup : public CSteamAppSystemGroup
 {
 public:
-    CSourceAppSystemGroup( std::string szBaseDir,
-                           IFileSystem* pFs = nullptr,
+    CSourceAppSystemGroup( std::string szBaseDir, IFileSystem* pFs = nullptr,
                            CAppSystemGroup* pParent = nullptr );
 
     // Methods of IApplication

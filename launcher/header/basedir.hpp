@@ -23,10 +23,7 @@ public:
         }
     }
 
-    std::string GetBaseDir() const
-    {
-        return m_BaseDir.string();
-    }
+    std::string GetBaseDir() const { return m_BaseDir.string(); }
 
 private:
     std::filesystem::path m_BaseDir;

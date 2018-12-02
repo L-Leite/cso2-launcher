@@ -38,17 +38,16 @@
 
 #include "cso2/iprecommandlineparser.h"
 
-static IEngineAPI *g_pEngineAPI = nullptr;
-static IHammer *g_pHammer = nullptr;
+static IEngineAPI* g_pEngineAPI = nullptr;
+static IHammer* g_pHammer = nullptr;
 
-constexpr const char *DEFAULT_HL2_GAMEDIR = "cstrike";
+constexpr const char* DEFAULT_HL2_GAMEDIR = "cstrike";
 
 bool g_bTextMode = false;
 
 CSourceAppSystemGroup::CSourceAppSystemGroup(
-    std::string szBaseDir,
-    IFileSystem *pFs /*= nullptr*/,
-    CAppSystemGroup *pParent /*= nullptr*/ )
+    std::string szBaseDir, IFileSystem* pFs /*= nullptr*/,
+    CAppSystemGroup* pParent /*= nullptr*/ )
     : CSteamAppSystemGroup( pFs, pParent ), m_szBaseDir( szBaseDir )
 {
 }
@@ -58,8 +57,8 @@ CSourceAppSystemGroup::CSourceAppSystemGroup(
 //-----------------------------------------------------------------------------
 bool CSourceAppSystemGroup::Create()
 {
-    IFileSystem *pFileSystem = static_cast<IFileSystem *>(
-        FindSystem( FILESYSTEM_INTERFACE_VERSION ) );
+    IFileSystem* pFileSystem =
+        static_cast<IFileSystem*>( FindSystem( FILESYSTEM_INTERFACE_VERSION ) );
     pFileSystem->InstallDirtyDiskReportFunc(
         []() {} );  // XB360 specific, is this necessary?
 
@@ -114,7 +113,7 @@ bool CSourceAppSystemGroup::Create()
         fileSystemModule = LoadModule( pFileSystemDLL );
 
         if ( fileSystemModule != APP_MODULE_INVALID )
-            g_pQueuedLoader = static_cast<IQueuedLoader *>(
+            g_pQueuedLoader = static_cast<IQueuedLoader*>(
                 AddSystem( fileSystemModule, QUEUEDLOADER_INTERFACE_VERSION ) );
     }
 
@@ -123,15 +122,15 @@ bool CSourceAppSystemGroup::Create()
                      CommandLine()->FindParm( "-p4" ) ) )
     {
         AppModule_t p4libModule = LoadModule( "p4lib.dll" );
-        p4 = static_cast<IP4 *>(
-            AddSystem( p4libModule, P4_INTERFACE_VERSION ) );
+        p4 =
+            static_cast<IP4*>( AddSystem( p4libModule, P4_INTERFACE_VERSION ) );
         if ( !p4 )
         {
             return false;
         }
 
         AppModule_t vstdlibModule = LoadModule( "vstdlib.dll" );
-        IProcessUtils *processUtils = static_cast<IProcessUtils *>(
+        IProcessUtils* processUtils = static_cast<IProcessUtils*>(
             AddSystem( vstdlibModule, PROCESS_UTILS_INTERFACE_VERSION ) );
         if ( !processUtils )
         {
@@ -140,7 +139,7 @@ bool CSourceAppSystemGroup::Create()
     }
 
     // Connect to interfaces loaded in AddSystems that we need locally
-    IMaterialSystem *pMaterialSystem = static_cast<IMaterialSystem *>(
+    IMaterialSystem* pMaterialSystem = static_cast<IMaterialSystem*>(
         FindSystem( MATERIAL_SYSTEM_INTERFACE_VERSION ) );
     if ( !pMaterialSystem )
     {
@@ -148,13 +147,13 @@ bool CSourceAppSystemGroup::Create()
     }
 
     g_pEngineAPI =
-        static_cast<IEngineAPI *>( FindSystem( VENGINE_LAUNCHER_API_VERSION ) );
+        static_cast<IEngineAPI*>( FindSystem( VENGINE_LAUNCHER_API_VERSION ) );
 
     // Load the hammer DLL if we're in editor mode
     if ( m_bEditMode )
     {
         AppModule_t hammerModule = LoadModule( "hammer_dll.dll" );
-        g_pHammer = static_cast<IHammer *>(
+        g_pHammer = static_cast<IHammer*>(
             AddSystem( hammerModule, INTERFACEVERSION_HAMMER ) );
         if ( !g_pHammer )
         {
@@ -164,7 +163,7 @@ bool CSourceAppSystemGroup::Create()
 
     // Load up the appropriate shader DLL
     // This has to be done before connection.
-    char const *pDLLName = "shaderapidx9.dll";
+    char const* pDLLName = "shaderapidx9.dll";
     if ( CommandLine()->FindParm( "-noshaderapi" ) )
     {
         pDLLName = "shaderapiempty.dll";
@@ -275,7 +274,7 @@ void CSourceAppSystemGroup::Destroy()
 // We eventually (hopefully) will be able to switch mods at runtime
 // because the engine/hammer integration really wants this feature.
 //-----------------------------------------------------------------------------
-const char *CSourceAppSystemGroup::DetermineDefaultMod() const
+const char* CSourceAppSystemGroup::DetermineDefaultMod() const
 {
     if ( !m_bEditMode )
     {
@@ -285,7 +284,7 @@ const char *CSourceAppSystemGroup::DetermineDefaultMod() const
     return g_pHammer->GetDefaultMod();
 }
 
-const char *CSourceAppSystemGroup::DetermineDefaultGame() const
+const char* CSourceAppSystemGroup::DetermineDefaultGame() const
 {
     if ( !m_bEditMode )
     {

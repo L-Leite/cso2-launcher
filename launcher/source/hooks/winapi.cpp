@@ -1,17 +1,21 @@
-#include "strtools.h"
 #include "hooks.hpp"
 #include "onloadlib.hpp"
+#include "strtools.h"
 
 HOOK_DETOUR_DECLARE( hkLoadLibraryExA );
 
-NOINLINE HMODULE WINAPI hkLoadLibraryExA( LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags )
+NOINLINE HMODULE WINAPI hkLoadLibraryExA( LPCSTR lpLibFileName, HANDLE hFile,
+                                          DWORD dwFlags )
 {
-	HMODULE hLoadedModule = HOOK_DETOUR_GET_ORIG( hkLoadLibraryExA )(lpLibFileName, hFile, dwFlags);
-	CLoadLibCallbacks::OnLoadLibrary( V_GetFileName( lpLibFileName ), reinterpret_cast<uintptr_t>(hLoadedModule) );
-	return hLoadedModule;
+    HMODULE hLoadedModule = HOOK_DETOUR_GET_ORIG( hkLoadLibraryExA )(
+        lpLibFileName, hFile, dwFlags );
+    CLoadLibCallbacks::OnLoadLibrary(
+        V_GetFileName( lpLibFileName ),
+        reinterpret_cast<uintptr_t>( hLoadedModule ) );
+    return hLoadedModule;
 }
 
 void HookWinapi()
 {
-	HOOK_DETOUR( LoadLibraryExA, hkLoadLibraryExA );
+    HOOK_DETOUR( LoadLibraryExA, hkLoadLibraryExA );
 }

@@ -14,7 +14,7 @@ enum Sys_Flags
 
 // same as InternalLoadLibrary
 extern "C" __declspec( dllexport ) HMODULE
-    _Init( const char *pName, Sys_Flags flags )
+    _Init( const char* pName, Sys_Flags flags )
 {
     HMODULE hModule = nullptr;
 
@@ -45,15 +45,11 @@ void CreateDebugConsole()
     SetConsoleOutputCP( CP_UTF8 );
 }
 
-int LauncherMain( HINSTANCE hInstance,
-                  HINSTANCE hPrevInstance,
-                  LPSTR lpCmdLine,
+int LauncherMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
                   int nCmdShow );
 
-int WINAPI WinMain( _In_ HINSTANCE hInstance,
-                    _In_opt_ HINSTANCE hPrevInstance,
-                    _In_ LPSTR lpCmdLine,
-                    _In_ int nShowCmd )
+int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
+                    _In_ LPSTR lpCmdLine, _In_ int nShowCmd )
 {
     CreateDebugConsole();
     return LauncherMain( hInstance, hPrevInstance, lpCmdLine, nShowCmd );

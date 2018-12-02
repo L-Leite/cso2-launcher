@@ -12,14 +12,14 @@ class CLogAllFiles
 {
 public:
     CLogAllFiles();
-    void Init( const std::string &szBaseDir );
+    void Init( const std::string& szBaseDir );
     void Shutdown();
-    void LogFile( const char *fullPathFileName, const char *options );
+    void LogFile( const char* fullPathFileName, const char* options );
 
 private:
-    static void LogAllFilesFunc( const char *fullPathFileName,
-                                 const char *options );
-    void LogToAllReslist( char const *line );
+    static void LogAllFilesFunc( const char* fullPathFileName,
+                                 const char* options );
+    void LogToAllReslist( char const* line );
 
     bool m_bActive{ false };
 

@@ -38,8 +38,8 @@
 // copied from sys.h
 struct FileAssociationInfo
 {
-    char const *extension;
-    char const *command_to_issue;
+    char const* extension;
+    char const* command_to_issue;
 };
 
 static FileAssociationInfo g_FileAssociations[] = {
@@ -53,7 +53,7 @@ CLeakDump g_LeakDump;
 //-----------------------------------------------------------------------------
 // Spew function!
 //-----------------------------------------------------------------------------
-SpewRetval_t LauncherDefaultSpewFunc( SpewType_t spewType, char const *pMsg )
+SpewRetval_t LauncherDefaultSpewFunc( SpewType_t spewType, char const* pMsg )
 {
 #ifndef _CERT
     OutputDebugStringA( pMsg );
@@ -98,15 +98,12 @@ SpewRetval_t LauncherDefaultSpewFunc( SpewType_t spewType, char const *pMsg )
 class CVCRHelpers : public IVCRHelpers
 {
 public:
-    void ErrorMessage( const char *pMsg ) override
+    void ErrorMessage( const char* pMsg ) override
     {
         NOVCR(::MessageBox( nullptr, pMsg, "VCR Error", MB_OK ) );
     }
 
-    void *GetMainWindow() override
-    {
-        return nullptr;
-    }
+    void* GetMainWindow() override { return nullptr; }
 };
 
 static CVCRHelpers g_VCRHelpers;
@@ -179,7 +176,7 @@ void TryToLoadSteamOverlayDLL()
             dwLength = sizeof( rgchSteamPath );
             if ( RegQueryValueEx(
                      hKey, "SteamClientDll", nullptr, nullptr,
-                     reinterpret_cast<unsigned char *>( rgchSteamPath ),
+                     reinterpret_cast<unsigned char*>( rgchSteamPath ),
                      &dwLength ) == ERROR_SUCCESS )
             {
                 if ( dwLength < 1 || Q_strlen( rgchSteamPath ) < 1 )
@@ -282,7 +279,7 @@ does a varargs printf into a temp buffer, so I don't need to have
 varargs versions of all text functions.
 ============
 */
-static char *va( char *format, ... )
+static char* va( char* format, ... )
 {
     va_list argptr;
     static char string[8][512];
@@ -303,17 +300,17 @@ static char *va( char *format, ... )
 // Input  : *param -
 // Output : static char const
 //-----------------------------------------------------------------------------
-static char const *Cmd_TranslateFileAssociation( char const *param )
+static char const* Cmd_TranslateFileAssociation( char const* param )
 {
     static char sz[512];
-    char *retval = nullptr;
+    char* retval = nullptr;
 
     char temp[512];
     Q_strncpy( temp, param, sizeof( temp ) );
     Q_FixSlashes( temp );
     Q_strlower( temp );
 
-    const char *extension = V_GetFileExtension( temp );
+    const char* extension = V_GetFileExtension( temp );
     // must have an extension to map
     if ( !extension )
     {
@@ -324,7 +321,7 @@ static char const *Cmd_TranslateFileAssociation( char const *param )
     int c = ARRAYSIZE( g_FileAssociations );
     for ( int i = 0; i < c; i++ )
     {
-        FileAssociationInfo &info = g_FileAssociations[i];
+        FileAssociationInfo& info = g_FileAssociations[i];
 
         if ( !Q_strcmp( extension, info.extension ) &&
              !CommandLine()->FindParm( va( "+%s", info.command_to_issue ) ) )
@@ -349,7 +346,7 @@ static char const *Cmd_TranslateFileAssociation( char const *param )
 // Input  : none
 // Output : const char * series of convars
 //-----------------------------------------------------------------------------
-static const char *BuildCommand()
+static const char* BuildCommand()
 {
     static CUtlBuffer build( 0, 0, CUtlBuffer::TEXT_BUFFER );
     build.Clear();
@@ -357,7 +354,7 @@ static const char *BuildCommand()
     // arg[0] is the executable name
     for ( int i = 1; i < CommandLine()->ParmCount(); i++ )
     {
-        const char *szParm = CommandLine()->GetParm( i );
+        const char* szParm = CommandLine()->GetParm( i );
         if ( !szParm )
         {
             continue;
@@ -366,7 +363,7 @@ static const char *BuildCommand()
         if ( szParm[0] == '-' )
         {
             // skip -XXX options and eat their args
-            const char *szValue = CommandLine()->ParmValue( szParm );
+            const char* szValue = CommandLine()->ParmValue( szParm );
             if ( szValue )
             {
                 i++;
@@ -376,7 +373,7 @@ static const char *BuildCommand()
         if ( szParm[0] == '+' )
         {
             // convert +XXX options and stuff them into the build buffer
-            const char *szValue = CommandLine()->ParmValue( szParm );
+            const char* szValue = CommandLine()->ParmValue( szParm );
             if ( szValue )
             {
                 build.PutString( va( "%s %s;", szParm + 1, szValue ) );
@@ -391,7 +388,7 @@ static const char *BuildCommand()
         else
         {
             // singleton values, convert to command
-            char const *translated =
+            char const* translated =
                 Cmd_TranslateFileAssociation( CommandLine()->GetParm( i ) );
             if ( translated )
             {
@@ -403,7 +400,7 @@ static const char *BuildCommand()
 
     build.PutChar( '\0' );
 
-    return static_cast<const char *>( build.Base() );
+    return static_cast<const char*>( build.Base() );
 }
 
 extern void HookTier0();
@@ -417,9 +414,7 @@ extern void HookWinapi();
 //			nCmdShow -
 // Output : int APIENTRY
 //-----------------------------------------------------------------------------
-int LauncherMain( HINSTANCE hInstance,
-                  HINSTANCE hPrevInstance,
-                  LPSTR lpCmdLine,
+int LauncherMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
                   int nCmdShow )
 {
     SetAppInstance( hInstance );
@@ -438,7 +433,7 @@ int LauncherMain( HINSTANCE hInstance,
         return -1;
     }
 
-    const char *filename;
+    const char* filename;
     CommandLine()->CreateCmdLine( IsPC() ? VCRHook_GetCommandLine() :
                                            lpCmdLine );
 
@@ -511,15 +506,16 @@ int LauncherMain( HINSTANCE hInstance,
                 // Can't find the engine
                 if ( hwndEngine == NULL )
                 {
-                    ::MessageBox(
-                        NULL,
-                        "The modified entity keyvalues could not be sent to the Source Engine because the engine does not appear to be running.",
-                        "Source Engine Not Running",
-                        MB_OK | MB_ICONEXCLAMATION );
+                    ::MessageBox( NULL,
+                                  "The modified entity keyvalues could not be "
+                                  "sent to the Source Engine because the "
+                                  "engine does not appear to be running.",
+                                  "Source Engine Not Running",
+                                  MB_OK | MB_ICONEXCLAMATION );
                 }
                 else
                 {
-                    const char *szCommand = BuildCommand();
+                    const char* szCommand = BuildCommand();
 
                     //
                     // Fill out the data structure to send to the engine.
@@ -527,14 +523,17 @@ int LauncherMain( HINSTANCE hInstance,
                     COPYDATASTRUCT copyData;
                     copyData.cbData = strlen( szCommand ) + 1;
                     copyData.dwData = 0;
-                    copyData.lpData = (void *)szCommand;
+                    copyData.lpData = (void*)szCommand;
 
                     if ( !::SendMessage( hwndEngine, WM_COPYDATA, 0,
                                          (LPARAM)&copyData ) )
                     {
                         ::MessageBox(
                             NULL,
-                            "The Source Engine was found running, but did not accept the request to load a savegame. It may be an old version of the engine that does not support this functionality.",
+                            "The Source Engine was found running, but did not "
+                            "accept the request to load a savegame. It may be "
+                            "an old version of the engine that does not "
+                            "support this functionality.",
                             "Source Engine Declined Request",
                             MB_OK | MB_ICONEXCLAMATION );
                     }
@@ -543,7 +542,7 @@ int LauncherMain( HINSTANCE hInstance,
                         retval = 0;
                     }
 
-                    free( (void *)szCommand );
+                    free( (void*)szCommand );
                 }
             }
             else
@@ -652,7 +651,7 @@ int LauncherMain( HINSTANCE hInstance,
         DWORD dwValueLen = MAX_PATH;
 
         if ( RegQueryValueEx( hKey, "Relaunch URL", nullptr, nullptr,
-                              (unsigned char *)szValue,
+                              (unsigned char*)szValue,
                               &dwValueLen ) == ERROR_SUCCESS )
         {
             ShellExecuteA( nullptr, "open", szValue, nullptr, nullptr,
