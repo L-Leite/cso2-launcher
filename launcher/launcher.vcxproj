@@ -72,8 +72,6 @@
 mkdir "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"
 xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\capstone\build32\$(Configuration)\capstone.lib" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"
 xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\$(Configuration)\PolyHook_2.lib" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"
-xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\$(Configuration)\PolyHook_2.dll" "$(SolutionDir)out\bin\$(Platform)\$(Configuration)"
-xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\$(Configuration)\PolyHook_2.pdb" "$(SolutionDir)out\bin\$(Platform)\$(Configuration)"
 xcopy /A /E /K /Y "$(SolutionDir)libs\source-sdk-cso2\lib" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"
 cd "$(SolutionDir)"
 powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps1"</Command>
@@ -85,12 +83,12 @@ powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps
       <StringPooling>true</StringPooling>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <BasicRuntimeChecks>UninitializedLocalUsageCheck</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <BufferSecurityCheck>true</BufferSecurityCheck>
       <FloatingPointModel>Fast</FloatingPointModel>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader />
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
@@ -132,6 +130,7 @@ powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps
       <ImageHasSafeExceptionHandlers />
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
     <Xdcmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -153,8 +152,6 @@ powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps
 mkdir "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"
 xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\capstone\build32\$(Configuration)\capstone.lib" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"
 xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\RelWithDebInfo\PolyHook_2.lib" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"
-xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\RelWithDebInfo\PolyHook_2.dll" "$(SolutionDir)out\bin\$(Platform)\$(Configuration)"
-xcopy /A /E /K /Y "$(SolutionDir)libs\PolyHook_2_0\RelWithDebInfo\PolyHook_2.pdb" "$(SolutionDir)out\bin\$(Platform)\$(Configuration)"
 xcopy /A /E /K /Y "$(SolutionDir)libs\source-sdk-cso2\lib" "$(SolutionDir)out\libs\$(Platform)-$(Configuration)"
 cd "$(SolutionDir)"
 powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps1"</Command>
@@ -168,12 +165,12 @@ powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps
       <PreprocessorDefinitions>WIN32;_WIN32;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;LAUNCHERONLY;_DLL_EXT=.dll;WIN32_LEAN_AND_MEAN;VC_EXTRALEAN;_ITERATOR_DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <FloatingPointModel>Fast</FloatingPointModel>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader />
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
@@ -187,6 +184,7 @@ powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps
       <ErrorReporting>Prompt</ErrorReporting>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <SDLCheck>true</SDLCheck>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -215,6 +213,8 @@ powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps
       <ImageHasSafeExceptionHandlers />
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
+      <LargeAddressAware>true</LargeAddressAware>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <Xdcmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
