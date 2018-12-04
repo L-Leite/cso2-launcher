@@ -2,7 +2,6 @@ version: 0.1.5-{build}
 skip_commits:
   files:
     - '*.md'
-    - '*.ps1'
 image: Visual Studio 2017
 configuration: Release
 platform: x86
