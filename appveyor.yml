@@ -16,28 +16,29 @@ platform: x86
 install:
 - ps: >-
     git submodule update --init --recursive
-
     $env:COMMIT_HASH_SHORT = $(git rev-parse --short=8 HEAD)
-
     ./setuplibs.ps1
 build:
   project: CSO2Launcher.sln
   verbosity: minimal
 after_build:
 - ps: >-
-    7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-binaries.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.exe
-
-    7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-symbols.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.pdb
+    if ($env:CONFIGURATION -eq 'Release') {
+      7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-binaries.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.exe
+      7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-symbols.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.pdb
+    }
 test: off
 artifacts:
-- path: $(APPVEYOR_PROJECT_NAME)-$(CONFIGURATION)-$(COMMIT_HASH_SHORT)-binaries.zip
+- path: $(APPVEYOR_PROJECT_NAME)-Release-$(COMMIT_HASH_SHORT)-binaries.zip
   name: binaries
-- path: $(APPVEYOR_PROJECT_NAME)-$(CONFIGURATION)-$(COMMIT_HASH_SHORT)-symbols.zip
+- path: $(APPVEYOR_PROJECT_NAME)-Release-$(COMMIT_HASH_SHORT)-symbols.zip
   name: symbols
 deploy:
 - provider: GitHub
-  release: Build $(APPVEYOR_REPO_TAG_NAME)
+  release: Build $(APPVEYOR_BUILD_VERSION)
   auth_token:
     secure: XnUsE3jqzulQ4cWVkK2ALBR7qfnfwbBdoMDChmcnx1RcGtRgXV0QLMPo+GcIf8YU
   artifact: binaries,symbols
   prerelease: false
+  on:
+    configuration: Release
