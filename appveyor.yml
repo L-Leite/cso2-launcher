@@ -16,7 +16,9 @@ platform: x86
 install:
 - ps: >-
     git submodule update --init --recursive
+
     $env:COMMIT_HASH_SHORT = $(git rev-parse --short=8 HEAD)
+
     ./setuplibs.ps1
 build:
   project: CSO2Launcher.sln
