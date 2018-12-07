@@ -1,9 +1,17 @@
-version: 0.1.5-{build}
+version: 0.1.{build}
+pull_requests:
+  do_not_increment_build_number: true
+branches:
+  only:
+  - master
+skip_tags: true
 skip_commits:
   files:
     - '*.md'
 image: Visual Studio 2017
-configuration: Release
+configuration:
+- Debug
+- Release
 platform: x86
 install:
 - ps: >-
@@ -17,11 +25,9 @@ build:
   verbosity: minimal
 after_build:
 - ps: >-
-    7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-binaries.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\*.dll
+    7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-binaries.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.exe
 
-    7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-binaries.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\*.exe
-
-    7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-symbols.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\*.pdb
+    7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-symbols.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.pdb
 test: off
 artifacts:
 - path: $(APPVEYOR_PROJECT_NAME)-$(CONFIGURATION)-$(COMMIT_HASH_SHORT)-binaries.zip
@@ -35,5 +41,3 @@ deploy:
     secure: XnUsE3jqzulQ4cWVkK2ALBR7qfnfwbBdoMDChmcnx1RcGtRgXV0QLMPo+GcIf8YU
   artifact: binaries,symbols
   prerelease: false
-  on:
-    APPVEYOR_REPO_TAG: true
