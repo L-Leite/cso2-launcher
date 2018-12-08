@@ -27,6 +27,7 @@ after_build:
 - ps: >-
     if ($env:CONFIGURATION -eq 'Release') {
       7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-binaries.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.exe
+      7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-binaries.zip $env:APPVEYOR_BUILD_FOLDER\start-cso2.bat
       7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-symbols.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.pdb
     }
 test: off
