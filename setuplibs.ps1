@@ -24,7 +24,7 @@ cmake -G "Visual Studio 15 2017" -DCAPSTONE_ARM_SUPPORT=0 -DCAPSTONE_ARM64_SUPPO
 
 # now PolyHook
 Set-Location ..\..
-cmake -G "Visual Studio 15 2017" -DBUILD_DLL=ON -DBUILD_STATIC=ON .\
+cmake -G "Visual Studio 15 2017" -DBUILD_DLL=ON -DBUILD_STATIC=ON -DFEATURE_INLINENTD=OFF .\
 
 # setup source sdk
 Set-Location ..\source-sdk-cso2
