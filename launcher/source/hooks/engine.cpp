@@ -109,6 +109,16 @@ void BytePatchEngine( const uintptr_t dwEngineBase )
     const std::array<uint8_t, 7> relayPatch3 = { 0xC7, 0x40, 0x04, 0x02,
                                                  0x00, 0x00, 0x00 };
     WriteProtectedMemory( relayPatch3, ( dwEngineBase + 0x2BE587 ) );
+
+    //
+    // don't send the filesystem hash
+    // stops the weird blinking when you login,
+    // but you don't get any client hash in the master server
+    //
+    const std::array<uint8_t, 11> hashGenPatch = {
+        0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90,
+    };
+    WriteProtectedMemory( hashGenPatch, ( dwEngineBase + 0x2BC50D ) );
 }
 
 extern DWORD WINAPI ConsoleThread( LPVOID lpArguments );
@@ -120,7 +130,6 @@ ON_LOAD_LIB( engine )
 
     HOOK_DETOUR( dwEngineBase + 0x155C80, hkSys_SpewFunc );
     HOOK_DETOUR( dwEngineBase + 0x285FE0, hkGetServerIpAddressInfo );
-    // HOOK_DETOUR( dwEngineBase + 0x3D8EC0, hkLocalToWideChar );
 
     CloseHandle(
         CreateThread( nullptr, NULL, ConsoleThread, nullptr, NULL, nullptr ) );
