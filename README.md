@@ -4,11 +4,21 @@
 
 A custom client launcher for Nexon's Counter-Strike: Online 2, written in C++.
 
-Ready for [this master server](https://github.com/Ochii/cso2-master-server/)
+Ready for [this master server](https://github.com/Ochii/cso2-master-server/). Most of the development happens in there, so definitely have a look at it!
 
 **Any help** towards the project is welcome and appreciated.
 
 ## Installation
+
+### Before starting
+
+You ***must*** either **port forward ports 27015 to 27020** or **open your NAT**, all in your router, in order to host a room (if you don't want to host a room, you don't have to do this).
+
+If you host a room match, **your IP will be known to other clients**.
+
+If you join a host's room match, **your IP will be known to the host**.
+
+This might be avoidable in the future, once a dedicated server launcher is developed.
 
 ### Obtaining CSO2
 
