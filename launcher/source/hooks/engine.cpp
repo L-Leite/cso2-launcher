@@ -115,10 +115,21 @@ void BytePatchEngine( const uintptr_t dwEngineBase )
     // stops the weird blinking when you login,
     // but you don't get any client hash in the master server
     //
+	// nops
     const std::array<uint8_t, 11> hashGenPatch = {
         0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90,
     };
     WriteProtectedMemory( hashGenPatch, ( dwEngineBase + 0x2BC50D ) );
+
+	//
+	// always return true when checking if the user is over 18
+	//
+	// mov al, 01
+	// ret
+	const std::array<uint8_t, 11> isAdultPatch = {
+        0xB0, 0x01, 0xC3
+    };
+    WriteProtectedMemory( isAdultPatch, ( dwEngineBase + 0x288FF0 ) );
 }
 
 extern DWORD WINAPI ConsoleThread( LPVOID lpArguments );
