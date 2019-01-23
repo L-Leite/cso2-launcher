@@ -15,7 +15,6 @@
 
 #include "basedir.hpp"
 #include "leakdump.hpp"
-#include "reslistgenerator.hpp"
 #include "sourceapp.hpp"
 
 #include "appframework/IAppSystemGroup.h"
@@ -597,31 +596,6 @@ int LauncherMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
         else if ( nRetval == RUN_RESTART )
         {
             bRestart = true;
-        }
-
-        bool bReslistCycle = false;
-        if ( !bRestart )
-        {
-            bReslistCycle = reslistgenerator->ShouldContinue();
-            bRestart = bReslistCycle;
-        }
-
-        if ( !bReslistCycle )
-        {
-            // Remove any overrides in case settings changed
-            CommandLine()->RemoveParm( "-w" );
-            CommandLine()->RemoveParm( "-h" );
-            CommandLine()->RemoveParm( "-width" );
-            CommandLine()->RemoveParm( "-height" );
-            CommandLine()->RemoveParm( "-sw" );
-            CommandLine()->RemoveParm( "-startwindowed" );
-            CommandLine()->RemoveParm( "-windowed" );
-            CommandLine()->RemoveParm( "-window" );
-            CommandLine()->RemoveParm( "-full" );
-            CommandLine()->RemoveParm( "-fullscreen" );
-            CommandLine()->RemoveParm( "-dxlevel" );
-            CommandLine()->RemoveParm( "-autoconfig" );
-            CommandLine()->RemoveParm( "+mat_hdr_level" );
         }
     }
 

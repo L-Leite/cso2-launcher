@@ -239,10 +239,8 @@ powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps
     <ClCompile Include="source\hooks\vgui2.cpp" />
     <ClCompile Include="source\hooks\winapi.cpp" />
     <ClCompile Include="source\launcher.cpp" />
-    <ClCompile Include="source\logallfiles.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\modulelist.cpp" />
-    <ClCompile Include="source\reslistgenerator.cpp" />
     <ClCompile Include="source\sourceapp.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -274,8 +272,6 @@ powershell.exe -ExecutionPolicy Unrestricted -file " $(SolutionDir)gengithash.ps
     <ClInclude Include="header\hooks.hpp" />
     <ClInclude Include="header\ifilesystem.hpp" />
     <ClCompile Include="header\leakdump.hpp" />
-    <ClInclude Include="header\logallfiles.hpp" />
-    <ClInclude Include="header\reslistgenerator.hpp" />
     <ClInclude Include="resource\resource.hpp" />
     <ClInclude Include="header\sourceapp.hpp" />
   </ItemGroup>

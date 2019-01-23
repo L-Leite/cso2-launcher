@@ -16,8 +16,6 @@
 
 #include "filesystem_init.h"
 
-#include "reslistgenerator.hpp"
-
 // interfaces
 #include "datacache/idatacache.h"
 #include "datacache/imdlcache.h"
@@ -33,8 +31,6 @@
 #include "video/ivideoservices.h"
 #include "vphysics_interface.h"
 #include "vstdlib/iprocessutils.h"
-
-#include "logallfiles.hpp"
 
 #include "cso2/iprecommandlineparser.h"
 
@@ -205,21 +201,6 @@ bool CSourceAppSystemGroup::PreInit()
         return false;
     }
 
-    if ( IsPC() )
-    {
-        // This will get called multiple times due to being here, but only the
-        // first one will do anything
-        reslistgenerator->Init( m_szBaseDir.c_str(),
-                                CommandLine()->ParmValue( "-game", "hl2" ) );
-
-        // This will also get called each time, but will actually fix up the
-        // command line as needed
-        reslistgenerator->SetupCommandLine();
-    }
-
-    // FIXME: Logfiles is mod-specific, needs to move into the engine.
-    g_LogFiles.Init( m_szBaseDir );
-
     // Required to run through the editor
     if ( m_bEditMode )
     {
@@ -249,11 +230,6 @@ int CSourceAppSystemGroup::Main()
 
 void CSourceAppSystemGroup::PostShutdown()
 {
-    // FIXME: Logfiles is mod-specific, needs to move into the engine.
-    g_LogFiles.Shutdown();
-
-    reslistgenerator->Shutdown();
-
     DisconnectTier3Libraries();
     DisconnectTier2Libraries();
     ConVar_Unregister();
