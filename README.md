@@ -12,7 +12,7 @@ Ready for [this master server](https://github.com/Ochii/cso2-master-server/). Mo
 
 ### Before starting
 
-You ***must*** either **port forward ports 27015 to 27020** or **open your NAT**, all in your router, in order to host a room (if you don't want to host a room, you don't have to do this).
+You ***must*** either **port forward ports 27015 to 27020** or **open your NAT**, all in your router, in order to host a room (if you don't want to host a room, you don't have to do this). You must also **allow *launcher.exe*** in your firewall settings.
 
 If you host a room match, **your IP will be known to other clients**.
 
@@ -41,7 +41,7 @@ Run ```start-cso2.bat``` and enter the master server's IP address to start the g
 
 *The translations are a courtesy of **[Frostie](#thank-yous)**.*
 
-- When the game loads enter some login information - only your username will be used, so you can use any password ([image](https://puu.sh/Bw7hu/ffba6ca218.png));
+- When the game loads enter some login information - only your username will be used, so you can use any password. **Your username must *not* exceed 10 characters**, or the game will crash ([image](https://puu.sh/Bw7hu/ffba6ca218.png));
 - Select *커스텀모드* (*custom mode*) to go to the channel menu ([image](https://puu.sh/C1Nno/7122e0fefd.png));
 - Pick a channel ([image](https://puu.sh/C1NpM/adead9596e.png))
 - Create your own room by pressing *방만들기* (*create a room*) ([image](https://puu.sh/C1NrH/5cbaa524f8.png)) then choosing game mode ([image](https://puu.sh/C1NSv/8023bd39e8.png));
