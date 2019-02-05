@@ -1,5 +1,5 @@
+#include "stdafx.hpp"
 #include "modulelist.hpp"
-#include <Windows.h>
 
 CModuleList g_ModuleList;
 

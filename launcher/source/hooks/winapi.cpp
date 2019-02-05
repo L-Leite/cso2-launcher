@@ -1,3 +1,5 @@
+#include "stdafx.hpp"
+
 #include "hooks.hpp"
 #include "onloadlib.hpp"
 #include "strtools.h"

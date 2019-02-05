@@ -4,6 +4,8 @@
 //
 //=============================================================================
 
+#include "stdafx.hpp"
+
 #undef PROTECTED_THINGS_ENABLE
 #undef PROTECT_FILEIO_FUNCTIONS
 #ifndef POSIX

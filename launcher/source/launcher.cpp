@@ -6,10 +6,11 @@
 //
 //===========================================================================//
 
+#include "stdafx.hpp"
+
 #ifdef _WIN32
 #include <Shlwapi.h>
 #include <WinSock2.h>
-#include <Windows.h>
 #include <shellapi.h>
 #endif
 

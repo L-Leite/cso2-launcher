@@ -1,3 +1,4 @@
+#include "stdafx.hpp"
 #include "convar.h"
 #include "hooks.hpp"
 

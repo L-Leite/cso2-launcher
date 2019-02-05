@@ -1,12 +1,9 @@
-#include <sstream>
-#include <string>
+#include "stdafx.hpp"
 
 #include "hooks.hpp"
 #include "tier0/icommandline.h"
 
-extern bool g_bEnableLocalization;
-
-HOOK_DETOUR_DECLARE( hkStrTblFind );
+/*HOOK_DETOUR_DECLARE( hkStrTblFind );
 
 // Original function: CLocalizedStringTable::Find
 NOINLINE wchar_t* __fastcall hkStrTblFind( void* ecx, void* edx,
@@ -24,7 +21,7 @@ NOINLINE wchar_t* __fastcall hkStrTblFind( void* ecx, void* edx,
     }
 
     return HOOK_DETOUR_GET_ORIG( hkStrTblFind )( ecx, edx, pName );
-}
+}*/
 
 //
 // Formats a string as "resource/[game prefix]_[language].txt"
@@ -155,9 +152,9 @@ NOINLINE int __fastcall hkUtf8ToLocal( void* thisptr, void*,
 HOOK_DETOUR_DECLARE( hkWideCharToUtf8 );
 
 NOINLINE int __fastcall hkWideCharToUtf8( void* thisptr, void*,
-                                         const wchar_t* szInput,
-                                 char* szOutBuffer,
-                                 std::uint32_t iOutBufferSize )
+                                          const wchar_t* szInput,
+                                          char* szOutBuffer,
+                                          std::uint32_t iOutBufferSize )
 {
     return ConvertWideCharToUtf8( szInput, szOutBuffer, iOutBufferSize );
 }
@@ -165,9 +162,9 @@ NOINLINE int __fastcall hkWideCharToUtf8( void* thisptr, void*,
 HOOK_DETOUR_DECLARE( hkUtf8ToWideChar );
 
 NOINLINE int __fastcall hkUtf8ToWideChar( void* thisptr, void*,
-                                         const char* szInput,
-                                 wchar_t* szOutBuffer,
-                                 std::uint32_t iOutBufferSize )
+                                          const char* szInput,
+                                          wchar_t* szOutBuffer,
+                                          std::uint32_t iOutBufferSize )
 {
     return ConvertUtf8ToWideChar( szInput, szOutBuffer, iOutBufferSize );
 }
@@ -175,9 +172,9 @@ NOINLINE int __fastcall hkUtf8ToWideChar( void* thisptr, void*,
 HOOK_DETOUR_DECLARE( hkWideCharToUtf8_2 );
 
 NOINLINE int __fastcall hkWideCharToUtf8_2( void* thisptr, void*,
-                                          const wchar_t* szInput,
-                                          char* szOutBuffer,
-                                          std::uint32_t iOutBufferSize )
+                                            const wchar_t* szInput,
+                                            char* szOutBuffer,
+                                            std::uint32_t iOutBufferSize )
 {
     return ConvertWideCharToUtf8( szInput, szOutBuffer, iOutBufferSize );
 }
@@ -186,7 +183,7 @@ ON_LOAD_LIB( vgui2 )
 {
     uintptr_t dwVguiBase = GET_LOAD_LIB_MODULE();
 
-    HOOK_DETOUR( dwVguiBase + 0xAC80, hkStrTblFind );
+    // HOOK_DETOUR( dwVguiBase + 0xAC80, hkStrTblFind );
     HOOK_DETOUR( dwVguiBase + 0x8D90, hkStrTblAddFile );
     HOOK_DETOUR( dwVguiBase + 0xB3F0, hkWideCharToUtf8 );
     HOOK_DETOUR( dwVguiBase + 0xB420, hkUtf8ToLocal );

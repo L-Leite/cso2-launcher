@@ -1,55 +1,24 @@
-#include <Windows.h>
+#include "stdafx.hpp"
 #include <iostream>
-#include <string>
 
-#include "cdll_int.h"
+#include "tierextra.hpp"
 
-static IVEngineClient* g_pEngineClient = nullptr;
-
-void ConnectRequiredLibraries()
+void ConsoleThread()
 {
     CreateInterfaceFn pEngineFactory = Sys_GetFactory( "engine.dll" );
-    g_pEngineClient = reinterpret_cast<IVEngineClient*>(
-        pEngineFactory( VENGINE_CLIENT_INTERFACE_VERSION, nullptr ) );
-}
+    ConnectExtraLibraries( &pEngineFactory, 1 );
 
-bool g_bEnableLocalization = true;
-bool g_bPrintMoreDebugInfo = false;
-
-DWORD WINAPI ConsoleThread( LPVOID lpArguments )
-{
-    ConnectRequiredLibraries();
-
-    while ( true )
+	if ( g_pEngineClient == nullptr )
     {
-        std::string szCommand;
+        std::cout << "ConsoleThread: g_pEngineClient is nullptr\n";
+        return;
+	}
+
+	std::string szCommand;
+
+    while ( szCommand.find( "stopconsolethread" ) != 0 )
+    {
         std::getline( std::cin, szCommand );
-
-        if ( szCommand.find( "lessdebug" ) == 0 )
-        {
-            g_bPrintMoreDebugInfo = !g_bPrintMoreDebugInfo;
-            std::cout << "There will be "
-                      << ( g_bPrintMoreDebugInfo ? "more" : "less" )
-                      << " debug info now\n";
-        }
-        else if ( szCommand.find( "togglelocal" ) == 0 )
-        {
-            g_bEnableLocalization = !g_bEnableLocalization;
-            std::cout << "Localization "
-                      << ( g_bEnableLocalization ? "enabled" : "disabled" )
-                      << '\n';
-        }
-        else if ( szCommand.find( "stopconsolethread" ) == 0 )
-        {
-            break;
-        }
-        else
-        {
-            g_pEngineClient->ClientCmd_Unrestricted( szCommand.c_str() );
-        }
-
-        szCommand.clear();
+        g_pEngineClient->ClientCmd_Unrestricted( szCommand.c_str() );
     }
-
-    return 0;
 }
