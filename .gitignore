@@ -412,8 +412,9 @@ _deps
 launcher/launcher_*_cotire.cmake
 
 ## cso2-launcher
-# ignore githash include file
-launcher/header/githash.hpp
+# ignore version headers
+launcher/header/git-version.hpp
+launcher/header/version.hpp
 
 # ignore compiled files out directory
 out/
