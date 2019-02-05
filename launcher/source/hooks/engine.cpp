@@ -1,5 +1,6 @@
 #include <array>
 
+#include "convar.h"
 #include "hooks.hpp"
 #include "tier0/icommandline.h"
 
@@ -36,6 +37,25 @@ NOINLINE void __fastcall hkGetServerIpAddressInfo( IpAddressInfo& info )
     info.iPort =
         szMasterPort ? static_cast<uint16_t>( atoi( szMasterPort ) ) : 30001;
 }
+
+HOOK_DETOUR_DECLARE( hkCanCheat );
+
+//
+// Fix sv_cheats
+//
+ConVar* sv_cheats = 0;
+
+NOINLINE bool __fastcall hkCanCheat()
+{
+    if ( !sv_cheats && g_pCVar )
+        sv_cheats = g_pCVar->FindVar( "sv_cheats" );
+
+    if ( sv_cheats->GetBool() )
+        return true;
+
+    return false;
+}
+
 
 void BytePatchEngine( const uintptr_t dwEngineBase )
 {
@@ -141,6 +161,7 @@ ON_LOAD_LIB( engine )
 
     HOOK_DETOUR( dwEngineBase + 0x155C80, hkSys_SpewFunc );
     HOOK_DETOUR( dwEngineBase + 0x285FE0, hkGetServerIpAddressInfo );
+    HOOK_DETOUR( dwEngineBase + 0xCE8B0, hkCanCheat );
 
     CloseHandle(
         CreateThread( nullptr, NULL, ConsoleThread, nullptr, NULL, nullptr ) );
