@@ -37,8 +37,8 @@ void CreateDebugConsole()
     freopen( "CONOUT$", "w", stdout );
     freopen( "CONOUT$", "w", stderr );
 
-    SetConsoleTitleA( "cso2-launcher " LAUNCHER_VERSION "-" GIT_COMMIT_HASH
-                      "-" GIT_BRANCH " -- Game Console" );
+    SetConsoleTitleA( "cso2-launcher " LAUNCHER_VERSION "-" GIT_BRANCH
+                      "-" GIT_COMMIT_HASH " -- Game Console" );
     SetConsoleCP( CP_UTF8 );
     SetConsoleOutputCP( CP_UTF8 );
 }
