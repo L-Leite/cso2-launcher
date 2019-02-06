@@ -4,7 +4,7 @@
 
 A custom client launcher for Nexon's Counter-Strike: Online 2, written in C++.
 
-Ready for [this master server](https://github.com/Ochii/cso2-master-server/). Most of the development happens in there, so definitely have a look at it!
+Ready for [this CSO2 master server](https://github.com/Ochii/cso2-master-server/).
 
 **Any help** towards the project is welcome and appreciated.
 
@@ -12,7 +12,7 @@ Ready for [this master server](https://github.com/Ochii/cso2-master-server/). Mo
 
 ### Before starting
 
-You ***must*** either **port forward ports 27015 to 27020** or **open your NAT**, all in your router, in order to host a room (if you don't want to host a room, you don't have to do this). You must also **allow *launcher.exe*** in your firewall settings.
+You ***must*** **allow `launcher.exe` in your firewall** and, either **port forward ports 27015 to 27020** or **open your router's NAT**, in order to play with others.
 
 If you host a room match, **your IP will be known to other clients**.
 
@@ -33,7 +33,7 @@ You can grab a copy of **Nexon's Counter-Strike: Online 2** at [MEGA](https://me
 
 ## Starting the game
 
-*Note: **a master server has to be running somewhere**.*
+*Note: **someone must be running a master server**.*
 
 Run ```start-cso2.bat``` and enter the master server's IP address to start the game.
 
@@ -41,13 +41,15 @@ Run ```start-cso2.bat``` and enter the master server's IP address to start the g
 
 *The translations are a courtesy of **[Frostie](#thank-yous)**.*
 
-- When the game loads enter some login information - only your username will be used, so you can use any password. **Your username must *not* exceed 10 characters**, or the game will crash ([image](https://puu.sh/Bw7hu/ffba6ca218.png));
+- When the game loads enter some login information - only your username will be used, so you can use any password ([image](https://puu.sh/Bw7hu/ffba6ca218.png));
 - Select *커스텀모드* (*custom mode*) to go to the channel menu ([image](https://puu.sh/C1Nno/7122e0fefd.png));
 - Pick a channel ([image](https://puu.sh/C1NpM/adead9596e.png))
 - Create your own room by pressing *방만들기* (*create a room*) ([image](https://puu.sh/C1NrH/5cbaa524f8.png)) then choosing game mode ([image](https://puu.sh/C1NSv/8023bd39e8.png));
 - You can now start the match by pressing *게임 시작* (*game start*) ([image](https://puu.sh/Bw7M3/9209eb7637.png)).
 
-You can input Source Engine commands (such as ```cl_showfps 1```) in the console window.
+You can access your inventory by pressing *인벤토리* (*inventory*) in the bottom menu bar.
+
+You can also input Source Engine commands (such as ```cl_showfps 1```) in the console window.
 
 ### Available command line arguments
 
@@ -63,31 +65,39 @@ You can input Source Engine commands (such as ```cl_showfps 1```) in the console
 - [Visual Studio 2017](https://www.visualstudio.com/downloads/)
 - [Windows PowerShell](https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-windows-powershell)
 
-Currently only Visual Studio 2017 is supported.
+Tested with Visual Studio 2017. Support for other compilers is unknown.
 
 ### Starting the build
 
-In a Powershell instance enter:
+cso2-launcher uses CMake to generate project files and to build itself.
+
+You can **build it through *CMake*** or **generate its project files**.
+
+As an example: to generate Visual Studio 2017 project files, **open a terminal instance** in the project's directory and run
 
 ```powershell
-./setuplibs.ps1 # setups dependencies
+# in powershell or in standard Windows cmd
+cmake -G "Visual Studio 15 2017" ./
 ```
 
-Open the solution ```CSO2Launcher.sln``` and build it in your preferred configuration.
+Or use the ```cmake-gui``` tool bundled with CMake for a more user friendly experience.
+
+Once generated successfully, you can open ```CSO2Launcher.sln``` and build the project in your preferred configuration.
 
 If built successfully, you will find the launcher inside ```out/bin/Win32/[your configuration]```.
 
 ## Bug reporting
 
-Have a look at the [issues](https://github.com/Ochii/cso2-launcher/issues) for a list of bugs found or to report them yourself.
+Have a look at the [issues](https://github.com/Ochii/cso2-launcher/issues) for a list of current bugs or to report them.
 
 ## Pull requests
 
-Improvements and suggestions are welcome, make one at ['pull requests'](https://github.com/Ochii/cso2-launcher/pulls).
+Improvements and suggestions are welcome, create a [pull request](https://github.com/Ochii/cso2-launcher/pulls).
 
 ## Libraries used
 
-- **[PolyHook v2.0](https://github.com/stevemk14ebr/PolyHook_2_0/)** by [stevemk14ebr](https://github.com/stevemk14ebr)
+- **[PolyHook 2.0](https://github.com/stevemk14ebr/PolyHook_2_0/)** by [stevemk14ebr](https://github.com/stevemk14ebr)
+- **[cotire](https://github.com/sakra/cotire/)** by [Sascha Kratky](https://github.com/sakra)
 
 ## Credits
 

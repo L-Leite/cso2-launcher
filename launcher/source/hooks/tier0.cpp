@@ -1,12 +1,7 @@
-#include <array>
-#include <filesystem>
-#include <fstream>
+#include "stdafx.hpp"
 
-#include "tier0/platform.h"
-
+#include "tier0/platform.h"			
 #include "hooks.hpp"
-
-extern bool g_bPrintMoreDebugInfo;
 
 HOOK_EXPORT_DECLARE( hkCOM_TimestampedLog );
 
@@ -14,11 +9,6 @@ NOINLINE void hkCOM_TimestampedLog( char const* fmt, ... )
 {
     static float s_LastStamp = 0.0;
     static bool s_bFirstWrite = false;
-
-    if ( !g_bPrintMoreDebugInfo )
-    {
-        return;
-    }
 
     char string[1024];
     va_list argptr;
@@ -49,12 +39,7 @@ NOINLINE void hkCOM_TimestampedLog( char const* fmt, ... )
 HOOK_EXPORT_DECLARE( hkMsg );
 
 NOINLINE void hkMsg( const tchar* pMsg, ... )
-{
-    if ( !g_bPrintMoreDebugInfo )
-    {
-        return;
-    }
-
+{				 
     va_list va;
     va_start( va, pMsg );
     vprintf( pMsg, va );
@@ -64,12 +49,7 @@ NOINLINE void hkMsg( const tchar* pMsg, ... )
 HOOK_EXPORT_DECLARE( hkWarning );
 
 NOINLINE void hkWarning( const tchar* pMsg, ... )
-{
-    if ( !g_bPrintMoreDebugInfo )
-    {
-        return;
-    }
-
+{		  
     va_list va;
     va_start( va, pMsg );
     vprintf( pMsg, va );

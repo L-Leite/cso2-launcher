@@ -1,9 +1,7 @@
-﻿#include <Windows.h>
-#include <iostream>
-#include <sstream>
-#include <string>
+﻿#include "stdafx.hpp"
 
-#include "githash.hpp"
+#include "git-version.hpp"
+#include "version.hpp"
 
 enum Sys_Flags
 {
@@ -39,8 +37,8 @@ void CreateDebugConsole()
     freopen( "CONOUT$", "w", stdout );
     freopen( "CONOUT$", "w", stderr );
 
-    SetConsoleTitleA( "cso2-launcher commit: " GIT_COMMIT_HASH
-                      " -- Debug Console" );
+    SetConsoleTitleA( "cso2-launcher " LAUNCHER_VERSION "-" GIT_BRANCH
+                      "-" GIT_COMMIT_HASH " -- Game Console" );
     SetConsoleCP( CP_UTF8 );
     SetConsoleOutputCP( CP_UTF8 );
 }

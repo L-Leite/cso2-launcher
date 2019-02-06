@@ -1,6 +1,5 @@
+#include "stdafx.hpp"
 #include "sourceapp.hpp"
-
-#include <filesystem>
 
 #ifdef _WIN32
 #include <Windows.h>

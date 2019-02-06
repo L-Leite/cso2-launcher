@@ -1,10 +1,8 @@
-#include <array>
+#include "stdafx.hpp"
 
 #include "convar.h"
 #include "hooks.hpp"
 #include "tier0/icommandline.h"
-
-using namespace std::literals::string_literals;
 
 HOOK_DETOUR_DECLARE( hkSys_SpewFunc );
 
@@ -152,7 +150,7 @@ void BytePatchEngine( const uintptr_t dwEngineBase )
     WriteProtectedMemory( isAdultPatch, ( dwEngineBase + 0x288FF0 ) );
 }
 
-extern DWORD WINAPI ConsoleThread( LPVOID lpArguments );
+void ConsoleThread();
 
 ON_LOAD_LIB( engine )
 {
@@ -163,6 +161,6 @@ ON_LOAD_LIB( engine )
     HOOK_DETOUR( dwEngineBase + 0x285FE0, hkGetServerIpAddressInfo );
     HOOK_DETOUR( dwEngineBase + 0xCE8B0, hkCanCheat );
 
-    CloseHandle(
-        CreateThread( nullptr, NULL, ConsoleThread, nullptr, NULL, nullptr ) );
+	std::thread threadObj( ConsoleThread );
+    threadObj.detach();
 }
