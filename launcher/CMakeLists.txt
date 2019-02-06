@@ -87,6 +87,7 @@ set(LAUNCHER_SOURCES_BASE
 
 set(LAUNCHER_SOURCES_HOOKS
     "source/hooks/engine.cpp"
+	"source/hooks/filesystem.cpp"
     "source/hooks/server.cpp"
     "source/hooks/tier0.cpp"
     "source/hooks/vgui2.cpp"
