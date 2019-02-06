@@ -1,4 +1,4 @@
-version: 0.2.0-{build}-{branch}
+version: {build}
 pull_requests:
   do_not_increment_build_number: true
 skip_tags: true
@@ -13,42 +13,47 @@ configuration:
 - RelWithDebInfo
 platform: Win32
 install:
-- ps: >-
+- ps: |
+    # install cmake 3.13 or better
+    # REMOVE THIS when AppVeyor updates CMake
     iex (new-object net.webclient).downloadstring('https://get.scoop.sh')
-
     scoop install cmake
 
+    # init submodules recusivelly
     git submodule update --init --recursive
 
+    # versioning vars
     $env:GIT_COMMIT_HASH = $(git rev-parse --short=8 HEAD)
-
-    $env:GIT_BRANCH = $(git rev-parse --abbrev-ref HEAD)
-
     $env:LAUNCHER_VERSION = $(Get-Content .\version.txt)
 
+    # generate project files
     cmake -G "Visual Studio 15 2017" ./
 build:
   project: launcher.sln
   verbosity: minimal
 after_build:
-- ps: >-
+- ps: |    
     if ($env:CONFIGURATION -eq 'Release') {
-      7z a ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:GIT_COMMIT_HASH)-($env:GIT_BRANCH)-($env:CONFIGURATION)_binaries.zip ($env:APPVEYOR_BUILD_FOLDER)\out\bin\Win32\Release\launcher.exe
-      7z a ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:GIT_COMMIT_HASH)-($env:GIT_BRANCH)-($env:CONFIGURATION)_binaries.zip ($env:APPVEYOR_BUILD_FOLDER)\start-cso2.bat
-      7z a ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:GIT_COMMIT_HASH)-($env:GIT_BRANCH)-($env:CONFIGURATION)_symbols.zip ($env:APPVEYOR_BUILD_FOLDER)\out\bin\Win32\Release\launcher.pdb
+      7z a ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:APPVEYOR_REPO_BRANCH)-($env:GIT_COMMIT_HASH)-($env:CONFIGURATION)_binaries.zip ($env:APPVEYOR_BUILD_FOLDER)\out\bin\Win32\Release\launcher.exe
+      7z a ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:APPVEYOR_REPO_BRANCH)-($env:GIT_COMMIT_HASH)-($env:CONFIGURATION)_binaries.zip ($env:APPVEYOR_BUILD_FOLDER)\start-cso2.bat
+      7z a ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:APPVEYOR_REPO_BRANCH)-($env:GIT_COMMIT_HASH)-($env:CONFIGURATION)_symbols.zip ($env:APPVEYOR_BUILD_FOLDER)\out\bin\Win32\Release\launcher.pdb
     }
 test: off
 artifacts:
-- path: $(APPVEYOR_PROJECT_NAME)_$(LAUNCHER_VERSION)-$(GIT_COMMIT_HASH)-$(GIT_BRANCH)-Release_binaries.zip
+- path: $(APPVEYOR_PROJECT_NAME)_$(LAUNCHER_VERSION)-$(APPVEYOR_REPO_BRANCH)-$(GIT_COMMIT_HASH)-Release_binaries.zip
   name: binaries
-- path: $(APPVEYOR_PROJECT_NAME)_$(LAUNCHER_VERSION)-$(GIT_COMMIT_HASH)-$(GIT_BRANCH)-Release-symbols.zip
+- path: $(APPVEYOR_PROJECT_NAME)_$(LAUNCHER_VERSION)-$(APPVEYOR_REPO_BRANCH)-$(GIT_COMMIT_HASH)-Release-symbols.zip
   name: symbols
 deploy:
 - provider: GitHub
-  release: Build $(LAUNCHER_VERSION)-$(GIT_COMMIT_HASH)-$(GIT_BRANCH)
+  release: Build $(LAUNCHER_VERSION)-$(GIT_COMMIT_HASH)-$(APPVEYOR_REPO_BRANCH)
   auth_token:
     secure: XnUsE3jqzulQ4cWVkK2ALBR7qfnfwbBdoMDChmcnx1RcGtRgXV0QLMPo+GcIf8YU
   artifact: binaries,symbols
   on:
     branch: master
     configuration: Release
+on_success:
+- ps: |
+    # set appveyor build version
+    update-appveyorbuild -version $env:LAUNCHER_VERSION-$env:APPVEYOR_REPO_BRANCH-$env:GIT_COMMIT_HASH
