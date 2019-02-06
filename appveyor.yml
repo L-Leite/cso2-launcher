@@ -8,8 +8,10 @@ skip_commits:
 image: Visual Studio 2017
 configuration:
 - Debug
+- MinSizeRel
 - Release
-platform: x86
+- RelWithDebInfo
+platform: Win32
 install:
 - ps: >-
     iex (new-object net.webclient).downloadstring('https://get.scoop.sh')
