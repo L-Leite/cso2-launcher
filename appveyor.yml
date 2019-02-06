@@ -1,4 +1,4 @@
-version: 0.1.{build}
+version: 0.2.{build}-{branch}
 pull_requests:
   do_not_increment_build_number: true
 skip_tags: true
@@ -15,7 +15,9 @@ install:
     git submodule update --init --recursive
 
     $env:GIT_COMMIT_HASH = $(git rev-parse --short=8 HEAD)
+
     $env:GIT_BRANCH = $(git rev-parse --abbrev-ref HEAD)
+
     $env:LAUNCHER_VERSION = $(Get-Content .\version.txt)
 
     cmake -G "Visual Studio 15 2017" ./
