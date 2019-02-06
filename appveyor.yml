@@ -1,9 +1,6 @@
 version: 0.1.{build}
 pull_requests:
   do_not_increment_build_number: true
-branches:
-  only:
-  - master
 skip_tags: true
 skip_commits:
   files:
@@ -17,31 +14,33 @@ install:
 - ps: >-
     git submodule update --init --recursive
 
-    $env:COMMIT_HASH_SHORT = $(git rev-parse --short=8 HEAD)
+    $env:GIT_COMMIT_HASH = $(git rev-parse --short=8 HEAD)
+    $env:GIT_BRANCH = $(git rev-parse --abbrev-ref HEAD)
+    $env:LAUNCHER_VERSION = $(Get-Content .\version.txt)
 
-    ./setuplibs.ps1
+    cmake -G "Visual Studio 15 2017" ./
 build:
-  project: CSO2Launcher.sln
+  project: launcher.sln
   verbosity: minimal
 after_build:
 - ps: >-
     if ($env:CONFIGURATION -eq 'Release') {
-      7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-binaries.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.exe
-      7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-binaries.zip $env:APPVEYOR_BUILD_FOLDER\start-cso2.bat
-      7z a $env:APPVEYOR_PROJECT_NAME-$env:CONFIGURATION-$env:COMMIT_HASH_SHORT-symbols.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.pdb
+      7z a $env:APPVEYOR_PROJECT_NAME_$env:LAUNCHER_VERSION-$env:GIT_COMMIT_HASH-$env:GIT_BRANCH-$env:CONFIGURATION_binaries.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.exe
+      7z a $env:APPVEYOR_PROJECT_NAME_$env:LAUNCHER_VERSION-$env:GIT_COMMIT_HASH-$env:GIT_BRANCH-$env:CONFIGURATION_binaries.zip $env:APPVEYOR_BUILD_FOLDER\start-cso2.bat
+      7z a $env:APPVEYOR_PROJECT_NAME_$env:LAUNCHER_VERSION-$env:GIT_COMMIT_HASH-$env:GIT_BRANCH-$env:CONFIGURATION_symbols.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.pdb
     }
 test: off
 artifacts:
-- path: $(APPVEYOR_PROJECT_NAME)-Release-$(COMMIT_HASH_SHORT)-binaries.zip
+- path: $env:APPVEYOR_PROJECT_NAME_$env:LAUNCHER_VERSION-$env:GIT_COMMIT_HASH-$env:GIT_BRANCH-Release_binaries.zip
   name: binaries
-- path: $(APPVEYOR_PROJECT_NAME)-Release-$(COMMIT_HASH_SHORT)-symbols.zip
+- path: $env:APPVEYOR_PROJECT_NAME_$env:LAUNCHER_VERSION-$env:GIT_COMMIT_HASH-$env:GIT_BRANCH-Release-symbols.zip
   name: symbols
 deploy:
 - provider: GitHub
-  release: Build $(APPVEYOR_BUILD_VERSION)
+  release: Build $env:LAUNCHER_VERSION-$env:GIT_COMMIT_HASH-$env:GIT_BRANCH
   auth_token:
     secure: XnUsE3jqzulQ4cWVkK2ALBR7qfnfwbBdoMDChmcnx1RcGtRgXV0QLMPo+GcIf8YU
   artifact: binaries,symbols
-  prerelease: false
   on:
+    branch: master
     configuration: Release
