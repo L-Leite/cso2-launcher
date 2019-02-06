@@ -12,6 +12,10 @@ configuration:
 platform: x86
 install:
 - ps: >-
+    iex (new-object net.webclient).downloadstring('https://get.scoop.sh')
+
+    scoop install cmake
+
     git submodule update --init --recursive
 
     $env:GIT_COMMIT_HASH = $(git rev-parse --short=8 HEAD)
