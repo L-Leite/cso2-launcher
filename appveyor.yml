@@ -33,15 +33,15 @@ build:
 after_build:
 - ps: >-
     if ($env:CONFIGURATION -eq 'Release') {
-      7z a ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:GIT_COMMIT_HASH)-($env:GIT_BRANCH)-($env:CONFIGURATION)_binaries.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.exe
-      7z a ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:GIT_COMMIT_HASH)-($env:GIT_BRANCH)-($env:CONFIGURATION)_binaries.zip $env:APPVEYOR_BUILD_FOLDER\start-cso2.bat
-      7z a ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:GIT_COMMIT_HASH)-($env:GIT_BRANCH)-($env:CONFIGURATION)_symbols.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.pdb
+      7z a ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:GIT_COMMIT_HASH)-($env:GIT_BRANCH)-($env:CONFIGURATION)_binaries.zip ($env:APPVEYOR_BUILD_FOLDER)\out\bin\Win32\Release\launcher.exe
+      7z a ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:GIT_COMMIT_HASH)-($env:GIT_BRANCH)-($env:CONFIGURATION)_binaries.zip ($env:APPVEYOR_BUILD_FOLDER)\start-cso2.bat
+      7z a ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:GIT_COMMIT_HASH)-($env:GIT_BRANCH)-($env:CONFIGURATION)_symbols.zip ($env:APPVEYOR_BUILD_FOLDER)\out\bin\Win32\Release\launcher.pdb
     }
 test: off
 artifacts:
-- path: $env:APPVEYOR_PROJECT_NAME_$env:LAUNCHER_VERSION-$env:GIT_COMMIT_HASH-$env:GIT_BRANCH-Release_binaries.zip
+- path: ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:GIT_COMMIT_HASH)-($env:GIT_BRANCH)-Release_binaries.zip
   name: binaries
-- path: $env:APPVEYOR_PROJECT_NAME_$env:LAUNCHER_VERSION-$env:GIT_COMMIT_HASH-$env:GIT_BRANCH-Release-symbols.zip
+- path: ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:GIT_COMMIT_HASH)-($env:GIT_BRANCH)-Release-symbols.zip
   name: symbols
 deploy:
 - provider: GitHub
