@@ -39,13 +39,13 @@ after_build:
     }
 test: off
 artifacts:
-- path: ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:GIT_COMMIT_HASH)-($env:GIT_BRANCH)-Release_binaries.zip
+- path: $(APPVEYOR_PROJECT_NAME)_$(LAUNCHER_VERSION)-$(GIT_COMMIT_HASH)-$(GIT_BRANCH)-Release_binaries.zip
   name: binaries
-- path: ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:GIT_COMMIT_HASH)-($env:GIT_BRANCH)-Release-symbols.zip
+- path: $(APPVEYOR_PROJECT_NAME)_$(LAUNCHER_VERSION)-$(GIT_COMMIT_HASH)-$(GIT_BRANCH)-Release-symbols.zip
   name: symbols
 deploy:
 - provider: GitHub
-  release: Build $env:LAUNCHER_VERSION-$env:GIT_COMMIT_HASH-$env:GIT_BRANCH
+  release: Build $(LAUNCHER_VERSION)-$(GIT_COMMIT_HASH)-$(GIT_BRANCH)
   auth_token:
     secure: XnUsE3jqzulQ4cWVkK2ALBR7qfnfwbBdoMDChmcnx1RcGtRgXV0QLMPo+GcIf8YU
   artifact: binaries,symbols
