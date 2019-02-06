@@ -8,9 +8,7 @@ skip_commits:
 image: Visual Studio 2017
 configuration:
 - Debug
-- MinSizeRel
 - Release
-- RelWithDebInfo
 platform: Win32
 install:
 - ps: |
@@ -34,9 +32,10 @@ build:
 after_build:
 - ps: |    
     if ($env:CONFIGURATION -eq 'Release') {
-      7z a ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:APPVEYOR_REPO_BRANCH)-($env:GIT_COMMIT_HASH)-($env:CONFIGURATION)_binaries.zip ($env:APPVEYOR_BUILD_FOLDER)\out\bin\Win32\Release\launcher.exe
-      7z a ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:APPVEYOR_REPO_BRANCH)-($env:GIT_COMMIT_HASH)-($env:CONFIGURATION)_binaries.zip ($env:APPVEYOR_BUILD_FOLDER)\start-cso2.bat
-      7z a ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:APPVEYOR_REPO_BRANCH)-($env:GIT_COMMIT_HASH)-($env:CONFIGURATION)_symbols.zip ($env:APPVEYOR_BUILD_FOLDER)\out\bin\Win32\Release\launcher.pdb
+      $artifactPrefix = ($env:APPVEYOR_PROJECT_NAME)_($env:LAUNCHER_VERSION)-($env:APPVEYOR_REPO_BRANCH)-($env:GIT_COMMIT_HASH)-($env:CONFIGURATION)
+      7z a -m0=lzma2 -mx9 $artifactPrefix_binaries.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.exe `
+        $env:APPVEYOR_BUILD_FOLDER\start-cso2.bat
+      7z a -m0=lzma2 -mx9 $artifactPrefix_symbols.zip $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.pdb
     }
 test: off
 artifacts:
