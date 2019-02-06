@@ -33,15 +33,15 @@ after_build:
 - ps: |    
     if ($env:CONFIGURATION -eq 'Release') {
       $artifactPrefix = $env:APPVEYOR_PROJECT_NAME + "_" + $env:LAUNCHER_VERSION + "-" + $env:APPVEYOR_REPO_BRANCH + "-" + $env:GIT_COMMIT_HASH + "-" + $env:CONFIGURATION
-      7z a -m0=lzma2 -mx9 $($artifactPrefix + "-binaries.7z") $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.exe `
+      7z a -m0=lzma2 -mx9 $($artifactPrefix + "_binaries.7z") $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.exe `
         $env:APPVEYOR_BUILD_FOLDER\start-cso2.bat
-      7z a -m0=lzma2 -mx9 $($artifactPrefix + "-symbols.7z") $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.pdb
+      7z a -m0=lzma2 -mx9 $($artifactPrefix + "_symbols.7z") $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\Release\launcher.pdb
     }
 test: off
 artifacts:
-- path: $(APPVEYOR_PROJECT_NAME)_$(LAUNCHER_VERSION)-$(APPVEYOR_REPO_BRANCH)-$(GIT_COMMIT_HASH)_Release-binaries.7z
+- path: $(APPVEYOR_PROJECT_NAME)_$(LAUNCHER_VERSION)-$(APPVEYOR_REPO_BRANCH)-$(GIT_COMMIT_HASH)-Release_binaries.7z
   name: binaries
-- path: $(APPVEYOR_PROJECT_NAME)_$(LAUNCHER_VERSION)-$(APPVEYOR_REPO_BRANCH)-$(GIT_COMMIT_HASH)_Release-symbols.7z
+- path: $(APPVEYOR_PROJECT_NAME)_$(LAUNCHER_VERSION)-$(APPVEYOR_REPO_BRANCH)-$(GIT_COMMIT_HASH)-Release_symbols.7z
   name: symbols
 deploy:
 - provider: GitHub
