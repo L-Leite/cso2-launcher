@@ -179,9 +179,16 @@ NOINLINE int __fastcall hkWideCharToUtf8_2( void* thisptr, void*,
     return ConvertWideCharToUtf8( szInput, szOutBuffer, iOutBufferSize );
 }
 
-ON_LOAD_LIB( vgui2 )
-{
-    uintptr_t dwVguiBase = GET_LOAD_LIB_MODULE();
+void OnVguiLoaded( const uintptr_t dwVguiBase )
+{			
+	static bool bHasLoaded = false;
+
+    if ( bHasLoaded )
+    {
+        return;
+    }
+
+    bHasLoaded = true;
 
     // HOOK_DETOUR( dwVguiBase + 0xAC80, hkStrTblFind );
     HOOK_DETOUR( dwVguiBase + 0x8D90, hkStrTblAddFile );
