@@ -1,7 +1,8 @@
 #include "stdafx.hpp"
 
-#include "tier0/platform.h"			
 #include "hooks.hpp"
+#include "tier0/ICommandLine.h"
+#include "tier0/platform.h"
 
 HOOK_EXPORT_DECLARE( hkCOM_TimestampedLog );
 
@@ -39,7 +40,7 @@ NOINLINE void hkCOM_TimestampedLog( char const* fmt, ... )
 HOOK_EXPORT_DECLARE( hkMsg );
 
 NOINLINE void hkMsg( const tchar* pMsg, ... )
-{				 
+{
     va_list va;
     va_start( va, pMsg );
     vprintf( pMsg, va );
@@ -49,7 +50,7 @@ NOINLINE void hkMsg( const tchar* pMsg, ... )
 HOOK_EXPORT_DECLARE( hkWarning );
 
 NOINLINE void hkWarning( const tchar* pMsg, ... )
-{		  
+{
     va_list va;
     va_start( va, pMsg );
     vprintf( pMsg, va );
@@ -71,7 +72,12 @@ void HookTier0()
     const uintptr_t dwTierBase = g_ModuleList.Get( "tier0.dll" );
     BytePatchTier( dwTierBase );
 
-    HOOK_EXPORT( "COM_TimestampedLog", L"tier0.dll", hkCOM_TimestampedLog );
+	// only hook COM_TimestampedLog if we are actually going to use it
+    if ( CommandLine()->CheckParm( "-timestamped", nullptr ) )
+    {
+        HOOK_EXPORT( "COM_TimestampedLog", L"tier0.dll", hkCOM_TimestampedLog );
+    }
+
     HOOK_EXPORT( "Msg", L"tier0.dll", hkMsg );
     HOOK_EXPORT( "Warning", L"tier0.dll", hkWarning );
 }
