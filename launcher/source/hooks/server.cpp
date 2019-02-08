@@ -1,8 +1,8 @@
-#include "stdafx.hpp"
 #include "convar.h"
 #include "hooks.hpp"
+#include "stdafx.hpp"
 
-void BytePatchServer( uintptr_t dwServerBase )
+void BytePatchServer( const uintptr_t dwServerBase )
 {
     // remove FCVAR_CHEAT from ent_create until sv_cheats is fixed
     /*
@@ -14,8 +14,16 @@ void BytePatchServer( uintptr_t dwServerBase )
 	*/
 }
 
-ON_LOAD_LIB( server )
+void OnServerLoaded( const uintptr_t dwServerBase )
 {
-    uintptr_t dwServerBase = GET_LOAD_LIB_MODULE();
+    static bool bHasLoaded = false;
+
+    if ( bHasLoaded )
+    {
+        return;
+    }
+
+    bHasLoaded = true;
+
     BytePatchServer( dwServerBase );
 }

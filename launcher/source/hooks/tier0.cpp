@@ -1,7 +1,7 @@
 #include "stdafx.hpp"
 
-#include "tier0/platform.h"			
 #include "hooks.hpp"
+#include "tier0/platform.h"
 
 HOOK_EXPORT_DECLARE( hkCOM_TimestampedLog );
 
@@ -39,7 +39,7 @@ NOINLINE void hkCOM_TimestampedLog( char const* fmt, ... )
 HOOK_EXPORT_DECLARE( hkMsg );
 
 NOINLINE void hkMsg( const tchar* pMsg, ... )
-{				 
+{
     va_list va;
     va_start( va, pMsg );
     vprintf( pMsg, va );
@@ -49,7 +49,7 @@ NOINLINE void hkMsg( const tchar* pMsg, ... )
 HOOK_EXPORT_DECLARE( hkWarning );
 
 NOINLINE void hkWarning( const tchar* pMsg, ... )
-{		  
+{
     va_list va;
     va_start( va, pMsg );
     vprintf( pMsg, va );
@@ -63,12 +63,12 @@ void BytePatchTier( const uintptr_t dwTierBase )
     //
     // jmp near 0x1D8 bytes forward
     const std::array<uint8_t, 5> addArgPatch = { 0xE9, 0xD8, 0x01, 0x00, 0x00 };
-    WriteProtectedMemory( addArgPatch, ( dwTierBase + 0x1D63 ) );
+    utils::WriteProtectedMemory( addArgPatch, dwTierBase + 0x1D63 );
 }
 
 void HookTier0()
-{
-    const uintptr_t dwTierBase = g_ModuleList.Get( "tier0.dll" );
+{				   
+    const uintptr_t dwTierBase = utils::GetModuleBase( "tier0.dll" );
     BytePatchTier( dwTierBase );
 
     HOOK_EXPORT( "COM_TimestampedLog", L"tier0.dll", hkCOM_TimestampedLog );

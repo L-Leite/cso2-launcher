@@ -4,6 +4,7 @@
 
 #include <array>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include <fstream>
@@ -17,5 +18,7 @@
 #else
 #error Include your OS specific headers here
 #endif
+
+#include "utilities.hpp"
 
 using namespace std::literals::string_literals;

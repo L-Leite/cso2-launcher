@@ -56,6 +56,7 @@ You can also input Source Engine commands (such as ```cl_showfps 1```) in the co
 - ```-lang [some language]``` - Sets the game's language to *some language*'s (considering you have the language files)
 - ```-masterip [some ip]``` - Sets the master server's IP address to *some ip*
 - ```-masterport [some port]``` - Sets the master server's port number to *some port*
+- ```-decryptedfiles``` - Tell the game to load decrypted files
 
 ## Building
 
