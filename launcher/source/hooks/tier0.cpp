@@ -1,6 +1,7 @@
 #include "stdafx.hpp"
 
 #include "hooks.hpp"
+#include "tier0/ICommandLine.h"
 #include "tier0/platform.h"
 
 HOOK_EXPORT_DECLARE( hkCOM_TimestampedLog );
@@ -63,15 +64,20 @@ void BytePatchTier( const uintptr_t dwTierBase )
     //
     // jmp near 0x1D8 bytes forward
     const std::array<uint8_t, 5> addArgPatch = { 0xE9, 0xD8, 0x01, 0x00, 0x00 };
-    utils::WriteProtectedMemory( addArgPatch, dwTierBase + 0x1D63 );
+    WriteProtectedMemory( addArgPatch, ( dwTierBase + 0x1D63 ) );
 }
 
 void HookTier0()
-{				   
-    const uintptr_t dwTierBase = utils::GetModuleBase( "tier0.dll" );
+{
+    const uintptr_t dwTierBase = g_ModuleList.Get( "tier0.dll" );
     BytePatchTier( dwTierBase );
 
-    HOOK_EXPORT( "COM_TimestampedLog", L"tier0.dll", hkCOM_TimestampedLog );
+	// only hook COM_TimestampedLog if we are actually going to use it
+    if ( CommandLine()->CheckParm( "-timestamped", nullptr ) )
+    {
+        HOOK_EXPORT( "COM_TimestampedLog", L"tier0.dll", hkCOM_TimestampedLog );
+    }
+
     HOOK_EXPORT( "Msg", L"tier0.dll", hkMsg );
     HOOK_EXPORT( "Warning", L"tier0.dll", hkWarning );
 }
