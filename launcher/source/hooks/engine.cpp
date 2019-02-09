@@ -146,6 +146,17 @@ void BytePatchEngine( const uintptr_t dwEngineBase )
     // ret
     const std::array<uint8_t, 11> isAdultPatch = { 0xB0, 0x01, 0xC3 };
     utils::WriteProtectedMemory( isAdultPatch, ( dwEngineBase + 0x288FF0 ) );
+    
+    //
+	// Patch CanCheat traps
+	//
+	// nops
+    const std::array<uint8_t, 6> canCheatPatch1 = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
+    WriteProtectedMemory( canCheatPatch1, ( dwEngineBase + 0x1EFEF6 ) );
+
+    // jmp
+    const std::array<uint8_t, 1> canCheatPatch2 = { 0xEB };
+    WriteProtectedMemory( canCheatPatch2, ( dwEngineBase + 0x19F4D2 ) );
 }
 
 extern void ConsoleThread();
