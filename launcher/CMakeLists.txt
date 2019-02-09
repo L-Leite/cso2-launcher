@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12.0)
+cmake_minimum_required(VERSION 3.13.0)
 
 include(cotire)
 
@@ -90,6 +90,7 @@ set(LAUNCHER_SOURCES_BASE
 
 set(LAUNCHER_SOURCES_HOOKS
     "source/hooks/engine.cpp"
+	"source/hooks/filesystem.cpp"
     "source/hooks/server.cpp"
     "source/hooks/tier0.cpp"
     "source/hooks/vgui2.cpp"
@@ -125,6 +126,7 @@ set(LAUNCHER_HEADERS_BASE
     "header/onloadlib.hpp"
     "header/sourceapp.hpp"
     "header/tierextra.hpp"
+	"header/utilities.hpp"
     "header/version.hpp"
     ${LAUNCHER_PRECOMPILED_HEADER})
 
