@@ -57,16 +57,19 @@ add_definitions(-DNO_VCR -D_DLL_EXT=.dll)
 #
 if(MSVC)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W4 /EHsc /MTd")
-  set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_RELEASE} /W4 /EHsc /MT")
+  set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} /W4 /EHsc /MT")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO
-      "${CMAKE_CXX_FLAGS_RELEASE} /W4 /EHsc /MT /GL")
+      "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /W4 /EHsc /MT /GL")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /W4 /EHsc /MT /GL")
 endif()
 
 #
-# extra linker flags enable whole program optimization for release builds
+# extra linker flags
+# make app support large addresses (>2gb) and
+# enable whole program optimization for release builds
 #
 if(MSVC)
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /LARGEADDRESSAWARE")
   set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LTCG")
   set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO
       "${CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO} /LTCG")
