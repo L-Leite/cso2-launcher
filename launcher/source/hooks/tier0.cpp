@@ -64,12 +64,12 @@ void BytePatchTier( const uintptr_t dwTierBase )
     //
     // jmp near 0x1D8 bytes forward
     const std::array<uint8_t, 5> addArgPatch = { 0xE9, 0xD8, 0x01, 0x00, 0x00 };
-    WriteProtectedMemory( addArgPatch, ( dwTierBase + 0x1D63 ) );
+    utils::WriteProtectedMemory( addArgPatch, ( dwTierBase + 0x1D63 ) );
 }
 
 void HookTier0()
 {
-    const uintptr_t dwTierBase = g_ModuleList.Get( "tier0.dll" );
+    const uintptr_t dwTierBase = utils::GetModuleBase( "tier0.dll" );
     BytePatchTier( dwTierBase );
 
 	// only hook COM_TimestampedLog if we are actually going to use it
