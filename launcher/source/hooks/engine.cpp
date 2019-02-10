@@ -2,6 +2,7 @@
 
 #include "convar.h"
 #include "hooks.hpp"
+#include "console.hpp"
 #include "tier0/icommandline.h"
 
 HOOK_DETOUR_DECLARE( hkSys_SpewFunc );
@@ -56,6 +57,23 @@ NOINLINE bool __fastcall hkCanCheat()
 	}
 
     return sv_cheats->GetBool();
+}
+
+HOOK_DETOUR_DECLARE( hkHLEngineWindowProc );
+
+NOINLINE LRESULT WINAPI hkHLEngineWindowProc( HWND hWnd, UINT Msg,
+                                              WPARAM wParam, LPARAM lParam )
+{
+    WndProc_t orig = HOOK_DETOUR_GET_ORIG( hkHLEngineWindowProc );
+
+    assert( g_pGameConsole );
+
+    if ( g_pGameConsole->m_hWnd == 0 )
+        g_pGameConsole->Init( hWnd );
+    else
+        return g_pGameConsole->WndProc( hWnd, Msg, wParam, lParam, orig );
+
+    return orig( hWnd, Msg, wParam, lParam );
 }
 
 void BytePatchEngine( const uintptr_t dwEngineBase )
@@ -181,6 +199,7 @@ void OnEngineLoaded( const uintptr_t dwEngineBase )
     HOOK_DETOUR( dwEngineBase + 0x155C80, hkSys_SpewFunc );
     HOOK_DETOUR( dwEngineBase + 0x285FE0, hkGetServerIpAddressInfo );
     HOOK_DETOUR( dwEngineBase + 0xCE8B0, hkCanCheat );
+    HOOK_DETOUR( dwEngineBase + 0x15EAF0, hkHLEngineWindowProc );
 
     std::thread threadObj( ConsoleThread );
     threadObj.detach();

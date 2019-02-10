@@ -31,10 +31,15 @@ set(LAUNCHER_SOURCE_SDK_INCLUDES
 
 set(LAUNCHER_LIBRARIES_INCLUDES ${PROJECT_SOURCE_DIR}/libs/PolyHook_2_0)
 
+set(LAUNCHER_IMGUI_INCLUDES 
+    source/imgui
+    source/imgui/imgui_impl)
+
 set(LAUNCHER_ALL_INCLUDES
     ${LAUNCHER_PROJECT_INCLUDES}
     ${LAUNCHER_SOURCE_SDK_INCLUDES}
-    ${LAUNCHER_LIBRARIES_INCLUDES})
+    ${LAUNCHER_LIBRARIES_INCLUDES}
+    ${LAUNCHER_IMGUI_INCLUDES})
 
 include_directories(${LAUNCHER_ALL_INCLUDES})
 
@@ -79,6 +84,7 @@ endif()
 # add source files to the project
 #
 set(LAUNCHER_SOURCES_BASE
+    "source/console.cpp"
     "source/consolethread.cpp"
     "source/filesystem_init.cpp"
     "source/launcher.cpp"
@@ -89,12 +95,20 @@ set(LAUNCHER_SOURCES_BASE
     "source/tierextra.cpp")
 
 set(LAUNCHER_SOURCES_HOOKS
+	"source/hooks/client.cpp"
     "source/hooks/engine.cpp"
 	"source/hooks/filesystem.cpp"
     "source/hooks/server.cpp"
     "source/hooks/tier0.cpp"
     "source/hooks/vgui2.cpp"
     "source/hooks/winapi.cpp")
+
+set(LAUNCHER_SOURCES_IMGUIS
+    "source/imgui/imgui.cpp"
+	"source/imgui/imgui_draw.cpp"
+    "source/imgui/imgui_widgets.cpp"
+    "source/imgui/imgui_impl/imgui_impl_dx9.cpp"
+    "source/imgui/imgui_impl/imgui_impl_win32.cpp")
 
 set(LAUNCHER_SOURCES_APPFRAMEWORK "source/appframework/AppSystemGroup.cpp"
     "source/appframework/WinApp.cpp")
@@ -116,8 +130,19 @@ set(LAUNCHER_SOURCES_TIER3 "source/tier3/tier3.cpp")
 
 set(LAUNCHER_PRECOMPILED_HEADER "header/stdafx.hpp")
 
+set(LAUNCHER_HEADERS_IMGUIS
+    "source/imgui/imconfig.h"
+	"source/imgui/imgui.h"
+    "source/imgui/imgui_internal.h"
+    "source/imgui/imstb_rectpack.h"
+    "source/mgui/imstb_textedit.h"
+    "source/imgui/imstb_truetype.h"
+    "source/imgui/imgui_impl/imgui_impl_dx9.h"
+    "source/imgui/imgui_impl/imgui_impl_win32.h")
+
 set(LAUNCHER_HEADERS_BASE
     "header/basedir.hpp"
+    "header/console.hpp"
     "header/git-version.hpp"
     "header/hooks.hpp"
     "header/ifilesystem.hpp"
@@ -126,7 +151,7 @@ set(LAUNCHER_HEADERS_BASE
     "header/onloadlib.hpp"
     "header/sourceapp.hpp"
     "header/tierextra.hpp"
-	"header/utilities.hpp"
+	  "header/utilities.hpp"
     "header/version.hpp"
     ${LAUNCHER_PRECOMPILED_HEADER})
 
@@ -138,20 +163,24 @@ set(LAUNCHER_RESOURCES_BASE
 file(GLOB LAUNCHER_ALL_SOURCES
           ${LAUNCHER_SOURCES_BASE}
           ${LAUNCHER_SOURCES_HOOKS}
+          ${LAUNCHER_SOURCES_IMGUIS}
           ${LAUNCHER_SOURCES_APPFRAMEWORK}
           ${LAUNCHER_SOURCES_TIER1}
           ${LAUNCHER_SOURCES_TIER2}
           ${LAUNCHER_SOURCES_TIER3}
-          ${LAUNCHER_HEADERS_BASE})
+          ${LAUNCHER_HEADERS_BASE}
+          ${LAUNCHER_HEADERS_IMGUIS})
 
 source_group("Source Files" FILES ${LAUNCHER_SOURCES_BASE})
 source_group("Source Files\\AppFramework" FILES
              ${LAUNCHER_SOURCES_APPFRAMEWORK})
 source_group("Source Files\\Hooks" FILES ${LAUNCHER_SOURCES_HOOKS})
+source_group("Source Files\\ImGui" FILES ${LAUNCHER_SOURCES_IMGUIS})
 source_group("Source Files\\Tier1" FILES ${LAUNCHER_SOURCES_TIER1})
 source_group("Source Files\\Tier2" FILES ${LAUNCHER_SOURCES_TIER2})
 source_group("Source Files\\Tier3" FILES ${LAUNCHER_SOURCES_TIER3})
 source_group("Header Files" FILES ${LAUNCHER_HEADERS_BASE})
+source_group("Header Files\\ImGui" FILES ${LAUNCHER_HEADERS_IMGUIS})
 source_group("Resource Files" FILES ${LAUNCHER_RESOURCES_BASE})
 
 #
