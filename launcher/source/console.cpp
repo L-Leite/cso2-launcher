@@ -203,9 +203,14 @@ void GameConsole::DrawConsole( void )
 
 void GameConsole::ToogleConsole( void )
 {
-    CreateInterfaceFn pEngineFactory = Sys_GetFactory( "engine.dll" );
-    ConnectExtraLibraries( &pEngineFactory, 1 );
-    g_pEngineClient->ClientCmd_Unrestricted( "pause" );
+	if (g_pEngineClient == nullptr)
+	{
+        CreateInterfaceFn pEngineFactory = Sys_GetFactory( "engine.dll" );
+        ConnectExtraLibraries( &pEngineFactory, 1 );
+	}
+    
+//    g_pEngineClient->ClientCmd_Unrestricted( "pause" );
+    ClearInput();
     m_bShowConsole = !m_bShowConsole;
 }
 
@@ -342,20 +347,18 @@ int GameConsole::ConsoleInputCallBack( ImGuiInputTextCallbackData* data )
     {
         case ImGuiInputTextFlags_CallbackCompletion:
         {
-            // Locate beginning of current word
-            const char* word_end = data->Buf + data->CursorPos;
-            const char* word_start = word_end;
-            while ( word_start > data->Buf )
-            {
-                const char c = word_start[-1];
-                if ( c == ' ' || c == '\t' || c == ',' || c == ';' )
-                    break;
-                word_start--;
-            }
-
             // Build a list of candidates
-			if (CompletePos == -1)
-			{
+            if ( CompletePos == -1 )
+            {
+                const char* word_end = data->Buf + data->CursorPos;
+                const char* word_start = word_end;
+                while ( word_start > data->Buf )
+                {
+                    const char c = word_start[-1];
+                    if ( c == ' ' || c == '\t' || c == ',' || c == ';' )
+                        break;
+                    word_start--;
+                }
                 const ConCommandBase* var;
                 for ( var = g_pCVar->GetCommands(); var; var = var->GetNext() )
                 {
@@ -363,9 +366,8 @@ int GameConsole::ConsoleInputCallBack( ImGuiInputTextCallbackData* data )
                                    (int)( word_end - word_start ) ) == 0 )
                         CompleteCandidates.push_back( var->GetName() );
                 }
-			}
-            
-
+            }
+            // Locate beginning of current word
             if ( CompleteCandidates.size() > 0 )
             {
 				CompletePos++;
@@ -413,10 +415,6 @@ int GameConsole::ConsoleInputCallBack( ImGuiInputTextCallbackData* data )
 		{
             CompletePos = -1;
             CompleteCandidates.clear();
-
-			if ( data->EventChar == '`' || data->EventChar == '~' )
-                return 1;
-
             break;
 		}
     }
