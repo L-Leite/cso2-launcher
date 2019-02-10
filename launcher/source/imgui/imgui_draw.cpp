@@ -3694,6 +3694,8 @@ ImColor ColorTable[10] = {
 	ImColor( 255, 173, 34 ),		// Yellow
     ImColor( 0, 135, 193 ),			// Blue
 	ImColor( 32, 197, 255 ),		// Light Blue(Cyan)
+    ImColor( 128, 128, 128 ),		// Grey
+    ImColor( 255, 255, 255 ),		// White
 };
 
 void ImFont::RenderText( ImDrawList* draw_list, float size, ImVec2 pos,
@@ -3768,7 +3770,7 @@ void ImFont::RenderText( ImDrawList* draw_list, float size, ImVec2 pos,
     {
         if ( *s == '^' )
         {
-            if ( *( s + 1 ) >= '0' && *( s + 1 ) < '6' )
+            if ( *( s + 1 ) >= '0' && *( s + 1 ) < '8' )
             {
                 col = ColorTable[*( s + 1 ) - 48];
                 s += 2;

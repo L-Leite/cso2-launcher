@@ -52,6 +52,7 @@ private:
     int HistoryPos;
     int CompletePos;
     std::vector<const char*> CompleteCandidates;
+
     bool m_bNeedScroll;
 };
 

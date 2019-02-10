@@ -1,4 +1,3 @@
-#include "stdafx.hpp"
 #include "console.hpp"
 #include "assert.h"
 #include "cdll_int.h"
@@ -8,6 +7,7 @@
 #include "imgui.h"
 #include "imgui_impl/imgui_impl_dx9.h"
 #include "imgui_impl/imgui_impl_win32.h"
+#include "stdafx.hpp"
 #include "tierextra.hpp"
 
 //
@@ -178,7 +178,7 @@ void GameConsole::DrawConsole( void )
 
     ImGui::End();
 
-    window_pos = ImVec2( 0, 50.0f );
+	window_pos = ImVec2( 0, 50.0f );
     window_pos_pivot = ImVec2( 0, 50.0f );
     ImGui::SetNextWindowPos( window_pos, ImGuiCond_Always, window_pos_pivot );
 
@@ -197,19 +197,88 @@ void GameConsole::DrawConsole( void )
                 ImGui::GetIO().DisplaySize.y - 100.0f ),
         ImGuiInputTextFlags_ReadOnly | NeedScrollOutput() );
 
-    ImGui::Text( u8"--- cso2-launcher " GIT_BRANCH " commit: " GIT_COMMIT_HASH " ---" );
+    ImGui::Text( u8"--- cso2-launcher " GIT_BRANCH " commit: " GIT_COMMIT_HASH
+                 " ---" );
     ImGui::End();
+
+    if ( *m_szConsoleText != ' ' && *m_szConsoleText != 0 )
+    {
+        window_pos = ImVec2( 20.0f, 40.0f );
+        ImGui::SetNextWindowPos( window_pos );
+
+        ImGui::Begin(
+            "List", NULL,
+            ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar |
+                ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings |
+                ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav |
+                ImGuiWindowFlags_AlwaysAutoResize |
+                ImGuiWindowFlags_NoCollapse );
+
+		ImGui::Dummy( ImVec2( ImGui::GetIO().DisplaySize.x / 2 ,0 ) );
+
+        std::string word = std::string( m_szConsoleText );
+        while ( word.c_str()[word.length() - 1] == ' ' ) // remove end spaces
+            word.pop_back();
+
+        ConCommand* command = g_pCVar->FindCommand( word.c_str() );
+        if ( command )
+        {
+            ImGui::Text( command->GetHelpText() );
+        }
+        else
+        {
+            const ConCommandBase* var;
+            ConVar* cvar;
+            int counter = 0;
+            for ( var = g_pCVar->GetCommands(); var; var = var->GetNext() )
+            {
+                if ( ( !var->IsCommand() ) &&
+                     strnicmp( var->GetName(), word.c_str(), word.length() ) == 0 &&
+                     !var->IsFlagSet( FCVAR_NEVER_AS_STRING ) )
+                {
+                    cvar = g_pCVar->FindVar( var->GetName() );
+
+                    ImGui::Columns( 2, var->GetName(), false );
+                    
+
+                    ImGui::Text( "^3%s",var->GetName() );
+                    ImGui::NextColumn();
+                    ImGui::Text( "^2%s", cvar->GetString() );
+                    ImGui::NextColumn();
+                    counter++;
+
+					if (counter >= 6)
+					{
+                        ImGui::Text( "^6More ...." );
+                        break;
+					}
+                }
+            }
+
+			if (counter == 1)
+            {
+                ImGui::Columns( 2, cvar->GetName(), false );
+                ImGui::Text( "default" );
+                ImGui::NextColumn();
+                ImGui::Text( "^2%s", cvar->GetDefault() );
+                ImGui::NextColumn();
+                ImGui::Columns( 1, "helptext", false );
+                ImGui::Text( cvar->GetHelpText() );
+			}
+        }
+        ImGui::End();
+    }
 }
 
 void GameConsole::ToogleConsole( void )
 {
-	if (g_pEngineClient == nullptr)
-	{
+    if ( g_pEngineClient == nullptr )
+    {
         CreateInterfaceFn pEngineFactory = Sys_GetFactory( "engine.dll" );
         ConnectExtraLibraries( &pEngineFactory, 1 );
-	}
-    
-//    g_pEngineClient->ClientCmd_Unrestricted( "pause" );
+    }
+
+    //    g_pEngineClient->ClientCmd_Unrestricted( "pause" );
     ClearInput();
     m_bShowConsole = !m_bShowConsole;
 }
@@ -266,7 +335,7 @@ void GameConsole::Error( const char* fmt, ... )
     va_end( arglist );
 }
 
-void GameConsole::VWrite( const char* fmt, va_list va ) 
+void GameConsole::VWrite( const char* fmt, va_list va )
 {
     char string[0x1000];
     Q_vsnprintf( string, sizeof( string ), fmt, va );
@@ -278,7 +347,7 @@ void GameConsole::VWrite( const char* fmt, va_list va )
     m_bNeedScroll = true;
 }
 
-void GameConsole::VWriteLine( const char* fmt, va_list va ) 
+void GameConsole::VWriteLine( const char* fmt, va_list va )
 {
     char string[0x1000];
     Q_vsnprintf( string, sizeof( string ), fmt, va );
@@ -300,7 +369,7 @@ void GameConsole::VWriteLine( const char* fmt, va_list va )
     m_bNeedScroll = true;
 }
 
-void GameConsole::VWarning( const char* fmt, va_list va ) 
+void GameConsole::VWarning( const char* fmt, va_list va )
 {
     char string[0x1000];
     Q_vsnprintf( string, sizeof( string ), fmt, va );
@@ -308,7 +377,7 @@ void GameConsole::VWarning( const char* fmt, va_list va )
     WriteLine( "^3%s", string );
 }
 
-void GameConsole::VDevInfo( const char* fmt, va_list va ) 
+void GameConsole::VDevInfo( const char* fmt, va_list va )
 {
     char string[0x1000];
     Q_vsnprintf( string, sizeof( string ), fmt, va );
@@ -316,7 +385,7 @@ void GameConsole::VDevInfo( const char* fmt, va_list va )
     WriteLine( "^2%s", string );
 }
 
-void GameConsole::VError( const char* fmt, va_list va ) 
+void GameConsole::VError( const char* fmt, va_list va )
 {
     char string[0x1000];
     Q_vsnprintf( string, sizeof( string ), fmt, va );
@@ -370,12 +439,12 @@ int GameConsole::ConsoleInputCallBack( ImGuiInputTextCallbackData* data )
             // Locate beginning of current word
             if ( CompleteCandidates.size() > 0 )
             {
-				CompletePos++;
+                CompletePos++;
 
-				if ( CompletePos >= CompleteCandidates.size() )
+                if ( CompletePos >= CompleteCandidates.size() )
                     CompletePos = 0;
 
-                data->DeleteChars( 0 , strlen(data->Buf) );
+                data->DeleteChars( 0, strlen( data->Buf ) );
                 data->InsertChars( data->CursorPos,
                                    CompleteCandidates[CompletePos] );
                 data->InsertChars( data->CursorPos, " " );
@@ -412,11 +481,11 @@ int GameConsole::ConsoleInputCallBack( ImGuiInputTextCallbackData* data )
             break;
         }
         case ImGuiInputTextFlags_CallbackCharFilter:
-		{
+        {
             CompletePos = -1;
             CompleteCandidates.clear();
             break;
-		}
+        }
     }
     return 0;
 }
