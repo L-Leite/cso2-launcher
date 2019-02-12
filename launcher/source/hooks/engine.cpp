@@ -3,13 +3,42 @@
 #include "convar.h"
 #include "hooks.hpp"
 #include "console.hpp"
+#include "color.h"
 #include "tier0/icommandline.h"
+
+HOOK_DETOUR_DECLARE(hkCon_ColorPrint);
+NOINLINE void __fastcall hkCon_ColorPrint(Color &clr, const char *msg)
+{
+	if (clr.r() > clr.g() + clr.b()) //Error
+	{
+		g_pGameConsole->Error(msg);
+	}
+	else if (clr.r() + clr.g() > clr.g() + clr.b()) //Warn
+	{
+		g_pGameConsole->Warning(msg);
+	}
+	else if (clr.g() > clr.r() + clr.b()) //Green message idk
+	{
+		g_pGameConsole->DevInfo(msg);
+	}
+	else if(clr.g() < 255 && clr.r() < 255 && clr.b() < 255) // Grey
+	{
+		g_pGameConsole->WriteLine("^6%s", msg);
+	}
+	else
+	{
+		g_pGameConsole->WriteLine(msg);
+	}
+
+	printf(msg);
+	return HOOK_DETOUR_GET_ORIG(hkCon_ColorPrint)(clr, msg);
+}
 
 HOOK_DETOUR_DECLARE( hkSys_SpewFunc );
 
-NOINLINE int hkSys_SpewFunc( int spewType, char* pMsg )
+NOINLINE SpewRetval_t hkSys_SpewFunc( SpewType_t spewType, char* pMsg )
 {
-    std::cout << pMsg;
+	std::cout << pMsg;
     return HOOK_DETOUR_GET_ORIG( hkSys_SpewFunc )( spewType, pMsg );
 }
 
@@ -196,11 +225,11 @@ void OnEngineLoaded( const uintptr_t dwEngineBase )
 
     BytePatchEngine( dwEngineBase );
 
-    HOOK_DETOUR( dwEngineBase + 0x155C80, hkSys_SpewFunc );
+    //HOOK_DETOUR( dwEngineBase + 0x155C80, hkSys_SpewFunc );
     HOOK_DETOUR( dwEngineBase + 0x285FE0, hkGetServerIpAddressInfo );
     HOOK_DETOUR( dwEngineBase + 0xCE8B0, hkCanCheat );
     HOOK_DETOUR( dwEngineBase + 0x15EAF0, hkHLEngineWindowProc );
-
+	HOOK_DETOUR(dwEngineBase + 0x1C4B40, hkCon_ColorPrint);
     std::thread threadObj( ConsoleThread );
     threadObj.detach();
 }

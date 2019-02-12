@@ -13,7 +13,8 @@ public:
     GameConsole( void );
     void Init( HWND hWnd );
     void DrawConsole( void );
-    void ToogleConsole( void );
+	void DrawCompleteList(void);
+	void ToogleConsole(bool extend);
 
 	void VWrite( const char* fmt, va_list va );
     void VWriteLine( const char* fmt, va_list va );
@@ -38,13 +39,13 @@ public:
 
     int ConsoleInputCallBack( ImGuiInputTextCallbackData* data );
 
-    bool m_bShowConsole;
-
-    LRESULT WINAPI WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam,
-                            WndProc_t orig );
-    HWND m_hWnd;
-
+	HWND m_hWnd;
+	LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam, WndProc_t orig);
 private:
+	bool m_bShowConsole;
+	bool m_bChanged;
+	bool m_bDrawExtend;
+
     char m_szConsoleText[0x100];
     char m_szOutputText[0x4000];
 

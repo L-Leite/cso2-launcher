@@ -48,12 +48,18 @@ GameConsole::GameConsole( void )
 {
     m_hWnd = 0;
     m_bShowConsole = false;
+	m_bDrawExtend = false;
     HistoryPos = -1;
     CompletePos = -1;
+
+	ClearInput();
+	ClearOutput();
 }
 
 HOOK_DETOUR_DECLARE( hkEndScene );
 
+extern unsigned int consola_unicode_compressed_size;
+extern unsigned int consola_unicode_compressed_data[8574320 / 4];
 HRESULT WINAPI hkEndScene( LPDIRECT3DDEVICE9 pDevice )
 {
     if ( g_pd3dDevice == NULL )
@@ -68,20 +74,32 @@ HRESULT WINAPI hkEndScene( LPDIRECT3DDEVICE9 pDevice )
 
         ImGui::StyleColorsDark();
 
+		// Load unicode fonts
+
+		// Default
+		ImFont* font = io.Fonts->AddFontFromMemoryCompressedTTF(consola_unicode_compressed_data, consola_unicode_compressed_size, 20.0f);
+
+		ImFontConfig font_cfg = ImFontConfig();
+
+		font_cfg.PixelSnapH = true;
+		font_cfg.MergeMode = true;
+
+		// chinese(t+s)
+		ImFont* cfont = io.Fonts->AddFontFromMemoryCompressedTTF(
+			consola_unicode_compressed_data, consola_unicode_compressed_size, 19.0f, &font_cfg, io.Fonts->GetGlyphRangesChineseFull());
+
+		// japanese
+		ImFont* jfont = io.Fonts->AddFontFromMemoryCompressedTTF(
+			consola_unicode_compressed_data, consola_unicode_compressed_size, 19.0f, &font_cfg, io.Fonts->GetGlyphRangesJapanese());
+
+		// korean
+		ImFont* kfont = io.Fonts->AddFontFromMemoryCompressedTTF(
+			consola_unicode_compressed_data, consola_unicode_compressed_size, 19.0f, &font_cfg, io.Fonts->GetGlyphRangesKorean());
+
         ImGui_ImplWin32_Init( g_pGameConsole->m_hWnd );
         ImGui_ImplDX9_Init( g_pd3dDevice );
-
-        ImFontConfig chn_config;
-        chn_config.MergeMode = true;
-        chn_config.PixelSnapH = true;
-        ImFont* font = io.Fonts->AddFontFromFileTTF(
-            "c:\\Windows\\Fonts\\consola.ttf", 14.0f );
-
-        ImFont* fontchn = io.Fonts->AddFontFromFileTTF(
-            "c:\\Windows\\Fonts\\msyh.ttc", 15.0f, &chn_config,
-            io.Fonts->GetGlyphRangesChineseSimplifiedCommon() );
     }
-
+	
     ImGui_ImplDX9_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
@@ -100,12 +118,13 @@ void GameConsole::Init( HWND hWnd )
 
     m_hWnd = hWnd;
 
+	// Dirty way to hook EndScene, Try to use with VFuncSwapHook in PolyHook
     uint32_t* vtable = 0;
     uint32_t table =
         FindPattern( (DWORD)GetModuleHandle( "d3d9.dll" ), 0x128000,
                      ( PBYTE ) "\xC7\x06\x00\x00\x00\x00\x89\x86\x00\x00"
                                "\x00\x00\x89\x86",
-                     "xx????xx????xx" );
+                     "xx????xx????xx" ); 
     memcpy( &vtable, (void*)( table + 2 ), 4 );
 
     HOOK_DETOUR( vtable[42], hkEndScene );
@@ -122,8 +141,7 @@ void GameConsole::DrawConsole( void )
         return;
 
     ImVec2 window_pos = ImVec2( 0, 0 );
-    ImVec2 window_pos_pivot = ImVec2( 0, 0 );
-    ImGui::SetNextWindowPos( window_pos, ImGuiCond_Always, window_pos_pivot );
+    ImGui::SetNextWindowPos( window_pos, ImGuiCond_Always );
 
     ImGui::Begin(
         "ConsoleInput", NULL,
@@ -132,7 +150,7 @@ void GameConsole::DrawConsole( void )
             ImGuiWindowFlags_NoSavedSettings |
             ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav |
             ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoBackground |
-            ImGuiWindowFlags_NoCollapse );
+            ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
     ImGui::SetKeyboardFocusHere();
 
@@ -178,99 +196,153 @@ void GameConsole::DrawConsole( void )
 
     ImGui::End();
 
-	window_pos = ImVec2( 0, 50.0f );
-    window_pos_pivot = ImVec2( 0, 50.0f );
-    ImGui::SetNextWindowPos( window_pos, ImGuiCond_Always, window_pos_pivot );
+	if (m_bDrawExtend)
+	{
+		ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, ImVec2(0, 50.0f));
 
-    ImGui::Begin(
-        "ConsoleOutput", NULL,
-        ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar |
-            ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings |
-            ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav |
-            ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoBackground |
-            ImGuiWindowFlags_NoCollapse );
+		ImGui::Begin(
+			"ConsoleOutput", NULL,
+			ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar |
+			ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings |
+			ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav |
+			ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoBackground |
+			ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
-    ImGui::Dummy( ImVec2( 0, 25.0f ) );
-    ImGui::InputTextMultiline(
-        "console_out", m_szOutputText, 0x4000,
-        ImVec2( ImGui::GetIO().DisplaySize.x - 20.0f,
-                ImGui::GetIO().DisplaySize.y - 100.0f ),
-        ImGuiInputTextFlags_ReadOnly | NeedScrollOutput() );
+		ImGui::Dummy(ImVec2(0, 25.0f));
+		ImGui::InputTextMultiline(
+			"console_out", m_szOutputText, 0x4000,
+			ImVec2(ImGui::GetIO().DisplaySize.x - 20.0f,
+				ImGui::GetIO().DisplaySize.y - 100.0f),
+			ImGuiInputTextFlags_ReadOnly | NeedScrollOutput());
 
-    ImGui::Text( u8"--- cso2-launcher " GIT_BRANCH " commit: " GIT_COMMIT_HASH
-                 " ---" );
-    ImGui::End();
+		ImGui::Text(u8"^3--- cso2-launcher " GIT_BRANCH " commit: " GIT_COMMIT_HASH
+			" ---");
+		ImGui::End();
+	}
 
-    if ( *m_szConsoleText != ' ' && *m_szConsoleText != 0 )
-    {
-        window_pos = ImVec2( 20.0f, 40.0f );
-        ImGui::SetNextWindowPos( window_pos );
-
-        ImGui::Begin(
-            "List", NULL,
-            ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar |
-                ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings |
-                ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav |
-                ImGuiWindowFlags_AlwaysAutoResize |
-                ImGuiWindowFlags_NoCollapse );
-
-		ImGui::Dummy( ImVec2( ImGui::GetIO().DisplaySize.x / 2 ,0 ) );
-
-        std::string word = std::string( m_szConsoleText );
-        while ( word.c_str()[word.length() - 1] == ' ' ) // remove end spaces
-            word.pop_back();
-
-        ConCommand* command = g_pCVar->FindCommand( word.c_str() );
-        if ( command )
-        {
-            ImGui::Text( command->GetHelpText() );
-        }
-        else
-        {
-            const ConCommandBase* var;
-            ConVar* cvar;
-            int counter = 0;
-            for ( var = g_pCVar->GetCommands(); var; var = var->GetNext() )
-            {
-                if ( ( !var->IsCommand() ) &&
-                     strnicmp( var->GetName(), word.c_str(), word.length() ) == 0 &&
-                     !var->IsFlagSet( FCVAR_NEVER_AS_STRING ) )
-                {
-                    cvar = g_pCVar->FindVar( var->GetName() );
-
-                    ImGui::Columns( 2, var->GetName(), false );
-                    
-
-                    ImGui::Text( "^3%s",var->GetName() );
-                    ImGui::NextColumn();
-                    ImGui::Text( "^2%s", cvar->GetString() );
-                    ImGui::NextColumn();
-                    counter++;
-
-					if (counter >= 6)
-					{
-                        ImGui::Text( "^6More ...." );
-                        break;
-					}
-                }
-            }
-
-			if (counter == 1)
-            {
-                ImGui::Columns( 2, cvar->GetName(), false );
-                ImGui::Text( "default" );
-                ImGui::NextColumn();
-                ImGui::Text( "^2%s", cvar->GetDefault() );
-                ImGui::NextColumn();
-                ImGui::Columns( 1, "helptext", false );
-                ImGui::Text( cvar->GetHelpText() );
-			}
-        }
-        ImGui::End();
-    }
+	g_pGameConsole->DrawCompleteList();
 }
 
-void GameConsole::ToogleConsole( void )
+void GameConsole::DrawCompleteList(void)
+{
+	if (*m_szConsoleText != ' ' && *m_szConsoleText != 0)
+	{
+		ImVec2 window_pos = ImVec2(20.0f, 40.0f);
+		ImGui::SetNextWindowPos(window_pos);
+
+		ImGui::Begin(
+			"List", NULL,
+			ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar |
+			ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings |
+			ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav |
+			ImGuiWindowFlags_AlwaysAutoResize |
+			ImGuiWindowFlags_NoCollapse);
+
+		ImGui::Dummy(ImVec2(ImGui::GetIO().DisplaySize.x / 2, 0));
+
+		// Build a list of candidates
+		if (m_bChanged)
+		{
+			m_bChanged = false;
+			HistoryPos = -1;
+			CompleteCandidates.clear();
+
+			// Only match word before first space
+			int len = strlen(m_szConsoleText);
+			for (int i = 0; i < len; i++)
+				if (m_szConsoleText[len] == ' ')
+				{
+					len = i;
+					break;
+				}
+
+			std::string word = std::string(m_szConsoleText).substr(0, len);
+
+			const ConCommandBase* ccommandbase;
+			ConVar* cvar;
+			int counter = 0;
+			for (ccommandbase = g_pCVar->GetCommands(); ccommandbase; ccommandbase = ccommandbase->GetNext())
+				if (strnicmp(ccommandbase->GetName(), word.c_str(), word.length()) == 0)
+					CompleteCandidates.push_back(ccommandbase->GetName());
+		}
+
+		static ConCommandBase* command = NULL;
+		int counter = 0;
+		for (auto commandname : CompleteCandidates)
+		{
+			counter++;
+			if (CompletePos != -1 && CompletePos > counter - 1)
+				continue;
+
+			if (counter >= (CompletePos == -1 ? 0 : CompletePos) + 7)
+				break;
+
+			command = g_pCVar->FindCommandBase(commandname);
+
+			ImGui::Columns(2, command->GetName(), false);
+			ImGui::Text("^3%s", command->GetName());
+			ImGui::NextColumn();
+
+			if (command->IsCommand())
+				ImGui::Text("^6Command");
+			else
+				ImGui::Text("^2%s", g_pCVar->FindVar(commandname)->GetString());
+				
+			ImGui::NextColumn();
+		}
+
+		if (counter >= 7)
+		{
+			ImGui::Columns(1, "toomuchtext", false);
+			ImGui::Text("^2%i ^6Matches, Too much to show here, Press ^7Shift + Tile ^6 to show all.", CompleteCandidates.size());
+			ImGui::NextColumn();
+		}
+
+		// If there's only 1 match, show detailed info.
+		if (counter == 1) //IDK why,the command will be NULL sometimes, I dont have any idea about it
+		{
+			// If this is a cvar, display default value
+			if (!command->IsCommand())
+			{
+				ImGui::Columns(2, command->GetName(), false);
+				ImGui::Text("^6Default:");
+				ImGui::NextColumn();
+				ImGui::Text("^2%s", g_pCVar->FindVar(command->GetName())->GetDefault());
+				ImGui::NextColumn();
+			}
+
+			// Help text
+			ImGui::Columns(1, "helptext", false);
+			ImGui::Text(command->GetHelpText());
+			ImGui::NextColumn();
+
+			// Display some flags
+			ImGui::Columns(2, "flags", false);
+			
+			ImGui::Text("^6Flags:");
+			ImGui::NextColumn();
+
+			std::string flaglist = std::string();
+			if (command->IsFlagSet(FCVAR_ARCHIVE))
+				flaglist.append(" Archive");
+			if (command->IsFlagSet(FCVAR_REPLICATED))
+				flaglist.append(" Server");
+			if (command->IsFlagSet(FCVAR_CLIENTDLL))
+				flaglist.append(" Client");
+			if (command->IsFlagSet(FCVAR_PROTECTED))
+				flaglist.append(" Protected");
+			if (command->IsFlagSet(FCVAR_CHEAT))
+				flaglist.append(" Cheat");
+			
+			ImGui::Text(flaglist.c_str());
+			ImGui::NextColumn();
+		}
+
+		ImGui::End();
+	}
+}
+
+void GameConsole::ToogleConsole( bool extend )
 {
     if ( g_pEngineClient == nullptr )
     {
@@ -278,9 +350,22 @@ void GameConsole::ToogleConsole( void )
         ConnectExtraLibraries( &pEngineFactory, 1 );
     }
 
-    //    g_pEngineClient->ClientCmd_Unrestricted( "pause" );
-    ClearInput();
-    m_bShowConsole = !m_bShowConsole;
+	if(!m_bDrawExtend && m_bShowConsole)
+		ClearInput();
+
+	if (extend && m_bShowConsole && CompleteCandidates.size() > 6)
+	{
+		WriteLine("---- Matches ----");
+		for (auto commandname : CompleteCandidates)
+		{
+			WriteLine(commandname);
+		}
+
+		WriteLine("\n\n\n");
+	}
+
+	m_bDrawExtend = extend;
+	m_bShowConsole = (extend && m_bShowConsole) ? m_bShowConsole : !m_bShowConsole;
 }
 
 //
@@ -291,6 +376,8 @@ void GameConsole::ToogleConsole( void )
 // ^3 - Yellow
 // ^4 - Blue
 // ^5 - Light Blue(Cyan)
+// ^6 - Grey
+// ^7 - White
 //
 // Example: if you inputed "^1red ^4blue", the "red" will be Red and the
 // "blue" will be Blue
@@ -416,26 +503,6 @@ int GameConsole::ConsoleInputCallBack( ImGuiInputTextCallbackData* data )
     {
         case ImGuiInputTextFlags_CallbackCompletion:
         {
-            // Build a list of candidates
-            if ( CompletePos == -1 )
-            {
-                const char* word_end = data->Buf + data->CursorPos;
-                const char* word_start = word_end;
-                while ( word_start > data->Buf )
-                {
-                    const char c = word_start[-1];
-                    if ( c == ' ' || c == '\t' || c == ',' || c == ';' )
-                        break;
-                    word_start--;
-                }
-                const ConCommandBase* var;
-                for ( var = g_pCVar->GetCommands(); var; var = var->GetNext() )
-                {
-                    if ( strnicmp( var->GetName(), word_start,
-                                   (int)( word_end - word_start ) ) == 0 )
-                        CompleteCandidates.push_back( var->GetName() );
-                }
-            }
             // Locate beginning of current word
             if ( CompleteCandidates.size() > 0 )
             {
@@ -482,28 +549,39 @@ int GameConsole::ConsoleInputCallBack( ImGuiInputTextCallbackData* data )
         }
         case ImGuiInputTextFlags_CallbackCharFilter:
         {
-            CompletePos = -1;
-            CompleteCandidates.clear();
+			// filter tile key
+			if (data->EventChar == '`' || data->EventChar == '~')
+				data->EventChar = 0;
+
             break;
         }
     }
     return 0;
 }
 
+static bool shiftDown = false;
+
 LRESULT WINAPI GameConsole::WndProc( HWND hWnd, UINT msg, WPARAM wParam,
                                      LPARAM lParam, WndProc_t orig )
 {
     if ( g_pd3dDevice && g_bRenderStarted )
     {
-        if ( msg == WM_KEYDOWN )
-            if ( wParam == VK_OEM_3 )
-            {
-                g_pGameConsole->ToogleConsole();
+		if (msg == WM_KEYDOWN)
+		{
+			if(wParam != VK_TAB)
+				m_bChanged = true;
 
-                return true;
-            }
+			if (wParam == VK_OEM_3)
+				ToogleConsole(shiftDown);
 
-        if ( g_pGameConsole->m_bShowConsole )
+			if (wParam == VK_SHIFT)
+				shiftDown = true;
+		}
+
+		if (msg == WM_KEYUP && wParam == VK_SHIFT)
+			shiftDown = false;
+
+        if ( m_bShowConsole )
         {
             ImGui_ImplWin32_WndProcHandler( hWnd, msg, wParam, lParam );
             return false;

@@ -107,6 +107,7 @@ set(LAUNCHER_SOURCES_IMGUIS
     "source/imgui/imgui.cpp"
 	"source/imgui/imgui_draw.cpp"
     "source/imgui/imgui_widgets.cpp"
+	"source/imgui/Consolas_Unicode.cpp"
     "source/imgui/imgui_impl/imgui_impl_dx9.cpp"
     "source/imgui/imgui_impl/imgui_impl_win32.cpp")
 
