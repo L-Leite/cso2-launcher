@@ -1,46 +1,12 @@
 #include "stdafx.hpp"
 
-#include "convar.h"
-#include "hooks.hpp"
-#include "console.hpp"
 #include "color.h"
+#include "convar.h"
 #include "tier0/icommandline.h"
 
-HOOK_DETOUR_DECLARE(hkCon_ColorPrint);
-NOINLINE void __fastcall hkCon_ColorPrint(Color &clr, const char *msg)
-{
-	if (clr.r() > clr.g() + clr.b()) //Error
-	{
-		g_pGameConsole->Error(msg);
-	}
-	else if (clr.r() + clr.g() > clr.g() + clr.b()) //Warn
-	{
-		g_pGameConsole->Warning(msg);
-	}
-	else if (clr.g() > clr.r() + clr.b()) //Green message idk
-	{
-		g_pGameConsole->DevInfo(msg);
-	}
-	else if(clr.g() < 255 && clr.r() < 255 && clr.b() < 255) // Grey
-	{
-		g_pGameConsole->WriteLine("^6%s", msg);
-	}
-	else
-	{
-		g_pGameConsole->WriteLine(msg);
-	}
-
-	printf(msg);
-	return HOOK_DETOUR_GET_ORIG(hkCon_ColorPrint)(clr, msg);
-}
-
-HOOK_DETOUR_DECLARE( hkSys_SpewFunc );
-
-NOINLINE SpewRetval_t hkSys_SpewFunc( SpewType_t spewType, char* pMsg )
-{
-	std::cout << pMsg;
-    return HOOK_DETOUR_GET_ORIG( hkSys_SpewFunc )( spewType, pMsg );
-}
+#include "console.hpp"
+#include "hooks.hpp"
+#include "tierextra.hpp"
 
 struct IpAddressInfo
 {
@@ -70,7 +36,7 @@ NOINLINE void __fastcall hkGetServerIpAddressInfo( IpAddressInfo& info )
 // Restore original CanCheat check
 // This fixes the use of sv_cheats as a host
 // Credit goes to GEEKiDoS
-//					   
+//
 ConVar* sv_cheats = nullptr;
 
 HOOK_DETOUR_DECLARE( hkCanCheat );
@@ -79,30 +45,56 @@ NOINLINE bool __fastcall hkCanCheat()
 {
     assert( g_pCVar != nullptr );  // this should be already available
 
-	if (!sv_cheats)
-	{
+    if ( !sv_cheats )
+    {
         sv_cheats = g_pCVar->FindVar( "sv_cheats" );
-        assert( sv_cheats != nullptr ); // this should always succeed
-	}
+        assert( sv_cheats != nullptr );  // this should always succeed
+    }
 
     return sv_cheats->GetBool();
+}
+
+static std::unique_ptr<PLH::x86Detour> g_pColorPrint;
+static uint64_t g_ColorPrintOrig = NULL;
+
+NOINLINE void __fastcall hkCon_ColorPrint( Color& clr, const char* msg )
+{
+    if ( clr.r() > clr.g() + clr.b() )  // Error
+    {
+        g_GameConsole.Error( msg );
+    }
+    else if ( clr.r() + clr.g() > clr.g() + clr.b() )  // Warn
+    {
+        g_GameConsole.Warning( msg );
+    }
+    else if ( clr.g() > clr.r() + clr.b() )  // Green message idk
+    {
+        g_GameConsole.DevInfo( msg );
+    }
+    else if ( clr.g() < 255 && clr.r() < 255 && clr.b() < 255 )  // Grey
+    {
+        g_GameConsole.WriteLine( "^6%s", msg );
+    }
+    else
+    {
+        g_GameConsole.WriteLine( msg );
+    }
+
+    return PLH::FnCast( g_ColorPrintOrig, &hkCon_ColorPrint )( clr, msg );
 }
 
 HOOK_DETOUR_DECLARE( hkHLEngineWindowProc );
 
 NOINLINE LRESULT WINAPI hkHLEngineWindowProc( HWND hWnd, UINT Msg,
                                               WPARAM wParam, LPARAM lParam )
-{
-    WndProc_t orig = HOOK_DETOUR_GET_ORIG( hkHLEngineWindowProc );
+{	   
+    bool conRes = g_GameConsole.OnWindowCallback( hWnd, Msg, wParam, lParam );
 
-    assert( g_pGameConsole );
+    if ( !conRes )
+        return NULL;
 
-    if ( g_pGameConsole->m_hWnd == 0 )
-        g_pGameConsole->Init( hWnd );
-    else
-        return g_pGameConsole->WndProc( hWnd, Msg, wParam, lParam, orig );
-
-    return orig( hWnd, Msg, wParam, lParam );
+	return HOOK_DETOUR_GET_ORIG( hkHLEngineWindowProc )( hWnd, Msg, wParam,
+                                                         lParam );
 }
 
 void BytePatchEngine( const uintptr_t dwEngineBase )
@@ -210,8 +202,6 @@ void BytePatchEngine( const uintptr_t dwEngineBase )
     utils::WriteProtectedMemory( canCheatPatch2, dwEngineBase + 0x19F4D2 );
 }
 
-extern void ConsoleThread();
-
 void OnEngineLoaded( const uintptr_t dwEngineBase )
 {
     static bool bHasLoaded = false;
@@ -223,13 +213,19 @@ void OnEngineLoaded( const uintptr_t dwEngineBase )
 
     bHasLoaded = true;
 
+    // setup engine interfaces
+    CreateInterfaceFn pEngineFactory = Sys_GetFactory( "engine.dll" );
+    ConnectExtraLibraries( &pEngineFactory, 1 );
+
     BytePatchEngine( dwEngineBase );
 
-    //HOOK_DETOUR( dwEngineBase + 0x155C80, hkSys_SpewFunc );
+    PLH::CapstoneDisassembler hookDisasm( PLH::Mode::x86 );
+
     HOOK_DETOUR( dwEngineBase + 0x285FE0, hkGetServerIpAddressInfo );
     HOOK_DETOUR( dwEngineBase + 0xCE8B0, hkCanCheat );
     HOOK_DETOUR( dwEngineBase + 0x15EAF0, hkHLEngineWindowProc );
-	HOOK_DETOUR(dwEngineBase + 0x1C4B40, hkCon_ColorPrint);
-    std::thread threadObj( ConsoleThread );
-    threadObj.detach();
+
+    g_pColorPrint = SetupDetourHook( dwEngineBase + 0x1C4B40, &hkCon_ColorPrint,
+                                     &g_ColorPrintOrig, hookDisasm );
+    g_pColorPrint->hook();
 }

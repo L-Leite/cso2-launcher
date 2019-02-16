@@ -98,7 +98,7 @@ set(LAUNCHER_SOURCES_HOOKS
 	"source/hooks/client.cpp"
     "source/hooks/engine.cpp"
 	"source/hooks/filesystem.cpp"
-    "source/hooks/server.cpp"
+    "source/hooks/shaderapidx9.cpp"
     "source/hooks/tier0.cpp"
     "source/hooks/vgui2.cpp"
     "source/hooks/winapi.cpp")

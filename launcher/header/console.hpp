@@ -11,12 +11,12 @@ class GameConsole
 {
 public:
     GameConsole( void );
-    void Init( HWND hWnd );
+    void Init( LPDIRECT3DDEVICE9 pDevice, HWND hWnd ) const;
     void DrawConsole( void );
-	void DrawCompleteList(void);
-	void ToogleConsole(bool extend);
+    void DrawCompleteList( void );
+    void ToggleConsole( bool extend );
 
-	void VWrite( const char* fmt, va_list va );
+    void VWrite( const char* fmt, va_list va );
     void VWriteLine( const char* fmt, va_list va );
 
     void VWarning( const char* fmt, va_list va );
@@ -30,8 +30,6 @@ public:
     void DevInfo( const char* fmt, ... );
     void Error( const char* fmt, ... );
 
-
-
     void ClearInput( void );
     void ClearOutput( void );
 
@@ -39,22 +37,24 @@ public:
 
     int ConsoleInputCallBack( ImGuiInputTextCallbackData* data );
 
-	HWND m_hWnd;
-	LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam, WndProc_t orig);
+    void OnEndScene();
+
+    bool OnWindowCallback( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 private:
-	bool m_bShowConsole;
-	bool m_bChanged;
-	bool m_bDrawExtend;
+    bool m_bShowConsole;
+    bool m_bChanged;
+    bool m_bDrawExtend;
 
     char m_szConsoleText[0x100];
     char m_szOutputText[0x4000];
 
-    std::vector<char*> History;
-    int HistoryPos;
-    int CompletePos;
-    std::vector<const char*> CompleteCandidates;
+    std::vector<std::string> m_History;
+    unsigned int m_HistoryPos;
+    unsigned int m_CompletePos;
+    std::vector<std::string_view> m_CompleteCandidates;
 
     bool m_bNeedScroll;
 };
 
-extern GameConsole* g_pGameConsole;
+extern GameConsole g_GameConsole;

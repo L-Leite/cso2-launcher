@@ -4,6 +4,7 @@
 #include <headers/CapstoneDisassembler.hpp>
 #include <headers/Detour/x86Detour.hpp>
 #include <headers/PE/EatHook.hpp>
+#include <headers/Virtuals/VTableSwapHook.hpp>
 
 #define HOOK_DETOUR_DECLARE( trampoline )                           \
     static std::unique_ptr<PLH::x86Detour> _##trampoline = nullptr; \
@@ -30,3 +31,11 @@
 
 #define HOOK_EXPORT_GET_ORIG( trampoline ) \
     ( (decltype( &trampoline ))_##trampoline##Orig )
+
+inline auto SetupDetourHook( const uintptr_t fnAddress, const void* fnCallback,
+                             uint64_t* userTrampVar, PLH::ADisassembler& dis )
+{
+    return std::make_unique<PLH::x86Detour>(
+        fnAddress, reinterpret_cast<const uint64_t>( fnCallback ), userTrampVar,
+        dis );
+}
