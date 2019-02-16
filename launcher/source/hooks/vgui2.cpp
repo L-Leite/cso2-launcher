@@ -3,26 +3,6 @@
 #include "hooks.hpp"
 #include "tier0/icommandline.h"
 
-/*HOOK_DETOUR_DECLARE( hkStrTblFind );
-
-// Original function: CLocalizedStringTable::Find
-NOINLINE wchar_t* __fastcall hkStrTblFind( void* ecx, void* edx,
-                                           const char* pName )
-{
-    static wchar_t szBuffer[1024];
-
-    if ( !g_bEnableLocalization )
-    {
-        size_t nameLength = strlen( pName );
-        MultiByteToWideChar( CP_ACP, NULL, pName, strlen( pName ), szBuffer,
-                             nameLength + 1 );
-        szBuffer[nameLength] = '\0';
-        return szBuffer;
-    }
-
-    return HOOK_DETOUR_GET_ORIG( hkStrTblFind )( ecx, edx, pName );
-}*/
-
 //
 // Formats a string as "resource/[game prefix]_[language].txt"
 //
@@ -190,7 +170,6 @@ void OnVguiLoaded( const uintptr_t dwVguiBase )
 
     bHasLoaded = true;
 
-    // HOOK_DETOUR( dwVguiBase + 0xAC80, hkStrTblFind );
     HOOK_DETOUR( dwVguiBase + 0x8D90, hkStrTblAddFile );
     HOOK_DETOUR( dwVguiBase + 0xB3F0, hkWideCharToUtf8 );
     HOOK_DETOUR( dwVguiBase + 0xB420, hkUtf8ToLocal );
