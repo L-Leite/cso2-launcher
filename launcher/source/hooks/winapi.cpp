@@ -4,7 +4,7 @@
 
 extern void OnEngineLoaded( const uintptr_t dwEngineBase );
 extern void OnFileSystemLoaded( const uintptr_t dwFilesystemBase );
-extern void OnServerLoaded( const uintptr_t dwServerBase );
+extern void OnShaderApiLoaded( const uintptr_t dwShaderApiBase );
 extern void OnVguiLoaded( const uintptr_t dwVguiBase );
 
 void OnLoadLibrary( HMODULE hLibrary, std::string_view libPathView )
@@ -23,9 +23,9 @@ void OnLoadLibrary( HMODULE hLibrary, std::string_view libPathView )
     {
         OnFileSystemLoaded( dwLibraryBase );
     }
-    else if ( szLibName == "server.dll" )
+    else if ( szLibName == "shaderapidx9.dll" )
     {
-        OnServerLoaded( dwLibraryBase );
+        OnShaderApiLoaded( dwLibraryBase );
     }
     else if ( szLibName == "vgui2.dll" )
     {

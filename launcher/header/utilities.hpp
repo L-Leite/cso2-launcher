@@ -22,13 +22,12 @@ public:
     {
         m_pAddress = pAddress;
         m_iMemSize = iMemSize;
-        BOOL res = VirtualProtect( pAddress, iMemSize, dwNewProt, &m_dwOriginalProt );
+        VirtualProtect( pAddress, iMemSize, dwNewProt, &m_dwOriginalProt );
     }
 
     ~COverrideMemProtection()
     {
-        BOOL res =
-            VirtualProtect( m_pAddress, m_iMemSize, m_dwOriginalProt, &m_dwOriginalProt );
+        VirtualProtect( m_pAddress, m_iMemSize, m_dwOriginalProt, &m_dwOriginalProt );
     }
 
 private:
