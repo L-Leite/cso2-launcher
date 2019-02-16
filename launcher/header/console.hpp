@@ -1,17 +1,21 @@
 #pragma once
+
+#ifdef _WIN32
 #include <Windows.h>
 #include <d3d9.h>
-#include <vector>
-#include "imgui.h"
+#else
+#error Implement me
+#endif
 
-typedef LRESULT( __stdcall* WndProc_t )( HWND hWnd, UINT msg, WPARAM wParam,
-                                         LPARAM lParam );
+struct ImGuiInputTextCallbackData;
 
 class GameConsole
 {
 public:
     GameConsole( void );
+    ~GameConsole() = default;
     void Init( LPDIRECT3DDEVICE9 pDevice, HWND hWnd ) const;
+
     void DrawConsole( void );
     void DrawCompleteList( void );
     void ToggleConsole( bool extend );
@@ -39,7 +43,7 @@ public:
 
     void OnEndScene();
 
-    bool OnWindowCallback( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+    bool OnWindowCallback( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
 
 private:
     bool m_bShowConsole;

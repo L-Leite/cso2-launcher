@@ -20,7 +20,7 @@
 //
 GameConsole g_GameConsole;
 
-bool g_bRenderStarted = false;
+bool g_bRenderStarted = true;
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler( HWND hWnd, UINT msg,
                                                WPARAM wParam, LPARAM lParam );
@@ -33,9 +33,13 @@ const unsigned int INVALID_POSITION = static_cast<unsigned int>( ~0 );
 GameConsole::GameConsole( void )
 {
     m_bShowConsole = false;
+    m_bChanged = false;
     m_bDrawExtend = false;
+
     m_HistoryPos = INVALID_POSITION;
     m_CompletePos = INVALID_POSITION;
+
+    m_bNeedScroll = false;
 
     ClearInput();
     ClearOutput();
