@@ -6,7 +6,6 @@ extern void OnEngineLoaded( const uintptr_t dwEngineBase );
 extern void OnFileSystemLoaded( const uintptr_t dwFilesystemBase );
 extern void OnShaderApiLoaded( const uintptr_t dwShaderApiBase );
 extern void OnVguiLoaded( const uintptr_t dwVguiBase );
-extern void OnClientLoaded( const uintptr_t dwClientBase );
 
 void OnLoadLibrary( HMODULE hLibrary, std::string_view libPathView )
 {
@@ -32,10 +31,6 @@ void OnLoadLibrary( HMODULE hLibrary, std::string_view libPathView )
     {
         OnVguiLoaded( dwLibraryBase );
     }
-	else if (szLibName == "client.dll")
-	{
-        OnClientLoaded( dwLibraryBase );
-	}
 }
 
 HOOK_DETOUR_DECLARE( hkLoadLibraryExA );

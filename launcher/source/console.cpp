@@ -20,8 +20,6 @@
 //
 GameConsole g_GameConsole;
 
-bool g_bRenderStarted = true;
-
 extern LRESULT ImGui_ImplWin32_WndProcHandler( HWND hWnd, UINT msg,
                                                WPARAM wParam, LPARAM lParam );
 
@@ -550,28 +548,25 @@ static bool shiftDown = false;
 bool GameConsole::OnWindowCallback( HWND hWnd, UINT msg, WPARAM wParam,
                                     LPARAM lParam )
 {
-    if ( g_bRenderStarted )
+    if ( msg == WM_KEYDOWN )
     {
-        if ( msg == WM_KEYDOWN )
-        {
-            if ( wParam != VK_TAB )
-                m_bChanged = true;
+        if ( wParam != VK_TAB )
+            m_bChanged = true;
 
-            if ( wParam == VK_OEM_3 )
-                ToggleConsole( shiftDown );
+        if ( wParam == VK_OEM_3 )
+            ToggleConsole( shiftDown );
 
-            if ( wParam == VK_SHIFT )
-                shiftDown = true;
-        }
+        if ( wParam == VK_SHIFT )
+            shiftDown = true;
+    }
 
-        if ( msg == WM_KEYUP && wParam == VK_SHIFT )
-            shiftDown = false;
+    if ( msg == WM_KEYUP && wParam == VK_SHIFT )
+        shiftDown = false;
 
-        if ( m_bShowConsole )
-        {
-            ImGui_ImplWin32_WndProcHandler( hWnd, msg, wParam, lParam );
-            return false;
-        }
+    if ( m_bShowConsole )
+    {
+        ImGui_ImplWin32_WndProcHandler( hWnd, msg, wParam, lParam );
+        return false;
     }
 
     return true;
