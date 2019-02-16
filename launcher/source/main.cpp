@@ -1,9 +1,5 @@
 ﻿#include "stdafx.hpp"
 
-#include "console.hpp"
-#include "git-version.hpp"
-#include "version.hpp"
-
 enum Sys_Flags
 {
     SYS_NOFLAGS = 0x00,
@@ -30,28 +26,11 @@ extern "C" __declspec( dllexport ) HMODULE
     return hModule;
 }
 
-void CreateDebugConsole()
-{
-    AllocConsole();
-
-    freopen( "CONIN$", "r", stdin );
-    freopen( "CONOUT$", "w", stdout );
-    freopen( "CONOUT$", "w", stderr );
-
-    SetConsoleTitleA( "cso2-launcher " LAUNCHER_VERSION "-" GIT_BRANCH
-                      "-" GIT_COMMIT_HASH " -- Game Console" );
-    SetConsoleCP( CP_UTF8 );
-    SetConsoleOutputCP( CP_UTF8 );
-}
-
 int LauncherMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
                   int nCmdShow );
 
-int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
-                    _In_ LPSTR lpCmdLine, _In_ int nShowCmd )
+int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
+                    LPSTR lpCmdLine, int nShowCmd )
 {
-    CreateDebugConsole();
-    g_pGameConsole = new GameConsole();
-
     return LauncherMain( hInstance, hPrevInstance, lpCmdLine, nShowCmd );
 }
