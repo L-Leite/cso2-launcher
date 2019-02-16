@@ -36,48 +36,7 @@ NOINLINE void hkCOM_TimestampedLog( char const* fmt, ... )
     }
 
     s_LastStamp = curStamp;
-}
-
-HOOK_EXPORT_DECLARE( hkMsg );
-
-NOINLINE void hkMsg( const tchar* pMsg, ... )
-{
-    va_list va;
-    va_start( va, pMsg );
-    vprintf( pMsg, va );
-    va_end( va );
-}
-
-HOOK_EXPORT_DECLARE( hkWarning );
-
-NOINLINE void hkWarning( const tchar* pMsg, ... )
-{
-    va_list va;
-    va_start( va, pMsg );
-    vprintf( pMsg, va );
-    va_end( va );
-}
-
-HOOK_DETOUR_DECLARE( hkConMsg );
-
-NOINLINE void hkConMsg( const char* pMsg, ... )
-{
-    va_list va;
-    va_start( va, pMsg );
-    vprintf( pMsg, va );
-    va_end( va );
-}
-
-HOOK_DETOUR_DECLARE( hkDevMsg );
-
-NOINLINE void hkDevMsg( const char* pMsg, ... )
-{
-    va_list va;
-    va_start( va, pMsg );
-    vprintf( pMsg, va );
-    va_end( va );
-}
-
+}					  
 
 void BytePatchTier( const uintptr_t dwTierBase )
 {
@@ -99,9 +58,4 @@ void HookTier0()
     {
         HOOK_EXPORT( "COM_TimestampedLog", L"tier0.dll", hkCOM_TimestampedLog );
     }
-
-    //HOOK_EXPORT( "Msg", L"tier0.dll", hkMsg );
-    //HOOK_EXPORT( "Warning", L"tier0.dll", hkWarning );
-    //HOOK_DETOUR( dwTierBase + 0x5C50, hkConMsg );
-    //HOOK_DETOUR( dwTierBase + 0x5550, hkDevMsg );
 }
