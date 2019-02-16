@@ -1,4 +1,5 @@
 #pragma once
+
 #include <memory>
 
 #include <headers/CapstoneDisassembler.hpp>
@@ -6,36 +7,26 @@
 #include <headers/PE/EatHook.hpp>
 #include <headers/Virtuals/VTableSwapHook.hpp>
 
-#define HOOK_DETOUR_DECLARE( trampoline )                           \
-    static std::unique_ptr<PLH::x86Detour> _##trampoline = nullptr; \
-    static uint64_t _##trampoline##Orig = NULL
-
-#define HOOK_DETOUR( original, trampoline )                            \
-    PLH::CapstoneDisassembler _##trampoline##Dis( PLH::Mode::x86 );    \
-    _##trampoline = std::make_unique<PLH::x86Detour>(                  \
-        (char*)( original ), (char*)&trampoline, &_##trampoline##Orig, \
-        _##trampoline##Dis );                                          \
-    _##trampoline->hook();
-
-#define HOOK_DETOUR_GET_ORIG( trampoline ) \
-    ( (decltype( &trampoline ))_##trampoline##Orig )
-
-#define HOOK_EXPORT_DECLARE( trampoline )                         \
-    static std::unique_ptr<PLH::EatHook> _##trampoline = nullptr; \
-    static uint64_t _##trampoline##Orig = NULL;
-
-#define HOOK_EXPORT( lib, func, trampoline )                  \
-    _##trampoline = std::make_unique<PLH::EatHook>(           \
-        lib, func, (char*)trampoline, &_##trampoline##Orig ); \
-    _##trampoline->hook();
-
-#define HOOK_EXPORT_GET_ORIG( trampoline ) \
-    ( (decltype( &trampoline ))_##trampoline##Orig )
-
 inline auto SetupDetourHook( const uintptr_t fnAddress, const void* fnCallback,
                              uint64_t* userTrampVar, PLH::ADisassembler& dis )
 {
     return std::make_unique<PLH::x86Detour>(
         fnAddress, reinterpret_cast<const uint64_t>( fnCallback ), userTrampVar,
         dis );
+}
+
+inline auto SetupExportHook( const std::string& apiName,
+                             const std::wstring& moduleName,
+                             const void* fnCallback, uint64_t* userOrigVar )
+{
+    return std::make_unique<PLH::EatHook>(
+        apiName, moduleName, reinterpret_cast<const uint64_t>( fnCallback ),
+        userOrigVar );
+}
+
+inline auto SetupVtableSwap( const void* Class,
+                             const PLH::VFuncMap& redirectMap )
+{
+    return std::make_unique<PLH::VTableSwapHook>(
+        reinterpret_cast<const uint64_t>( Class ), redirectMap );
 }

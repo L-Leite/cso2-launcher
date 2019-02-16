@@ -6,15 +6,16 @@
 //
 // Formats a string as "resource/[game prefix]_[language].txt"
 //
-std::string GetDesiredLangFile( const std::string& szGamePrefix,
-                                const char* szLanguage )
+std::string GetDesiredLangFile( std::string_view szGamePrefix,
+                                std::string_view szLanguage )
 {
     std::ostringstream oss;
     oss << "resource/" << szGamePrefix << "_" << szLanguage << ".txt";
     return oss.str();
 }
 
-HOOK_DETOUR_DECLARE( hkStrTblAddFile );
+static std::unique_ptr<PLH::x86Detour> g_pStrTblAddHook;
+static uint64_t g_StrTblAddOrig = NULL;
 
 //
 // Allow the user to specify some language file through command line arguments
@@ -32,7 +33,7 @@ NOINLINE bool __fastcall hkStrTblAddFile( void* ecx, void* edx,
     // Make sure we have a command argument
     if ( !szDesiredLang )
     {
-        return HOOK_DETOUR_GET_ORIG( hkStrTblAddFile )(
+        return PLH::FnCast( g_StrTblAddOrig, hkStrTblAddFile )(
             ecx, edx, szFileName, pPathID, bIncludeFallbackSearchPaths );
     }
 
@@ -60,12 +61,12 @@ NOINLINE bool __fastcall hkStrTblAddFile( void* ecx, void* edx,
     {
         // if we don't want to replace the existing file, resume ordinary
         // behavior
-        return HOOK_DETOUR_GET_ORIG( hkStrTblAddFile )(
+        return PLH::FnCast( g_StrTblAddOrig, hkStrTblAddFile )(
             ecx, edx, szFileName, pPathID, bIncludeFallbackSearchPaths );
     }
 
     // load our desired language file
-    return HOOK_DETOUR_GET_ORIG( hkStrTblAddFile )(
+    return PLH::FnCast( g_StrTblAddOrig, hkStrTblAddFile )(
         ecx, edx, szDesiredFile.c_str(), pPathID, true );
 }
 
@@ -111,7 +112,13 @@ int ConvertUtf8ToWideChar( const char* szInput, wchar_t* szOutput,
     return iLength;
 }
 
-HOOK_DETOUR_DECLARE( hkLocalToUtf8 );
+void* GetLocalizedStringTable( const uintptr_t base )
+{
+    return reinterpret_cast<void*>( base + 0x96FB0 );
+}
+
+static std::unique_ptr<PLH::VTableSwapHook> g_pStrTblHook;
+static PLH::VFuncMap g_StrTblOrig;
 
 NOINLINE int __fastcall hkLocalToUtf8( void* thisptr, void*,
                                        const char* szInput, char* szOutBuffer,
@@ -120,16 +127,12 @@ NOINLINE int __fastcall hkLocalToUtf8( void* thisptr, void*,
     return HandleLocalConvertion( szInput, szOutBuffer, iOutBufferSize );
 }
 
-HOOK_DETOUR_DECLARE( hkUtf8ToLocal );
-
 NOINLINE int __fastcall hkUtf8ToLocal( void* thisptr, void*,
                                        const char* szInput, char* szOutBuffer,
                                        std::uint32_t iOutBufferSize )
 {
     return HandleLocalConvertion( szInput, szOutBuffer, iOutBufferSize );
 }
-
-HOOK_DETOUR_DECLARE( hkWideCharToUtf8 );
 
 NOINLINE int __fastcall hkWideCharToUtf8( void* thisptr, void*,
                                           const wchar_t* szInput,
@@ -139,8 +142,6 @@ NOINLINE int __fastcall hkWideCharToUtf8( void* thisptr, void*,
     return ConvertWideCharToUtf8( szInput, szOutBuffer, iOutBufferSize );
 }
 
-HOOK_DETOUR_DECLARE( hkUtf8ToWideChar );
-
 NOINLINE int __fastcall hkUtf8ToWideChar( void* thisptr, void*,
                                           const char* szInput,
                                           wchar_t* szOutBuffer,
@@ -148,8 +149,6 @@ NOINLINE int __fastcall hkUtf8ToWideChar( void* thisptr, void*,
 {
     return ConvertUtf8ToWideChar( szInput, szOutBuffer, iOutBufferSize );
 }
-
-HOOK_DETOUR_DECLARE( hkWideCharToUtf8_2 );
 
 NOINLINE int __fastcall hkWideCharToUtf8_2( void* thisptr, void*,
                                             const wchar_t* szInput,
@@ -170,10 +169,24 @@ void OnVguiLoaded( const uintptr_t dwVguiBase )
 
     bHasLoaded = true;
 
-    HOOK_DETOUR( dwVguiBase + 0x8D90, hkStrTblAddFile );
-    HOOK_DETOUR( dwVguiBase + 0xB3F0, hkWideCharToUtf8 );
-    HOOK_DETOUR( dwVguiBase + 0xB420, hkUtf8ToLocal );
-    HOOK_DETOUR( dwVguiBase + 0xB4A0, hkLocalToUtf8 );
-    HOOK_DETOUR( dwVguiBase + 0xB520, hkUtf8ToWideChar );
-    HOOK_DETOUR( dwVguiBase + 0xB550, hkWideCharToUtf8_2 );
+	PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
+
+	g_pStrTblAddHook = SetupDetourHook( dwVguiBase + 0x8D90, &hkStrTblAddFile,
+                                        &g_StrTblAddOrig, dis );
+    g_pStrTblAddHook->hook();
+
+	const void* pTableInstance = GetLocalizedStringTable( dwVguiBase );
+
+	// does multiple hooks in CLocalizedStringTable 
+	static const PLH::VFuncMap deviceRedirects = {
+        { uint16_t( 20 ), reinterpret_cast<uint64_t>( &hkWideCharToUtf8 ) },
+        { uint16_t( 21 ), reinterpret_cast<uint64_t>( &hkUtf8ToLocal ) },
+        { uint16_t( 22 ), reinterpret_cast<uint64_t>( &hkLocalToUtf8 ) },
+        { uint16_t( 23 ), reinterpret_cast<uint64_t>( &hkUtf8ToWideChar ) },
+        { uint16_t( 24 ), reinterpret_cast<uint64_t>( &hkWideCharToUtf8_2 ) },
+    };
+
+    g_pStrTblHook = SetupVtableSwap( pTableInstance, deviceRedirects );
+    g_pStrTblHook->hook();
+    g_StrTblOrig = g_pStrTblHook->getOriginals();
 }

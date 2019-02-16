@@ -13,14 +13,13 @@ LPDIRECT3DDEVICE9 GetD3dDevice( const uintptr_t base )
     return *reinterpret_cast<LPDIRECT3DDEVICE9*>( base + 0x13E184 );
 }
 
-using fnConColorPrint_t = HRESULT( WINAPI* )( LPDIRECT3DDEVICE9 );
 static std::unique_ptr<PLH::VTableSwapHook> g_pDeviceHook;
-static PLH::VFuncMap g_EndSceneOrig;
+static PLH::VFuncMap g_DeviceOrig;
 
 NOINLINE HRESULT WINAPI hkEndScene( LPDIRECT3DDEVICE9 pDevice )
 {
     g_GameConsole.OnEndScene();
-    return PLH::FnCast( g_EndSceneOrig.at( 42 ), &hkEndScene )( pDevice );
+    return PLH::FnCast( g_DeviceOrig.at( 42 ), &hkEndScene )( pDevice );
 }
 
 static std::unique_ptr<PLH::x86Detour> g_pCreateDeviceHook;
@@ -45,10 +44,9 @@ NOINLINE bool __fastcall hkCreateD3DDevice(
         static const PLH::VFuncMap deviceRedirects = {
             { uint16_t( 42 ), reinterpret_cast<uint64_t>( &hkEndScene ) }
         };
-        g_pDeviceHook = std::make_unique<PLH::VTableSwapHook>(
-            reinterpret_cast<uint64_t>( pDevice ), deviceRedirects );
+        g_pDeviceHook = SetupVtableSwap( pDevice, deviceRedirects );
         g_pDeviceHook->hook();
-        g_EndSceneOrig = g_pDeviceHook->getOriginals();
+        g_DeviceOrig = g_pDeviceHook->getOriginals();
     }
 
     return res;
@@ -65,10 +63,10 @@ void OnShaderApiLoaded( const uintptr_t dwShaderApiBase )
 
     bHasLoaded = true;
 
-    PLH::CapstoneDisassembler hookDisasm( PLH::Mode::x86 );
+    PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
 
     g_pCreateDeviceHook =
         SetupDetourHook( dwShaderApiBase + 0x551F0, &hkCreateD3DDevice,
-                         &g_CreateDeviceOrig, hookDisasm );
+                         &g_CreateDeviceOrig, dis );
     g_pCreateDeviceHook->hook();
 }

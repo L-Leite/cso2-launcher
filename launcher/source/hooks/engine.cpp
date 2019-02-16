@@ -14,7 +14,8 @@ struct IpAddressInfo
     uint16_t iPort;
 };
 
-HOOK_DETOUR_DECLARE( hkGetServerIpAddressInfo );
+static std::unique_ptr<PLH::x86Detour> g_pServerAddrHook;
+static uint64_t g_ServerAddrOrig = NULL;
 
 //
 // Allows the user to choose a specific master server's IP address and/or port
@@ -22,7 +23,7 @@ HOOK_DETOUR_DECLARE( hkGetServerIpAddressInfo );
 // arguments are given Usage: "-masterip [desired master IP address]" and/or
 // "-masterport [desired master port number]"
 //
-NOINLINE void __fastcall hkGetServerIpAddressInfo( IpAddressInfo& info )
+NOINLINE void __fastcall hkGetServerInfo( IpAddressInfo& info )
 {
     const char* szMasterIp = CommandLine()->ParmValue( "-masterip" );
     const char* szMasterPort = CommandLine()->ParmValue( "-masterport" );
@@ -39,7 +40,8 @@ NOINLINE void __fastcall hkGetServerIpAddressInfo( IpAddressInfo& info )
 //
 ConVar* sv_cheats = nullptr;
 
-HOOK_DETOUR_DECLARE( hkCanCheat );
+static std::unique_ptr<PLH::x86Detour> g_pCanCheatHook;
+static uint64_t g_CanCheatOrig = NULL;
 
 NOINLINE bool __fastcall hkCanCheat()
 {
@@ -54,7 +56,7 @@ NOINLINE bool __fastcall hkCanCheat()
     return sv_cheats->GetBool();
 }
 
-static std::unique_ptr<PLH::x86Detour> g_pColorPrint;
+static std::unique_ptr<PLH::x86Detour> g_pColorPrintHook;
 static uint64_t g_ColorPrintOrig = NULL;
 
 NOINLINE void __fastcall hkCon_ColorPrint( Color& clr, const char* msg )
@@ -83,18 +85,19 @@ NOINLINE void __fastcall hkCon_ColorPrint( Color& clr, const char* msg )
     return PLH::FnCast( g_ColorPrintOrig, &hkCon_ColorPrint )( clr, msg );
 }
 
-HOOK_DETOUR_DECLARE( hkHLEngineWindowProc );
+static std::unique_ptr<PLH::x86Detour> g_pEngineWinHook;
+static uint64_t g_EngineWinOrig = NULL;
 
 NOINLINE LRESULT WINAPI hkHLEngineWindowProc( HWND hWnd, UINT Msg,
                                               WPARAM wParam, LPARAM lParam )
-{	   
+{
     bool conRes = g_GameConsole.OnWindowCallback( hWnd, Msg, wParam, lParam );
 
     if ( !conRes )
         return NULL;
 
-	return HOOK_DETOUR_GET_ORIG( hkHLEngineWindowProc )( hWnd, Msg, wParam,
-                                                         lParam );
+    return PLH::FnCast( g_EngineWinOrig, &hkHLEngineWindowProc )(
+        hWnd, Msg, wParam, lParam );
 }
 
 void BytePatchEngine( const uintptr_t dwEngineBase )
@@ -219,13 +222,19 @@ void OnEngineLoaded( const uintptr_t dwEngineBase )
 
     BytePatchEngine( dwEngineBase );
 
-    PLH::CapstoneDisassembler hookDisasm( PLH::Mode::x86 );
+    PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
 
-    HOOK_DETOUR( dwEngineBase + 0x285FE0, hkGetServerIpAddressInfo );
-    HOOK_DETOUR( dwEngineBase + 0xCE8B0, hkCanCheat );
-    HOOK_DETOUR( dwEngineBase + 0x15EAF0, hkHLEngineWindowProc );
+    g_pServerAddrHook = SetupDetourHook(
+        dwEngineBase + 0x285FE0, &hkGetServerInfo, &g_ServerAddrOrig, dis );
+    g_pCanCheatHook = SetupDetourHook(
+		dwEngineBase + 0xCE8B0, &hkCanCheat, &g_CanCheatOrig, dis );
+    g_pEngineWinHook = SetupDetourHook(
+        dwEngineBase + 0x15EAF0, &hkHLEngineWindowProc, &g_EngineWinOrig, dis );
+    g_pColorPrintHook = SetupDetourHook(
+        dwEngineBase + 0x1C4B40, &hkCon_ColorPrint, &g_ColorPrintOrig, dis );
 
-    g_pColorPrint = SetupDetourHook( dwEngineBase + 0x1C4B40, &hkCon_ColorPrint,
-                                     &g_ColorPrintOrig, hookDisasm );
-    g_pColorPrint->hook();
+    g_pServerAddrHook->hook();
+    g_pCanCheatHook->hook();
+    g_pEngineWinHook->hook();
+    g_pColorPrintHook->hook();
 }

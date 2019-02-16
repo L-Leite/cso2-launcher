@@ -5,7 +5,8 @@
 #include "tier0/ICommandLine.h"
 #include "tier0/platform.h"
 
-HOOK_EXPORT_DECLARE( hkCOM_TimestampedLog );
+static std::unique_ptr<PLH::EatHook> g_pTimestampedHook;
+static uint64_t g_pTimestampedOrig = NULL; // unused but needed by polyhook
 
 NOINLINE void hkCOM_TimestampedLog( char const* fmt, ... )
 {
@@ -56,6 +57,8 @@ void HookTier0()
 	// only hook COM_TimestampedLog if we are actually going to use it
     if ( CommandLine()->CheckParm( "-timestamped", nullptr ) )
     {
-        HOOK_EXPORT( "COM_TimestampedLog", L"tier0.dll", hkCOM_TimestampedLog );
+        g_pTimestampedHook = SetupExportHook( "COM_TimestampedLog", L"tier0.dll",
+                             &hkCOM_TimestampedLog, &g_pTimestampedOrig );
+        g_pTimestampedHook->hook();
     }
 }

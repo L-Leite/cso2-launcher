@@ -13,7 +13,7 @@ void OnLoadLibrary( HMODULE hLibrary, std::string_view libPathView )
     std::filesystem::path libPath = libPathView;
     const std::string szLibName = libPath.filename().string();
 
-	const uintptr_t dwLibraryBase = reinterpret_cast<uintptr_t>( hLibrary );
+    const uintptr_t dwLibraryBase = reinterpret_cast<uintptr_t>( hLibrary );
 
     if ( szLibName == "engine.dll" )
     {
@@ -33,12 +33,13 @@ void OnLoadLibrary( HMODULE hLibrary, std::string_view libPathView )
     }
 }
 
-HOOK_DETOUR_DECLARE( hkLoadLibraryExA );
+static std::unique_ptr<PLH::x86Detour> g_pLoadLibExHook;
+static uint64_t g_LoadLibExOrig = NULL;
 
 NOINLINE HMODULE WINAPI hkLoadLibraryExA( LPCSTR lpLibFileName, HANDLE hFile,
                                           DWORD dwFlags )
 {
-    HMODULE hLoadedModule = HOOK_DETOUR_GET_ORIG( hkLoadLibraryExA )(
+    HMODULE hLoadedModule = PLH::FnCast( g_LoadLibExOrig, hkLoadLibraryExA )(
         lpLibFileName, hFile, dwFlags );
     OnLoadLibrary( hLoadedModule, lpLibFileName );
     return hLoadedModule;
@@ -46,5 +47,10 @@ NOINLINE HMODULE WINAPI hkLoadLibraryExA( LPCSTR lpLibFileName, HANDLE hFile,
 
 void HookWinapi()
 {
-    HOOK_DETOUR( LoadLibraryExA, hkLoadLibraryExA );
+    PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
+
+    g_pLoadLibExHook =
+        SetupDetourHook( reinterpret_cast<uintptr_t>( &LoadLibraryExA ),
+                         &hkLoadLibraryExA, &g_LoadLibExOrig, dis );
+    g_pLoadLibExHook->hook();
 }
