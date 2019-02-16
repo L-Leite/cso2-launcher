@@ -49,21 +49,22 @@ Run ```start-cso2.bat``` and enter the master server's IP address to start the g
 
 You can access your inventory by pressing *인벤토리* (*inventory*) in the bottom menu bar.
 
-You can also input Source Engine commands (such as ```cl_showfps 1```) in the console window.
+You **may open a CoD styled console by pressing the *~*** (*tilde*) **key**.
 
 ### Available command line arguments
 
 - ```-lang [some language]``` - Sets the game's language to *some language*'s (considering you have the language files)
 - ```-masterip [some ip]``` - Sets the master server's IP address to *some ip*
 - ```-masterport [some port]``` - Sets the master server's port number to *some port*
-- ```-decryptedfiles``` - Tell the game to load decrypted files
+- ```-decryptedfiles``` - Tell the game to consider every game file as decrypted
+- ```-enablecustom``` - Enables the use of a custom directory `custom` in the root directory of your game's files
 
 ## Building
 
 ### Build requirements
 
-- [CMake](https://cmake.org/download/)
-- [Visual Studio 2017](https://www.visualstudio.com/downloads/)
+- [CMake](https://cmake.org/download)
+- [Visual Studio 2017](https://www.visualstudio.com/downloads)
 - [Windows PowerShell](https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-windows-powershell)
 
 Tested with Visual Studio 2017. Support for other compilers is unknown.
@@ -97,12 +98,19 @@ Improvements and suggestions are welcome, create a [pull request](https://github
 
 ## Libraries used
 
-- **[PolyHook 2.0](https://github.com/stevemk14ebr/PolyHook_2_0/)** by [stevemk14ebr](https://github.com/stevemk14ebr)
-- **[cotire](https://github.com/sakra/cotire/)** by [Sascha Kratky](https://github.com/sakra)
+- **[cotire](https://github.com/sakra/cotire)** by [Sascha Kratky](https://github.com/sakra)
+- **[Dear ImGui](https://github.com/ocornut/imgui)** by [Omar Cornut](https://github.com/sakra)
+- **[PolyHook 2.0](https://github.com/stevemk14ebr/PolyHook_2_0)** by [stevemk14ebr](https://github.com/stevemk14ebr)
+
+## Contributors
+
+Thank you for your contributions.
+
+- [GEEKiDoS](https://github.com/GEEKiDoS)
+- [cs-student101](https://github.com/cs-student101)
 
 ## Credits
 
-- [GEEKiDoS](https://github.com/GEEKiDoS)
 - [Valve Software](https://github.com/ValveSoftware/source-sdk-2013)
 
 ## Thank you's
