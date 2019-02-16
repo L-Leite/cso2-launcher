@@ -39,7 +39,7 @@ Run ```start-cso2.bat``` and enter the master server's IP address to start the g
 
 ### Lauching
 
-*The translations is courtesy of **[Frostie](#thank-yous)**.*
+*The translations are courtesy of **[Frostie](#thank-yous)**.*
 
 - When the game loads enter some login information - only your username will be used, so you can use any password ([image](https://puu.sh/Bw7hu/ffba6ca218.png));
 - Select *커스텀모드* (*custom mode*) to go to the channel menu ([image](https://puu.sh/C1Nno/7122e0fefd.png));
