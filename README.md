@@ -6,7 +6,7 @@ A custom client launcher for Nexon's Counter-Strike: Online 2, written in C++.
 
 Ready for [this CSO2 master server](https://github.com/Ochii/cso2-master-server/).
 
-**Any help** towards the project is welcome and appreciated.
+**Any help** towards the project is welcomed and appreciated.
 
 ## Installation
 
@@ -18,7 +18,7 @@ If you host a room match, **your IP will be known to other clients**.
 
 If you join a host's room match, **your IP will be known to the host**.
 
-This might be avoidable in the future, once a dedicated server launcher is developed.
+This might be avoidable in the future once a dedicated server launcher is developed.
 
 ### Obtaining CSO2
 
@@ -29,7 +29,7 @@ You can grab a copy of **Nexon's Counter-Strike: Online 2** at [MEGA](https://me
 ### Obtaining the launcher
 
 - Download a copy of the [launcher](https://github.com/Ochii/cso2-launcher/releases);
-- Then, extract the files inside to ```[your CSO2 game folder]/Bin```.
+- Then extract the files inside to ```[your CSO2 game folder]/Bin```.
 
 ## Starting the game
 
@@ -39,7 +39,7 @@ Run ```start-cso2.bat``` and enter the master server's IP address to start the g
 
 ### Lauching
 
-*The translations are a courtesy of **[Frostie](#thank-yous)**.*
+*The translations is courtesy of **[Frostie](#thank-yous)**.*
 
 - When the game loads enter some login information - only your username will be used, so you can use any password ([image](https://puu.sh/Bw7hu/ffba6ca218.png));
 - Select *커스텀모드* (*custom mode*) to go to the channel menu ([image](https://puu.sh/C1Nno/7122e0fefd.png));
@@ -75,7 +75,7 @@ cso2-launcher uses CMake to generate project files and to build itself.
 
 You can **build it through *CMake*** or **generate its project files**.
 
-As an example: to generate Visual Studio 2017 project files, **open a terminal instance** in the project's directory and run
+For example: to generate Visual Studio 2017 project files, **open a terminal instance** in the project's directory and run
 
 ```powershell
 # in powershell or in standard Windows cmd
@@ -84,7 +84,7 @@ cmake -G "Visual Studio 15 2017" ./
 
 Or use the ```cmake-gui``` tool bundled with CMake for a more user friendly experience.
 
-Once generated successfully, you can open ```CSO2Launcher.sln``` and build the project in your preferred configuration.
+Once successfully generated, you can open ```CSO2Launcher.sln``` and build the project in your preferred configuration.
 
 If built successfully, you will find the launcher inside ```out/bin/Win32/[your configuration]```.
 
@@ -94,7 +94,7 @@ Have a look at the [issues](https://github.com/Ochii/cso2-launcher/issues) for a
 
 ## Pull requests
 
-Improvements and suggestions are welcome, create a [pull request](https://github.com/Ochii/cso2-launcher/pulls).
+Improvements and suggestions are welcomed, create a [pull request](https://github.com/Ochii/cso2-launcher/pulls).
 
 ## Libraries used
 
@@ -124,4 +124,4 @@ Thank you for your contributions.
 
 Read ```LICENSE``` for license information.
 
-I'm not affiliated with either Valve and/or Nexon, neither I own Counter-Strike Online 2.
+I'm not affiliated with either Valve and/or Nexon, nor do I own Counter-Strike Online 2.
