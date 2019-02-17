@@ -56,10 +56,6 @@
 #define _getcwd getcwd
 #elif _WIN32
 #include <direct.h>
-#if !defined( _X360 )
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif
 #endif
 
 #ifdef _WIN32
