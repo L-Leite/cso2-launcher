@@ -2,6 +2,7 @@
 
 #include "console.hpp"
 #include "hooks.hpp"
+
 #include "tier0/ICommandLine.h"
 #include "tier0/platform.h"
 
@@ -11,7 +12,19 @@ static uint64_t g_pTimestampedOrig = NULL; // unused but needed by polyhook
 NOINLINE void hkCOM_TimestampedLog( char const* fmt, ... )
 {
     static float s_LastStamp = 0.0;
+    static bool s_bShouldLog = false;
+    static bool s_bChecked = false;
     static bool s_bFirstWrite = false;
+
+    if ( !s_bChecked )
+    {
+        s_bShouldLog = CommandLine()->CheckParm( "-profile" ) != nullptr;
+        s_bChecked = true;
+    }
+    if ( !s_bShouldLog )
+    {
+        return;
+    }
 
     char string[1024];
     va_list argptr;
@@ -19,22 +32,18 @@ NOINLINE void hkCOM_TimestampedLog( char const* fmt, ... )
     _vsnprintf( string, sizeof( string ), fmt, argptr );
     va_end( argptr );
 
-    float curStamp = Plat_FloatTime();
-
+    float curStamp = Plat_FloatTime();		  
+    
     if ( !s_bFirstWrite )
     {
-        std::filesystem::remove( std::filesystem::current_path() /
-                                 "timestamped.log" );
+        unlink( "timestamped.log" );
         s_bFirstWrite = true;
     }
 
-    std::ofstream logStream( "timestamped.log", std::ios::app );
-
-    if ( logStream.good() )
-    {
-        logStream << std::setw( 8 ) << std::setprecision( 4 ) << curStamp
-                  << curStamp - s_LastStamp << string << '\n';
-    }
+    FILE* fp = fopen( "timestamped.log", "at+" );
+    fprintf( fp, "%8.4f / %8.4f:  %s\n", curStamp, curStamp - s_LastStamp,
+                string );
+    fclose( fp );
 
     s_LastStamp = curStamp;
 }					  
@@ -54,11 +63,7 @@ void HookTier0()
     const uintptr_t dwTierBase = utils::GetModuleBase( "tier0.dll" );
     BytePatchTier( dwTierBase );
 
-	// only hook COM_TimestampedLog if we are actually going to use it
-    if ( CommandLine()->CheckParm( "-timestamped", nullptr ) )
-    {
-        g_pTimestampedHook = SetupExportHook( "COM_TimestampedLog", L"tier0.dll",
-                             &hkCOM_TimestampedLog, &g_pTimestampedOrig );
-        g_pTimestampedHook->hook();
-    }
+	g_pTimestampedHook = SetupExportHook( "COM_TimestampedLog", L"tier0.dll",
+							&hkCOM_TimestampedLog, &g_pTimestampedOrig );
+	g_pTimestampedHook->hook();
 }
