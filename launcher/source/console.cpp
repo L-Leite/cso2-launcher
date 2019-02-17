@@ -8,6 +8,8 @@
 
 #include "cdll_int.h"
 #include "convar.h"
+#include "inputsystem/iinputsystem.h"
+#include "tier2/tier2.h"
 
 #include "console.hpp"
 #include "git-version.hpp"
@@ -320,7 +322,7 @@ void GameConsole::DrawCompleteList( void )
 void GameConsole::ToggleConsole( bool extend )
 {
     if ( !m_bDrawExtend && m_bShowConsole )
-        ClearInput();
+        ClearInput();	    
 
     if ( extend && m_bShowConsole && m_CompleteCandidates.size() > 6 )
     {
@@ -336,6 +338,9 @@ void GameConsole::ToggleConsole( bool extend )
     m_bDrawExtend = extend;
     m_bShowConsole =
         ( extend && m_bShowConsole ) ? m_bShowConsole : !m_bShowConsole;
+
+	// Disable game input while the console is enabled
+    g_pInputSystem->EnableInput( !m_bShowConsole );
 }
 
 //
