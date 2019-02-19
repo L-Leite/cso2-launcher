@@ -90,7 +90,9 @@ If built successfully, you will find the launcher inside ```out/bin/Win32/[your 
 
 ## Bug reporting
 
-Have a look at the [issues](https://github.com/Ochii/cso2-launcher/issues) for a list of current bugs or to report them.
+When creating an issue, [try to use a template](https://github.com/Ochii/cso2-launcher/issues/new/choose). This helps us understanding your problem better.
+
+You can also see the [current open issues](https://github.com/Ochii/cso2-launcher/issues) at anytime.
 
 ## Pull requests
 
@@ -100,7 +102,7 @@ Improvements and suggestions are welcomed, create a [pull request](https://githu
 
 - **[cotire](https://github.com/sakra/cotire)** by [Sascha Kratky](https://github.com/sakra)
 - **[Dear ImGui](https://github.com/ocornut/imgui)** by [Omar Cornut](https://github.com/sakra)
-- **[PolyHook 2.0](https://github.com/stevemk14ebr/PolyHook_2_0)** by [stevemk14ebr](https://github.com/stevemk14ebr)
+- **[PolyHook 2.0](https://github.com/stevemk14ebr/PolyHook_2_0)** by [Stephen Eckels](https://github.com/stevemk14ebr)
 
 ## Contributors
 
