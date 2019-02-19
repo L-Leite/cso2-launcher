@@ -534,6 +534,22 @@ int GameConsole::ConsoleInputCallBack( ImGuiInputTextCallbackData* data )
     return 0;
 }
 
+//
+// reset imgui when changing graphics settings
+//
+void GameConsole::OnPreReset()
+{
+    ImGui_ImplDX9_InvalidateDeviceObjects();
+}
+
+//
+// once the new graphics settings are applied, setup imgui again
+//
+void GameConsole::OnPostReset()
+{
+    ImGui_ImplDX9_CreateDeviceObjects();
+}
+
 // this is called by the game's d3d device's endscene
 // draws our own console
 void GameConsole::OnEndScene()

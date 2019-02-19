@@ -41,6 +41,8 @@ public:
 
     int ConsoleInputCallBack( ImGuiInputTextCallbackData* data );
 
+	void OnPreReset();
+    void OnPostReset();
     void OnEndScene();
 
     bool OnWindowCallback( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );

@@ -16,10 +16,20 @@ LPDIRECT3DDEVICE9 GetD3dDevice( const uintptr_t base )
 static std::unique_ptr<PLH::VTableSwapHook> g_pDeviceHook;
 static PLH::VFuncMap g_DeviceOrig;
 
-NOINLINE HRESULT WINAPI hkEndScene( LPDIRECT3DDEVICE9 pDevice )
+NOINLINE HRESULT WINAPI hkReset(
+    LPDIRECT3DDEVICE9 thisptr, D3DPRESENT_PARAMETERS* pPresentationParameters )
+{
+    g_GameConsole.OnPreReset();
+    const HRESULT result = PLH::FnCast( g_DeviceOrig.at( 16 ), &hkReset )(
+        thisptr, pPresentationParameters );
+    g_GameConsole.OnPostReset();
+    return result;
+}
+
+NOINLINE HRESULT WINAPI hkEndScene( LPDIRECT3DDEVICE9 thisptr )
 {
     g_GameConsole.OnEndScene();
-    return PLH::FnCast( g_DeviceOrig.at( 42 ), &hkEndScene )( pDevice );
+    return PLH::FnCast( g_DeviceOrig.at( 42 ), &hkEndScene )( thisptr );
 }
 
 static std::unique_ptr<PLH::x86Detour> g_pCreateDeviceHook;
@@ -42,6 +52,7 @@ NOINLINE bool __fastcall hkCreateD3DDevice(
         // hook the game's d3d device endscene (its virtual function table index
         // is 42)
         static const PLH::VFuncMap deviceRedirects = {
+            { uint16_t( 16 ), reinterpret_cast<uint64_t>( &hkReset ) },
             { uint16_t( 42 ), reinterpret_cast<uint64_t>( &hkEndScene ) }
         };
         g_pDeviceHook = SetupVtableSwap( pDevice, deviceRedirects );
