@@ -23,6 +23,9 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
+**Log files**
+If possible, upload `cso2_report_log.txt` and/or `timestamped.txt` log files.
+
 **Desktop (please complete the following information):**
  - OS: [e.g. Windows 10]
  - OS version [e.g. 1803]
