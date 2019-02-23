@@ -1,4 +1,5 @@
 #include "stdafx.hpp"
+#include <future>
 
 #include "hooks.hpp"
 #include "tier0/ICommandLine.h"
@@ -16,34 +17,30 @@ public:
 
 extern ICSO2LoginManager *g_pCSO2LoginManager;
 
-DWORD WINAPI AutoLogin(LPVOID p)
-{
-	// Delay 1s after ui loaded to avoid crash
-	Sleep(1000);
-	
-	const char* szUsername = CommandLine()->ParmValue("-username");
-	const char* szPassword = CommandLine()->ParmValue("-password");
-
-	if (szUsername && szPassword)
-	{
-		std::string Username(szUsername);
-		std::string Password(szPassword);
-
-		while (Username.size() > 16)
-			Username.pop_back();
-
-		while (Password.size() > 4)
-			Password.pop_back();
-
-		g_pCSO2LoginManager->Login(strdup(Username.c_str()), strdup(Password.c_str()) , "", "", "");
-	}
-
-	return S_OK;
-}
-
 NOINLINE bool __fastcall hkCSO2UIManager_InitMainUI(void* ecx, void* edx)
 {
-	CreateThread(NULL, 0, AutoLogin, 0, 0, 0);
+	std::async(std::launch::async, []() {
+		// Delay 1s after ui loaded to avoid crash
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+
+		const char* szUsername = CommandLine()->ParmValue("-username");
+		const char* szPassword = CommandLine()->ParmValue("-password");
+
+		if (szUsername && szPassword)
+		{
+			std::string Username(szUsername);
+			std::string Password(szPassword);
+
+			while (Username.size() > 16)
+				Username.pop_back();
+
+			while (Password.size() > 4)
+				Password.pop_back();
+
+			g_pCSO2LoginManager->Login(strdup(Username.c_str()), strdup(Password.c_str()), "", "", "");
+		}
+	});
+
 	return PLH::FnCast(g_InitUIOrig, &hkCSO2UIManager_InitMainUI)(ecx, edx);
 }
 
