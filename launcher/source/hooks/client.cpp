@@ -3,80 +3,39 @@
 #include "hooks.hpp"
 #include "tier0/ICommandLine.h"
 
-// crappy struct
-struct LoginParmPointer
-{
-	uint32_t padding[0x4]; // 0-0Fh
-	char **pUsername; // 10h-13h
-	uint32_t padding1[0x7]; // 14h-29h
-	char **pPassword; // 30h-33h
-};
-
-struct LoginParm
-{
-	uint32_t padding[0x2]; // 0-7
-	LoginParmPointer *values; // 8-0Bh
-	uint32_t valueSize; // 0Ch-0Fh
-};
-
-uintptr_t g_pTryLogin = 0;
-
 static std::unique_ptr<PLH::x86Detour> g_pInitUIHook;
 static uint64_t g_InitUIOrig = NULL;
 
-char userName[17] = "";
-char passWord[5] = "";
-
-/*
-// Test function to make sure the LoginParm is working
-void __cdecl Test(volatile DWORD values)
+class ICSO2LoginManager
 {
-	char *username;
-	char *password;
+public:
+	virtual void sub_1028465() = 0;
+	virtual void sub_10286160() = 0;
+	virtual bool Login(const char *UserName, const char *Password, const char *a4, const char *a5, const char *a6) = 0;
+};
 
-	__asm {
-		push	eax
-		push	ecx
-		mov		ecx, [esi + 8]
-		mov		eax, [ecx + 10h]
-		mov		eax, [eax]
-		mov		username, eax
-		mov		eax, [ecx + 30h]
-		mov		eax, [eax]
-		mov		password, eax
-		pop		ecx
-		pop		eax
-	}
-
-	printf("%s %s", username, password);
-}
-*/
+extern ICSO2LoginManager *g_pCSO2LoginManager;
 
 DWORD WINAPI AutoLogin(LPVOID p)
 {
 	// Delay 1s after ui loaded to avoid crash
 	Sleep(1000);
-
+	
 	const char* szUsername = CommandLine()->ParmValue("-username");
 	const char* szPassword = CommandLine()->ParmValue("-password");
 
 	if (szUsername && szPassword)
 	{
-		auto pLoginParm = new LoginParm;
-		pLoginParm->values = new LoginParmPointer;
-		pLoginParm->valueSize = 2u;
+		std::string Username(szUsername);
+		std::string Password(szPassword);
 
-		strncpy(userName, szUsername, 16);
-		strncpy(passWord, szPassword, 4);
+		while (Username.size() > 16)
+			Username.pop_back();
 
-		char *pUsername = (char *)&userName;
-		char *pPassword = (char *)&passWord;
+		while (Password.size() > 4)
+			Password.pop_back();
 
-		pLoginParm->values->pUsername = &pUsername;
-		pLoginParm->values->pPassword = &pPassword;
-
-		//TestGetValue((DWORD)pLoginParm);
-		((void(__cdecl*)(volatile DWORD))g_pTryLogin)((DWORD)pLoginParm);
+		g_pCSO2LoginManager->Login(strdup(Username.c_str()), strdup(Password.c_str()) , "", "", "");
 	}
 
 	return S_OK;
@@ -98,8 +57,6 @@ void OnClientLoaded(const uintptr_t dwClientBase)
 	}
 
 	bHasLoaded = true;
-
-	g_pTryLogin = dwClientBase + 0xACA490;
 
 	PLH::CapstoneDisassembler dis(PLH::Mode::x86);
 

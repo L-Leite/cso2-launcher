@@ -205,6 +205,9 @@ void BytePatchEngine( const uintptr_t dwEngineBase )
     utils::WriteProtectedMemory( canCheatPatch2, dwEngineBase + 0x19F4D2 );
 }
 
+class ICSO2LoginManager;
+ICSO2LoginManager* g_pCSO2LoginManager;
+
 void OnEngineLoaded( const uintptr_t dwEngineBase )
 {
     static bool bHasLoaded = false;
@@ -232,6 +235,8 @@ void OnEngineLoaded( const uintptr_t dwEngineBase )
         dwEngineBase + 0x15EAF0, &hkHLEngineWindowProc, &g_EngineWinOrig, dis );
     g_pColorPrintHook = SetupDetourHook(
         dwEngineBase + 0x1C4B40, &hkCon_ColorPrint, &g_ColorPrintOrig, dis );
+
+	g_pCSO2LoginManager = (ICSO2LoginManager*)(dwEngineBase + 0xAA8190);
 
     g_pServerAddrHook->hook();
     g_pCanCheatHook->hook();
