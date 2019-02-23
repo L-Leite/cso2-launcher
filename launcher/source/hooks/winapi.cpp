@@ -2,6 +2,7 @@
 
 #include "hooks.hpp"
 
+extern void OnClientLoaded(const uintptr_t dwClientBase);
 extern void OnEngineLoaded( const uintptr_t dwEngineBase );
 extern void OnFileSystemLoaded( const uintptr_t dwFilesystemBase );
 extern void OnShaderApiLoaded( const uintptr_t dwShaderApiBase );
@@ -31,6 +32,10 @@ void OnLoadLibrary( HMODULE hLibrary, std::string_view libPathView )
     {
         OnVguiLoaded( dwLibraryBase );
     }
+	else if ( szLibName == "client.dll" )
+	{
+		OnClientLoaded( dwLibraryBase );
+	}
 }
 
 static std::unique_ptr<PLH::x86Detour> g_pLoadLibExHook;
