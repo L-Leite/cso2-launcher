@@ -1,63 +1,41 @@
 #include "stdafx.hpp"
-#include <future>
 
 #include "hooks.hpp"
+
+#include "engine/cso2/icso2msgmanager.h"
 #include "tier0/ICommandLine.h"
 
 static std::unique_ptr<PLH::x86Detour> g_pInitUIHook;
 static uint64_t g_InitUIOrig = NULL;
 
-class ICSO2LoginManager
+NOINLINE bool __fastcall hkCSO2UIManager_InitMainUI( void* ecx, void* edx )
 {
-public:
-	virtual void sub_1028465() = 0;
-	virtual void sub_10286160() = 0;
-	virtual bool Login(const char *UserName, const char *Password, const char *a4, const char *a5, const char *a6) = 0;
-};
+    const char* szUsername = CommandLine()->ParmValue( "-username" );
+    const char* szPassword = CommandLine()->ParmValue( "-password" );
 
-extern ICSO2LoginManager *g_pCSO2LoginManager;
+    if ( szUsername && szPassword )
+    {
+        g_pCSO2MsgHandler->Login( szUsername, szPassword, szUsername );
+    }
 
-NOINLINE bool __fastcall hkCSO2UIManager_InitMainUI(void* ecx, void* edx)
-{
-	std::async(std::launch::async, []() {
-		// Delay 1s after ui loaded to avoid crash
-		std::this_thread::sleep_for(std::chrono::seconds(1));
-
-		const char* szUsername = CommandLine()->ParmValue("-username");
-		const char* szPassword = CommandLine()->ParmValue("-password");
-
-		if (szUsername && szPassword)
-		{
-			std::string Username(szUsername);
-			std::string Password(szPassword);
-
-			while (Username.size() > 16)
-				Username.pop_back();
-
-			while (Password.size() > 4)
-				Password.pop_back();
-
-			g_pCSO2LoginManager->Login(strdup(Username.c_str()), strdup(Password.c_str()), "", "", "");
-		}
-	});
-
-	return PLH::FnCast(g_InitUIOrig, &hkCSO2UIManager_InitMainUI)(ecx, edx);
+    return PLH::FnCast( g_InitUIOrig, &hkCSO2UIManager_InitMainUI )( ecx, edx );
 }
 
-void OnClientLoaded(const uintptr_t dwClientBase)
+void OnClientLoaded( const uintptr_t dwClientBase )
 {
-	static bool bHasLoaded = false;
+    static bool bHasLoaded = false;
 
-	if (bHasLoaded)
-	{
-		return;
-	}
+    if ( bHasLoaded )
+    {
+        return;
+    }
 
-	bHasLoaded = true;
+    bHasLoaded = true;
 
-	PLH::CapstoneDisassembler dis(PLH::Mode::x86);
+    PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
 
-	g_pInitUIHook = SetupDetourHook(
-		dwClientBase + 0xAE4610, &hkCSO2UIManager_InitMainUI, &g_InitUIOrig, dis);
-	g_pInitUIHook->hook();
+    g_pInitUIHook =
+        SetupDetourHook( dwClientBase + 0xAE4610, &hkCSO2UIManager_InitMainUI,
+                         &g_InitUIOrig, dis );
+    g_pInitUIHook->hook();
 }

@@ -58,8 +58,8 @@ You **may open a CoD styled console by pressing the *~*** (*tilde*) **key**.
 - ```-masterport [some port]``` - Sets the master server's port number to *some port*
 - ```-decryptedfiles``` - Tell the game to consider every game file as decrypted
 - ```-enablecustom``` - Enables the use of a custom directory `custom` in the root directory of your game's files
-- ```-username [your name]``` - Specify user name for skip login screen, Must use with ```-password```
-- ```-password [your password]``` - Specify password for skip login screen, Must use with ```-username```
+- ```-username [your username]``` - Specify login user name, in order to skip the login screen. **Must** be used with ```-password```
+- ```-password [your password]``` - Specify login password , in order to skip the login screen. **Must** be used with ```-username```
 
 ## Building
 

@@ -91,7 +91,7 @@ static uint64_t g_EngineWinOrig = NULL;
 NOINLINE LRESULT WINAPI hkHLEngineWindowProc( HWND hWnd, UINT Msg,
                                               WPARAM wParam, LPARAM lParam )
 {
-    bool conRes = g_GameConsole.OnWindowCallback( hWnd, Msg, wParam, lParam );
+    const bool conRes = g_GameConsole.OnWindowCallback( hWnd, Msg, wParam, lParam );
 
     if ( !conRes )
         return NULL;
@@ -136,18 +136,29 @@ void BytePatchEngine( const uintptr_t dwEngineBase )
     utils::WriteProtectedMemory( loginNMPatch2, dwEngineBase + 0x28499D );
 
     //
+    // don't clear password string
+    // TODO: this is DANGEROUS! find a better way to fix this!
+    //
+    // nops
+    const std::array<uint8_t, 14> loginNMPatch3 = { 0x90, 0x90, 0x90, 0x90,
+                                                    0x90, 0x90, 0x90, 0x90,
+                                                    0x90, 0x90, 0x90, 0x90,
+                                                    0x90, 0x90 };
+    utils::WriteProtectedMemory( loginNMPatch3, dwEngineBase + 0x2849CB );
+
+    //
     // don't allow nexon messenger to ovewrite our password
     //
     // nops
-    const std::array<uint8_t, 10> loginNMPatch3 = {
+    const std::array<uint8_t, 10> loginNMPatch4 = {
         0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90
     };
-    utils::WriteProtectedMemory( loginNMPatch3, dwEngineBase + 0x284A22 );
+    utils::WriteProtectedMemory( loginNMPatch4, dwEngineBase + 0x284A22 );
 
     //
     // don't get the nexon username from NM
     //
-    utils::WriteProtectedMemory( loginNMPatch3, dwEngineBase + 0x284A57 );
+    utils::WriteProtectedMemory( loginNMPatch4, dwEngineBase + 0x284A57 );
 
     //
     // reenable UDP info packet
@@ -205,9 +216,6 @@ void BytePatchEngine( const uintptr_t dwEngineBase )
     utils::WriteProtectedMemory( canCheatPatch2, dwEngineBase + 0x19F4D2 );
 }
 
-class ICSO2LoginManager;
-ICSO2LoginManager* g_pCSO2LoginManager;
-
 void OnEngineLoaded( const uintptr_t dwEngineBase )
 {
     static bool bHasLoaded = false;
@@ -219,7 +227,7 @@ void OnEngineLoaded( const uintptr_t dwEngineBase )
 
     bHasLoaded = true;
 
-    // setup engine interfaces
+    // setup engine library interfaces
     CreateInterfaceFn pEngineFactory = Sys_GetFactory( "engine.dll" );
     ConnectExtraLibraries( &pEngineFactory, 1 );
 
@@ -229,14 +237,12 @@ void OnEngineLoaded( const uintptr_t dwEngineBase )
 
     g_pServerAddrHook = SetupDetourHook(
         dwEngineBase + 0x285FE0, &hkGetServerInfo, &g_ServerAddrOrig, dis );
-    g_pCanCheatHook = SetupDetourHook(
-		dwEngineBase + 0xCE8B0, &hkCanCheat, &g_CanCheatOrig, dis );
+    g_pCanCheatHook = SetupDetourHook( dwEngineBase + 0xCE8B0, &hkCanCheat,
+                                       &g_CanCheatOrig, dis );
     g_pEngineWinHook = SetupDetourHook(
         dwEngineBase + 0x15EAF0, &hkHLEngineWindowProc, &g_EngineWinOrig, dis );
     g_pColorPrintHook = SetupDetourHook(
         dwEngineBase + 0x1C4B40, &hkCon_ColorPrint, &g_ColorPrintOrig, dis );
-
-	g_pCSO2LoginManager = (ICSO2LoginManager*)(dwEngineBase + 0xAA8190);
 
     g_pServerAddrHook->hook();
     g_pCanCheatHook->hook();
