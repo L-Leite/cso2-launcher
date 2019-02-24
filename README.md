@@ -6,7 +6,7 @@ A custom client launcher for Nexon's Counter-Strike: Online 2, written in C++.
 
 Ready for [this CSO2 master server](https://github.com/Ochii/cso2-master-server/).
 
-**Any help** towards the project is welcomed and appreciated.
+If you **wish to help** please read the [contributing guide](https://github.com/Ochii/cso2-launcher/blob/master/.github/PULL_REQUEST_TEMPLATE.md) to know how. Your help is welcome.
 
 ## Installation
 
@@ -89,16 +89,6 @@ Or use the ```cmake-gui``` tool bundled with CMake for a more user friendly expe
 Once successfully generated, you can open ```CSO2Launcher.sln``` and build the project in your preferred configuration.
 
 If built successfully, you will find the launcher inside ```out/bin/Win32/[your configuration]```.
-
-## Bug reporting
-
-When creating an issue, [try to use a template](https://github.com/Ochii/cso2-launcher/issues/new/choose). This helps us understanding your problem better.
-
-You can also see the [current open issues](https://github.com/Ochii/cso2-launcher/issues) at anytime.
-
-## Pull requests
-
-Improvements and suggestions are welcomed, create a [pull request](https://github.com/Ochii/cso2-launcher/pulls).
 
 ## Libraries used
 
