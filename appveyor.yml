@@ -2,9 +2,6 @@ version: '{build}'
 pull_requests:
   do_not_increment_build_number: true
 skip_tags: true
-skip_commits:
-  files:
-    - '*.md'
 image: Visual Studio 2017
 configuration:
 - Debug
@@ -43,7 +40,7 @@ artifacts:
   name: symbols
 deploy:
 - provider: GitHub
-  release: Build $(LAUNCHER_VERSION)
+  release: $(LAUNCHER_VERSION)
   auth_token:
     secure: XnUsE3jqzulQ4cWVkK2ALBR7qfnfwbBdoMDChmcnx1RcGtRgXV0QLMPo+GcIf8YU
   artifact: binaries,symbols
