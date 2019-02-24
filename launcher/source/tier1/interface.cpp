@@ -128,11 +128,6 @@ void *GetModuleHandle(const char *name)
 }
 #endif
 
-#if defined( _WIN32 ) && !defined( _X360 )
-#define WIN32_LEAN_AND_MEAN
-#include "windows.h"
-#endif
-
 //-----------------------------------------------------------------------------
 // Purpose: returns a pointer to a function, given a module
 // Input  : pModuleName - module name

@@ -2,7 +2,6 @@
 #include "sourceapp.hpp"
 
 #ifdef _WIN32
-#include <Windows.h>
 #include <combaseapi.h>
 #endif
 

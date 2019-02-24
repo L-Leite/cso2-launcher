@@ -16,7 +16,6 @@
 #include <direct.h>
 #include <io.h>
 #include <process.h>
-#include <windows.h>
 #elif defined( POSIX )
 #include <unistd.h>
 #define _chdir chdir
