@@ -322,7 +322,7 @@ void GameConsole::DrawCompleteList( void )
 void GameConsole::ToggleConsole( bool extend )
 {
     if ( !m_bDrawExtend && m_bShowConsole )
-        ClearInput();	    
+        ClearInput();
 
     if ( extend && m_bShowConsole && m_CompleteCandidates.size() > 6 )
     {
@@ -339,7 +339,7 @@ void GameConsole::ToggleConsole( bool extend )
     m_bShowConsole =
         ( extend && m_bShowConsole ) ? m_bShowConsole : !m_bShowConsole;
 
-	// Disable game input while the console is enabled
+    // Disable game input while the console is enabled
     g_pInputSystem->EnableInput( !m_bShowConsole );
 }
 
@@ -515,8 +515,11 @@ int GameConsole::ConsoleInputCallBack( ImGuiInputTextCallbackData* data )
             // current input line along with cursor position.
             if ( prev_history_pos != m_HistoryPos )
             {
-                std::string_view history_str =
-                    ( m_HistoryPos >= 0 ) ? m_History[m_HistoryPos] : "";
+                std::string_view history_str = "";
+
+                if ( m_HistoryPos != INVALID_POSITION )
+                    history_str = m_History[m_HistoryPos];
+
                 data->DeleteChars( 0, data->BufTextLen );
                 data->InsertChars( 0, history_str.data() );
             }
