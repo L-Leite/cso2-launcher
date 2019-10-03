@@ -418,3 +418,6 @@ launcher/header/version.hpp
 
 # CMake build dir
 build/
+
+# VScode configs
+/.vscode
