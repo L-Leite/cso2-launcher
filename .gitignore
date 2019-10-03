@@ -416,12 +416,5 @@ launcher/launcher_*_cotire.cmake
 launcher/header/git-version.hpp
 launcher/header/version.hpp
 
-# ignore compiled files out directory
-out/
-
-# ignore temp build directory
-tmp/
-
-# ignore generated project files
-*.sln
-*.vcxproj*
+# CMake build dir
+build/
