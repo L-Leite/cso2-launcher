@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.13.0)
 project(launcher LANGUAGES CXX)
 
 if(NOT CMAKE_SIZEOF_VOID_P EQUAL 4)
-  message(FATAL_ERROR "The launcher must be built for 32 bit platforms.")
+  # message(FATAL_ERROR "The launcher must be built for 32 bit platforms.")
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
@@ -26,22 +26,20 @@ set(FEATURE_INLINENTD OFF CACHE BOOL "")
 
 add_subdirectory(libs/PolyHook_2_0)
 
-include(cotire)
-
 set(LAUNCHER_VERSION_FILE "${LAUNCHER_ROOT_DIR}/version.txt")
 set(LAUNCHER_VERSION_TEMPLATE "${CMAKE_SOURCE_DIR}/headers/uc2_version.hpp.in")
 set(LAUNCHER_VERSION_OUT "${LAUNCHER_GENERATED_DIR}/uc2_version.hpp")
 set(LAUNCHER_GIT_DIR "${CMAKE_SOURCE_DIR}/.git")
 
-include(uc2_version)
-generate_uc2_version(VERSION_FILE
-                     ${LAUNCHER_VERSION_FILE}
-                     HEADER_TEMPLATE
-                     ${LAUNCHER_VERSION_TEMPLATE}
-                     HEADER_OUT
-                     ${LAUNCHER_VERSION_OUT}
-                     GIT_DIR
-                     ${LAUNCHER_GIT_DIR})
+include(launcher_version)
+generate_launcher_version(VERSION_FILE
+                          ${LAUNCHER_VERSION_FILE}
+                          HEADER_TEMPLATE
+                          ${LAUNCHER_VERSION_TEMPLATE}
+                          HEADER_OUT
+                          ${LAUNCHER_VERSION_OUT}
+                          GIT_DIR
+                          ${LAUNCHER_GIT_DIR})
 
 #
 # project's include directories
@@ -117,7 +115,6 @@ set(LAUNCHER_SOURCES_BASE
     "sources/main.cpp"
     "sources/modulelist.cpp"
     "sources/sourceapp.cpp"
-    "sources/stdafx.cpp"
     "sources/tierextra.cpp")
 
 set(LAUNCHER_SOURCES_HOOKS
@@ -155,8 +152,6 @@ set(LAUNCHER_SOURCES_TIER2 "sources/tier2/tier2.cpp")
 
 set(LAUNCHER_SOURCES_TIER3 "sources/tier3/tier3.cpp")
 
-set(LAUNCHER_PRECOMPILED_HEADER "headers/stdafx.hpp")
-
 set(LAUNCHER_HEADERS_IMGUIS
     "sources/imgui/imconfig.h"
     "sources/imgui/imgui.h"
@@ -178,7 +173,6 @@ set(LAUNCHER_HEADERS_BASE
     "headers/sourceapp.hpp"
     "headers/tierextra.hpp"
     "headers/utilities.hpp"
-    ${LAUNCHER_PRECOMPILED_HEADER}
     ${LAUNCHER_VERSION_OUT})
 
 set(LAUNCHER_RESOURCES_BASE "resources/launcher.ico" "resources/launcher.rc"
@@ -276,11 +270,3 @@ target_compile_definitions(PolyHook_2 PRIVATE _ITERATOR_DEBUG_LEVEL=0)
 if(WIN32)
   target_link_libraries(launcher wsock32.lib)
 endif()
-
-set_target_properties(launcher
-                      PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT
-                                 ${LAUNCHER_PRECOMPILED_HEADER}
-                                 COTIRE_ADD_UNITY_BUILD
-                                 FALSE)
-
-cotire(launcher)
