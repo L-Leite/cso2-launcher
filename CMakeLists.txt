@@ -7,17 +7,11 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
 
-if(NOT CMAKE_BUILD_TYPE)
-  message(STATUS "User did not specify build type, defaulting to Release build")
-  set(CMAKE_BUILD_TYPE "Release")
-endif()
-
-if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-  add_definitions(-DNDEBUG)
-endif()
+message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
+message(STATUS "CMAKE_SIZEOF_VOID_P: ${CMAKE_SIZEOF_VOID_P}")
 
 if(NOT CMAKE_SIZEOF_VOID_P EQUAL 4)
-  message(FATAL_ERROR "The launcher must be built for 32 bit platforms.")
+  message(STATUS "The launcher must be built for 32 bit platforms.")
 endif()
 
 set(LAUNCHER_REQUIRED_LIBRARIES capstone-static PolyHook_2)
