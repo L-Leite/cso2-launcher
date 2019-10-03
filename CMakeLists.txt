@@ -2,14 +2,18 @@ cmake_minimum_required(VERSION 3.13.0)
 
 project(launcher LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
-
 if(NOT CMAKE_SIZEOF_VOID_P EQUAL 4)
   message(FATAL_ERROR "The launcher must be built for 32 bit platforms.")
 endif()
+
+set(CMAKE_CXX_STANDARD 17)
+
+set(LAUNCHER_ROOT_DIR "${PROJECT_SOURCE_DIR}")
+set(LAUNCHER_GENERATED_DIR "${CMAKE_BINARY_DIR}/generated")
+
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(LAUNCHER_REQUIRED_LIBRARIES capstone-static PolyHook_2)
 
@@ -24,19 +28,20 @@ add_subdirectory(libs/PolyHook_2_0)
 
 include(cotire)
 
-# Generate version.h at build time.
-add_custom_target(LauncherVersion ALL
-                  COMMAND ${CMAKE_COMMAND}
-                          -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
-                          -P
-                          ${PROJECT_SOURCE_DIR}/cmake_modules/version.cmake)
+set(LAUNCHER_VERSION_FILE "${LAUNCHER_ROOT_DIR}/version.txt")
+set(LAUNCHER_VERSION_TEMPLATE "${CMAKE_SOURCE_DIR}/headers/uc2_version.hpp.in")
+set(LAUNCHER_VERSION_OUT "${LAUNCHER_GENERATED_DIR}/uc2_version.hpp")
+set(LAUNCHER_GIT_DIR "${CMAKE_SOURCE_DIR}/.git")
 
-# Generate git-version.h at build time.
-add_custom_target(GitVersion ALL
-                  COMMAND ${CMAKE_COMMAND}
-                          -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
-                          -P
-                          ${PROJECT_SOURCE_DIR}/cmake_modules/git-version.cmake)
+include(uc2_version)
+generate_uc2_version(VERSION_FILE
+                     ${LAUNCHER_VERSION_FILE}
+                     HEADER_TEMPLATE
+                     ${LAUNCHER_VERSION_TEMPLATE}
+                     HEADER_OUT
+                     ${LAUNCHER_VERSION_OUT}
+                     GIT_DIR
+                     ${LAUNCHER_GIT_DIR})
 
 #
 # project's include directories
@@ -165,7 +170,6 @@ set(LAUNCHER_HEADERS_IMGUIS
 set(LAUNCHER_HEADERS_BASE
     "headers/basedir.hpp"
     "headers/console.hpp"
-    "headers/git-version.hpp"
     "headers/hooks.hpp"
     "headers/ifilesystem.hpp"
     "headers/leakdump.hpp"
@@ -174,8 +178,8 @@ set(LAUNCHER_HEADERS_BASE
     "headers/sourceapp.hpp"
     "headers/tierextra.hpp"
     "headers/utilities.hpp"
-    "headers/version.hpp"
-    ${LAUNCHER_PRECOMPILED_HEADER})
+    ${LAUNCHER_PRECOMPILED_HEADER}
+    ${LAUNCHER_VERSION_OUT})
 
 set(LAUNCHER_RESOURCES_BASE "resources/launcher.ico" "resources/launcher.rc"
                             "resources/resource.hpp")
@@ -246,6 +250,9 @@ add_dependencies(launcher GitVersion)
 if(WIN32)
   target_sources(launcher PRIVATE "resources/launcher.rc")
 endif()
+
+# the generated version header's directory
+target_include_directories(launcher PRIVATE ${LAUNCHER_GENERATED_DIR})
 
 #
 # library dependencies

@@ -12,7 +12,6 @@
 #include "tier2/tier2.h"
 
 #include "console.hpp"
-#include "git-version.hpp"
 #include "hooks.hpp"
 #include "tierextra.hpp"
 #include "version.hpp"

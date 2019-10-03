@@ -411,11 +411,6 @@ _deps
 # cotire
 launcher/launcher_*_cotire.cmake
 
-## cso2-launcher
-# ignore version headers
-launcher/header/git-version.hpp
-launcher/header/version.hpp
-
 # CMake build dir
 build/
 
