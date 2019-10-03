@@ -1,5 +1,5 @@
 set(LAUNCHER_VERSION_HEADER "${SOURCE_DIR}/header/version.hpp")
-set(LAUNCHER_VERSION_FILE "${SOURCE_DIR}/../version.txt")
+set(LAUNCHER_VERSION_FILE "${SOURCE_DIR}/version.txt")
 set(LAUNCHER_VERSION "0.0.0")
 
 set(SHOULD_UPDATE_FILE "1")
