@@ -6,8 +6,6 @@ A custom client launcher for Nexon's Counter-Strike: Online 2, written in C++.
 
 Ready for [this CSO2 master server](https://github.com/Ochii/cso2-master-server/).
 
-If you **wish to help** please read the [contributing guide](https://github.com/Ochii/cso2-launcher/blob/master/.github/PULL_REQUEST_TEMPLATE.md) to know how. Your help is welcome.
-
 ## Installation
 
 ### Before starting
