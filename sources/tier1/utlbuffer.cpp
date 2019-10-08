@@ -8,8 +8,6 @@
 
 #pragma warning (disable : 4514)
 
-#include "stdafx.hpp"
-
 #include "utlbuffer.h"
 #include <stdio.h>
 #include <stdarg.h>

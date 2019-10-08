@@ -6,6 +6,8 @@ if(NOT CMAKE_SIZEOF_VOID_P EQUAL 4)
   # message(FATAL_ERROR "The launcher must be built for 32 bit platforms.")
 endif()
 
+add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
+
 set(CMAKE_CXX_STANDARD 17)
 
 set(LAUNCHER_ROOT_DIR "${PROJECT_SOURCE_DIR}")
@@ -27,8 +29,9 @@ set(FEATURE_INLINENTD OFF CACHE BOOL "")
 add_subdirectory(libs/PolyHook_2_0)
 
 set(LAUNCHER_VERSION_FILE "${LAUNCHER_ROOT_DIR}/version.txt")
-set(LAUNCHER_VERSION_TEMPLATE "${CMAKE_SOURCE_DIR}/headers/uc2_version.hpp.in")
-set(LAUNCHER_VERSION_OUT "${LAUNCHER_GENERATED_DIR}/uc2_version.hpp")
+set(LAUNCHER_VERSION_TEMPLATE
+    "${CMAKE_SOURCE_DIR}/headers/launcher_version.hpp.in")
+set(LAUNCHER_VERSION_OUT "${LAUNCHER_GENERATED_DIR}/launcher_version.hpp")
 set(LAUNCHER_GIT_DIR "${CMAKE_SOURCE_DIR}/.git")
 
 include(launcher_version)
@@ -47,16 +50,16 @@ generate_launcher_version(VERSION_FILE
 set(LAUNCHER_PROJECT_INCLUDES "headers")
 
 set(LAUNCHER_SOURCE_SDK_INCLUDES
-    ${PROJECT_SOURCE_DIR}/sdk/common
-    ${PROJECT_SOURCE_DIR}/sdk/public
-    ${PROJECT_SOURCE_DIR}/sdk/public/appframework
-    ${PROJECT_SOURCE_DIR}/sdk/public/mathlib
-    ${PROJECT_SOURCE_DIR}/sdk/public/tier0
-    ${PROJECT_SOURCE_DIR}/sdk/public/tier1
-    ${PROJECT_SOURCE_DIR}/sdk/public/vgui
-    ${PROJECT_SOURCE_DIR}/sdk/public/vstdlib)
+    ${LAUNCHER_ROOT_DIR}/sdk/common
+    ${LAUNCHER_ROOT_DIR}/sdk/public
+    ${LAUNCHER_ROOT_DIR}/sdk/public/appframework
+    ${LAUNCHER_ROOT_DIR}/sdk/public/mathlib
+    ${LAUNCHER_ROOT_DIR}/sdk/public/tier0
+    ${LAUNCHER_ROOT_DIR}/sdk/public/tier1
+    ${LAUNCHER_ROOT_DIR}/sdk/public/vgui
+    ${LAUNCHER_ROOT_DIR}/sdk/public/vstdlib)
 
-set(LAUNCHER_LIBRARIES_INCLUDES ${PROJECT_SOURCE_DIR}/libs/PolyHook_2_0)
+set(LAUNCHER_LIBRARIES_INCLUDES ${LAUNCHER_ROOT_DIR}/libs/PolyHook_2_0)
 
 set(LAUNCHER_IMGUI_INCLUDES "sources/imgui" "sources/imgui/imgui_impl")
 
@@ -217,11 +220,11 @@ if(WIN32)
 endif()
 
 set(LAUNCHER_OUT_DIR_BIN
-    "${PROJECT_SOURCE_DIR}/out/bin/${LAUNCHER_SYSTEM_OUT_DIR}"
+    "${LAUNCHER_ROOT_DIR}/out/bin/${LAUNCHER_SYSTEM_OUT_DIR}"
     CACHE STRING "The directory where to output compiled executables")
 
 set(LAUNCHER_OUT_DIR_LIB
-    "${PROJECT_SOURCE_DIR}/out/lib/${LAUNCHER_SYSTEM_OUT_DIR}"
+    "${LAUNCHER_ROOT_DIR}/out/lib/${LAUNCHER_SYSTEM_OUT_DIR}"
     CACHE STRING "The directory where to output compiled libraries")
 
 set_target_properties(launcher
@@ -231,12 +234,6 @@ set_target_properties(launcher
                                  ${LAUNCHER_OUT_DIR_LIB}
                                  RUNTIME_OUTPUT_DIRECTORY
                                  ${LAUNCHER_OUT_DIR_BIN})
-
-# generate launcher version header
-add_dependencies(launcher LauncherVersion)
-
-# generate git version header
-add_dependencies(launcher GitVersion)
 
 #
 # resource file for windows
@@ -254,7 +251,7 @@ target_include_directories(launcher PRIVATE ${LAUNCHER_GENERATED_DIR})
 target_link_libraries(launcher ${LAUNCHER_REQUIRED_LIBRARIES})
 
 # source sdk
-target_link_directories(launcher PRIVATE ${PROJECT_SOURCE_DIR}/sdk/lib/public)
+target_link_directories(launcher PRIVATE ${LAUNCHER_ROOT_DIR}/sdk/lib/public)
 
 target_link_libraries(launcher tier0.lib vstdlib.lib)
 

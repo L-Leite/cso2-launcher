@@ -1,4 +1,4 @@
-﻿#include "stdafx.hpp"
+#include <windows.h>
 
 enum Sys_Flags
 {

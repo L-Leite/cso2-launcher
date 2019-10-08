@@ -1,6 +1,5 @@
 #include "convar.h"
 #include "hooks.hpp"
-#include "stdafx.hpp"
 
 void BytePatchServer( const uintptr_t dwServerBase )
 {
@@ -11,7 +10,7 @@ void BytePatchServer( const uintptr_t dwServerBase )
 
     if ( ent_create->IsFlagSet( FCVAR_CHEAT ) )
         ent_create->RemoveFlags( FCVAR_CHEAT );
-	*/
+    */
 }
 
 void OnServerLoaded( const uintptr_t dwServerBase )

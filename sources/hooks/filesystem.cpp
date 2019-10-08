@@ -1,9 +1,13 @@
-#include "stdafx.hpp"
+#include <array>
+#include <filesystem>
 
 #include <direct.h>
 #include <io.h>
+
+#include <tier0/ICommandLine.h>
+
 #include "hooks.hpp"
-#include "tier0/ICommandLine.h"
+#include "utilities.hpp"
 
 std::filesystem::path GetCustomPath( const char* pFileName )
 {

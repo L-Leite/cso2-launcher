@@ -1,13 +1,14 @@
-#include "stdafx.hpp"
+#include <array>
+
+#include <tier0/ICommandLine.h>
+#include <tier0/platform.h>
 
 #include "console.hpp"
 #include "hooks.hpp"
-
-#include "tier0/ICommandLine.h"
-#include "tier0/platform.h"
+#include "utilities.hpp"
 
 static std::unique_ptr<PLH::EatHook> g_pTimestampedHook;
-static uint64_t g_pTimestampedOrig = NULL; // unused but needed by polyhook
+static uint64_t g_pTimestampedOrig = NULL;  // unused but needed by polyhook
 
 NOINLINE void hkCOM_TimestampedLog( char const* fmt, ... )
 {
@@ -32,8 +33,8 @@ NOINLINE void hkCOM_TimestampedLog( char const* fmt, ... )
     _vsnprintf( string, sizeof( string ), fmt, argptr );
     va_end( argptr );
 
-    float curStamp = Plat_FloatTime();		  
-    
+    float curStamp = Plat_FloatTime();
+
     if ( !s_bFirstWrite )
     {
         unlink( "timestamped.log" );
@@ -42,11 +43,11 @@ NOINLINE void hkCOM_TimestampedLog( char const* fmt, ... )
 
     FILE* fp = fopen( "timestamped.log", "at+" );
     fprintf( fp, "%8.4f / %8.4f:  %s\n", curStamp, curStamp - s_LastStamp,
-                string );
+             string );
     fclose( fp );
 
     s_LastStamp = curStamp;
-}					  
+}
 
 void BytePatchTier( const uintptr_t dwTierBase )
 {
@@ -63,7 +64,8 @@ void HookTier0()
     const uintptr_t dwTierBase = utils::GetModuleBase( "tier0.dll" );
     BytePatchTier( dwTierBase );
 
-	g_pTimestampedHook = SetupExportHook( "COM_TimestampedLog", L"tier0.dll",
-							&hkCOM_TimestampedLog, &g_pTimestampedOrig );
-	g_pTimestampedHook->hook();
+    g_pTimestampedHook =
+        SetupExportHook( "COM_TimestampedLog", L"tier0.dll",
+                         &hkCOM_TimestampedLog, &g_pTimestampedOrig );
+    g_pTimestampedHook->hook();
 }

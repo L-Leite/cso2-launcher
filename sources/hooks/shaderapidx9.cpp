@@ -1,7 +1,6 @@
-#include "stdafx.hpp"
-
 #include "console.hpp"
 #include "hooks.hpp"
+#include "utilities.hpp"
 
 //
 // this is D3DDeviceWrapper::m_pD3DDevice (an IDirect3DDevice9). it's the first

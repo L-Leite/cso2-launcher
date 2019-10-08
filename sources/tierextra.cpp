@@ -1,5 +1,3 @@
-#include "stdafx.hpp"
-
 #include "tierextra.hpp"
 
 #include "engine/cso2/icso2msgmanager.h"

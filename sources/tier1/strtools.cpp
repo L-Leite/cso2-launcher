@@ -42,8 +42,6 @@
 	#undef strncat
 #endif
 
-#include "stdafx.hpp"
-
 // NOTE: I have to include stdio + stdarg first so vsnprintf gets compiled in
 #include <stdio.h>
 #include <stdarg.h>
@@ -55,6 +53,7 @@
 #include <stdlib.h>
 #define _getcwd getcwd
 #elif _WIN32
+#include <windows.h>
 #include <direct.h>
 #endif
 

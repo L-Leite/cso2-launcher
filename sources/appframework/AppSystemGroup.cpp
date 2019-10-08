@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved.
+//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved.
 //============//
 //
 // Purpose: Defines a group of app systems that all have the same lifetime
@@ -8,7 +8,7 @@
 // $NoKeywords: $
 //=============================================================================//
 
-#include "stdafx.hpp"
+#include <windows.h>
 
 #include "appframework/IAppSystem.h"
 #include "appframework/IAppSystemGroup.h"

@@ -1,4 +1,3 @@
-#include "stdafx.hpp"
 #include "sourceapp.hpp"
 
 #ifdef _WIN32

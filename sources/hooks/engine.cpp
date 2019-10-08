@@ -1,12 +1,17 @@
-#include "stdafx.hpp"
+#include <array>
+#include <cstdint>
+#include <string>
 
-#include "color.h"
+#include "Color.h"
 #include "convar.h"
-#include "tier0/icommandline.h"
+#include "tier0/ICommandLine.h"
 
 #include "console.hpp"
 #include "hooks.hpp"
-#include "tierextra.hpp"
+#include "tierextra.hpp" 
+#include "utilities.hpp"
+
+using namespace std::string_literals;
 
 struct IpAddressInfo
 {
@@ -91,7 +96,8 @@ static uint64_t g_EngineWinOrig = NULL;
 NOINLINE LRESULT WINAPI hkHLEngineWindowProc( HWND hWnd, UINT Msg,
                                               WPARAM wParam, LPARAM lParam )
 {
-    const bool conRes = g_GameConsole.OnWindowCallback( hWnd, Msg, wParam, lParam );
+    const bool conRes =
+        g_GameConsole.OnWindowCallback( hWnd, Msg, wParam, lParam );
 
     if ( !conRes )
         return NULL;

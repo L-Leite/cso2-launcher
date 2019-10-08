@@ -1,5 +1,3 @@
-#include "stdafx.hpp"
-
 #include "hooks.hpp"
 
 #include "engine/cso2/icso2msgmanager.h"

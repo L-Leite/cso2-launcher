@@ -4,8 +4,6 @@
 //
 //=============================================================================
 
-#include "stdafx.hpp"
-
 #undef PROTECTED_THINGS_ENABLE
 #undef PROTECT_FILEIO_FUNCTIONS
 #ifndef POSIX
@@ -13,6 +11,7 @@
 #endif
 
 #if defined( _WIN32 ) && !defined( _X360 )
+#include <windows.h>
 #include <direct.h>
 #include <io.h>
 #include <process.h>
@@ -26,7 +25,7 @@
 #include "KeyValues.h"
 #include "appframework/IAppSystemGroup.h"
 #include "filesystem_init.h"
-#include "tier0/icommandline.h"
+#include "tier0/ICommandLine.h"
 #include "tier1/smartptr.h"
 #include "tier1/strtools.h"
 #include "tier1/utlbuffer.h"

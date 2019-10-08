@@ -1,10 +1,8 @@
-//===== Copyright © 2005-2005, Valve Corporation, All rights reserved. ======//
+//===== Copyright ï¿½ 2005-2005, Valve Corporation, All rights reserved. ======//
 //
 // Purpose: A higher level link library for general use in the game and tools.
 //
 //===========================================================================//
-
-#include "stdafx.hpp"
 
 #include <tier2/tier2.h>
 #include "filesystem.h"

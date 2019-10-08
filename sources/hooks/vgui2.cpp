@@ -1,7 +1,9 @@
-#include "stdafx.hpp"
+#include <sstream>
+#include <string_view>
+
+#include <tier0/icommandline.h>
 
 #include "hooks.hpp"
-#include "tier0/icommandline.h"
 
 //
 // Formats a string as "resource/[game prefix]_[language].txt"
@@ -159,8 +161,8 @@ NOINLINE int __fastcall hkWideCharToUtf8_2( void* thisptr, void*,
 }
 
 void OnVguiLoaded( const uintptr_t dwVguiBase )
-{			
-	static bool bHasLoaded = false;
+{
+    static bool bHasLoaded = false;
 
     if ( bHasLoaded )
     {
@@ -169,16 +171,16 @@ void OnVguiLoaded( const uintptr_t dwVguiBase )
 
     bHasLoaded = true;
 
-	PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
+    PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
 
-	g_pStrTblAddHook = SetupDetourHook( dwVguiBase + 0x8D90, &hkStrTblAddFile,
+    g_pStrTblAddHook = SetupDetourHook( dwVguiBase + 0x8D90, &hkStrTblAddFile,
                                         &g_StrTblAddOrig, dis );
     g_pStrTblAddHook->hook();
 
-	const void* pTableInstance = GetLocalizedStringTable( dwVguiBase );
+    const void* pTableInstance = GetLocalizedStringTable( dwVguiBase );
 
-	// does multiple hooks in CLocalizedStringTable 
-	static const PLH::VFuncMap deviceRedirects = {
+    // does multiple hooks in CLocalizedStringTable
+    static const PLH::VFuncMap deviceRedirects = {
         { uint16_t( 20 ), reinterpret_cast<uint64_t>( &hkWideCharToUtf8 ) },
         { uint16_t( 21 ), reinterpret_cast<uint64_t>( &hkUtf8ToLocal ) },
         { uint16_t( 22 ), reinterpret_cast<uint64_t>( &hkLocalToUtf8 ) },

@@ -4,8 +4,6 @@
 //
 //=============================================================================
 
-#include "stdafx.hpp"
-
 #define __STDC_LIMIT_MACROS
 #include <stdint.h>
 

@@ -1,6 +1,6 @@
-#include "stdafx.hpp"
-
 #include <d3d9.h>
+
+#include "launcher_version.hpp"
 
 #include "imgui.h"
 #include "imgui_impl/imgui_impl_dx9.h"
