@@ -22,7 +22,7 @@ IProcessUtils *g_pProcessUtils = 0;
 static bool s_bConnected = false;
 
 // for utlsortvector.h
-#ifndef _WIN32
+#if defined( _WIN32 ) || defined( COMPILER_MINGW )
 	void *g_pUtlSortVectorQSortContext = NULL;
 #endif
 

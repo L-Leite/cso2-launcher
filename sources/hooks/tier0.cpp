@@ -8,7 +8,7 @@
 #include "utilities.hpp"
 
 static std::unique_ptr<PLH::EatHook> g_pTimestampedHook;
-static uint64_t g_pTimestampedOrig = NULL;  // unused but needed by polyhook
+static uint64_t g_pTimestampedOrig = 0;  // unused but needed by polyhook
 
 NOINLINE void hkCOM_TimestampedLog( char const* fmt, ... )
 {

@@ -26,7 +26,7 @@ std::filesystem::path GetCustomPath( const char* pFileName )
 }
 
 static std::unique_ptr<PLH::x86Detour> g_pOpenExHook;
-static uint64_t g_OpenExOrig = NULL;
+static uint64_t g_OpenExOrig = 0;
 
 NOINLINE void* __fastcall hkFsOpenEx( void* ecx, void* edx,
                                       const char* pFileName,
@@ -50,7 +50,7 @@ NOINLINE void* __fastcall hkFsOpenEx( void* ecx, void* edx,
 }
 
 static std::unique_ptr<PLH::x86Detour> g_pOpenExGfxHook;
-static uint64_t g_OpenExGfxOrig = NULL;
+static uint64_t g_OpenExGfxOrig = 0;
 
 NOINLINE void* __fastcall hkFsOpenExGfx( void* ecx, void* edx,
                                          const char* pFileName,
@@ -65,7 +65,7 @@ NOINLINE void* __fastcall hkFsOpenExGfx( void* ecx, void* edx,
 const char* path = 0;
 
 static std::unique_ptr<PLH::x86Detour> g_pFileEncHook;
-static uint64_t g_FileEncOrig = NULL;
+static uint64_t g_FileEncOrig = 0;
 
 NOINLINE bool __fastcall hkIsFileEncrypted( void* ecx, void* edx )
 {
@@ -79,7 +79,7 @@ NOINLINE bool __fastcall hkIsFileEncrypted( void* ecx, void* edx )
 }
 
 static std::unique_ptr<PLH::x86Detour> g_pGetFileExtHook;
-static uint64_t g_GetFileExtOrig = NULL;
+static uint64_t g_GetFileExtOrig = 0;
 
 //
 // this will be called before call the IsFileEncrypted, and ecx is the pointer

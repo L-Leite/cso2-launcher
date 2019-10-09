@@ -41,7 +41,7 @@ void OnLoadLibrary( HMODULE hLibrary, std::string_view libPathView )
 }
 
 static std::unique_ptr<PLH::x86Detour> g_pLoadLibExHook;
-static uint64_t g_LoadLibExOrig = NULL;
+static uint64_t g_LoadLibExOrig = 0;
 
 NOINLINE HMODULE WINAPI hkLoadLibraryExA( LPCSTR lpLibFileName, HANDLE hFile,
                                           DWORD dwFlags )

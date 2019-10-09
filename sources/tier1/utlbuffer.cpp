@@ -638,7 +638,7 @@ void CUtlBuffer::GetStringInternal( char *pString, size_t maxLenInChars )
 		return;
 	}
 
-	const size_t nCharsToRead = min( (size_t)nLen, maxLenInChars ) - 1;
+	const size_t nCharsToRead = std::min( (size_t)nLen, maxLenInChars ) - 1;
 
 	Get( pString, nCharsToRead );
 	pString[nCharsToRead] = 0;

@@ -3,7 +3,7 @@
 #include <string>
 
 #include "appframework/AppFramework.h"
-#include "tier0/icommandline.h"
+#include "tier0/ICommandLine.h"
 
 class CAppSystemGroup;
 class IFileSystem;

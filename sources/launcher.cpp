@@ -7,17 +7,19 @@
 //===========================================================================//
 
 #ifdef _WIN32
-#include <Shlwapi.h>
-#include <WinSock2.h>
+#include <windows.h>
+
 #include <shellapi.h>
+#include <shlwapi.h>
+#include <winsock2.h>
 #endif
 
 #include "basedir.hpp"
 #include "leakdump.hpp"
 #include "sourceapp.hpp"
 
+#include "appframework/IAppSystem.h"
 #include "appframework/IAppSystemGroup.h"
-#include "appframework/iappsystem.h"
 #include "engine_launcher_api.h"
 #include "iregistry.h"
 #include "materialsystem/imaterialsystem.h"
@@ -27,8 +29,6 @@
 #include "tier0/vcrmode.h"
 
 #include "tier1/interface.h"
-#include "tier1/utlbuffer.h"
-#include "tier1/utlrbtree.h"
 
 #include "cso2/log.h"
 #include "cso2/messagebox.h"
@@ -344,10 +344,9 @@ static char const* Cmd_TranslateFileAssociation( char const* param )
 // Input  : none
 // Output : const char * series of convars
 //-----------------------------------------------------------------------------
-static const char* BuildCommand()
+static std::string BuildCommand()
 {
-    static CUtlBuffer build( 0, 0, CUtlBuffer::TEXT_BUFFER );
-    build.Clear();
+    std::string cmdStr;
 
     // arg[0] is the executable name
     for ( int i = 1; i < CommandLine()->ParmCount(); i++ )
@@ -374,13 +373,13 @@ static const char* BuildCommand()
             const char* szValue = CommandLine()->ParmValue( szParm );
             if ( szValue )
             {
-                build.PutString( va( "%s %s;", szParm + 1, szValue ) );
+                cmdStr += va( "%s %s;", szParm + 1, szValue );
                 i++;
             }
             else
             {
-                build.PutString( szParm + 1 );
-                build.PutChar( ';' );
+                cmdStr += ( szParm + 1 );
+                cmdStr += ';';
             }
         }
         else
@@ -390,15 +389,13 @@ static const char* BuildCommand()
                 Cmd_TranslateFileAssociation( CommandLine()->GetParm( i ) );
             if ( translated )
             {
-                build.PutString( translated );
-                build.PutChar( ';' );
+                cmdStr += translated;
+                cmdStr += ';';
             }
         }
     }
 
-    build.PutChar( '\0' );
-
-    return static_cast<const char*>( build.Base() );
+    return cmdStr;
 }
 
 extern void HookTier0();
@@ -513,15 +510,15 @@ int LauncherMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
                 }
                 else
                 {
-                    const char* szCommand = BuildCommand();
+                    std::string szCommand = BuildCommand();
 
                     //
                     // Fill out the data structure to send to the engine.
                     //
                     COPYDATASTRUCT copyData;
-                    copyData.cbData = strlen( szCommand ) + 1;
+                    copyData.cbData = szCommand.length() + 1;
                     copyData.dwData = 0;
-                    copyData.lpData = (void*)szCommand;
+                    copyData.lpData = (void*)szCommand.c_str();
 
                     if ( !::SendMessage( hwndEngine, WM_COPYDATA, 0,
                                          (LPARAM)&copyData ) )
@@ -539,8 +536,6 @@ int LauncherMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
                     {
                         retval = 0;
                     }
-
-                    free( (void*)szCommand );
                 }
             }
             else
@@ -575,8 +570,6 @@ int LauncherMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 
     g_LeakDump.m_bCheckLeaks =
         CommandLine()->CheckParm( "-leakcheck" ) != nullptr;
-
-    _set_SSE2_enable( true );
 
     bool bRestart = true;
     while ( bRestart )

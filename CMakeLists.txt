@@ -251,7 +251,7 @@ target_include_directories(launcher PRIVATE ${LAUNCHER_GENERATED_DIR})
 target_link_libraries(launcher ${LAUNCHER_REQUIRED_LIBRARIES})
 
 # source sdk
-target_link_directories(launcher PRIVATE ${LAUNCHER_ROOT_DIR}/sdk/lib/public)
+target_link_directories(launcher PRIVATE "${LAUNCHER_ROOT_DIR}/sdk/lib/public")
 
 target_link_libraries(launcher tier0.lib vstdlib.lib)
 

@@ -4,7 +4,7 @@
 #include <combaseapi.h>
 #endif
 
-#include "tier0/icommandline.h"
+#include "tier0/ICommandLine.h"
 
 #include "IHammer.h"
 #include "engine_launcher_api.h"
@@ -24,7 +24,7 @@
 #include "tier2/tier2.h"
 #include "tier3/tier3.h"
 #include "vgui/ISurface.h"
-#include "vgui/ivgui.h"
+#include "vgui/IVGui.h"
 #include "video/ivideoservices.h"
 #include "vphysics_interface.h"
 #include "vstdlib/iprocessutils.h"

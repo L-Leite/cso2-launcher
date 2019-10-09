@@ -32,7 +32,7 @@ NOINLINE HRESULT WINAPI hkEndScene( LPDIRECT3DDEVICE9 thisptr )
 }
 
 static std::unique_ptr<PLH::x86Detour> g_pCreateDeviceHook;
-static uint64_t g_CreateDeviceOrig = NULL;
+static uint64_t g_CreateDeviceOrig = 0;
 
 NOINLINE bool __fastcall hkCreateD3DDevice(
     void* thisptr, void* edx, void* pHWnd, int nAdapter,

@@ -16,15 +16,15 @@
 #undef PROTECTED_THINGS_ENABLE  // from protected_things.h
 #endif
 
-#include <cstdio>	 
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <filesystem>	
+#include <filesystem>
 
 #include "basetypes.h"
 #include "interface.h"
+#include "tier0/ICommandLine.h"
 #include "tier0/dbg.h"
-#include "tier0/icommandline.h"
 #include "tier0/threadtools.h"
 #include "tier1/strtools.h"
 #ifdef _WIN32
@@ -479,7 +479,7 @@ CreateInterfaceFn Sys_GetFactoryThis( void )
 CreateInterfaceFn Sys_GetFactory( const char* pModuleName )
 {
 #ifdef _WIN32
-    return static_cast<CreateInterfaceFn>(
+    return reinterpret_cast<CreateInterfaceFn>(
         Sys_GetProcAddress( pModuleName, CREATEINTERFACE_PROCNAME ) );
 #elif defined( POSIX )
     // see Sys_GetFactory( CSysModule *pModule ) for an explanation

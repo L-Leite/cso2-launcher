@@ -8,7 +8,7 @@
 
 #include "console.hpp"
 #include "hooks.hpp"
-#include "tierextra.hpp" 
+#include "tierextra.hpp"
 #include "utilities.hpp"
 
 using namespace std::string_literals;
@@ -20,7 +20,7 @@ struct IpAddressInfo
 };
 
 static std::unique_ptr<PLH::x86Detour> g_pServerAddrHook;
-static uint64_t g_ServerAddrOrig = NULL;
+static uint64_t g_ServerAddrOrig = 0;
 
 //
 // Allows the user to choose a specific master server's IP address and/or port
@@ -46,7 +46,7 @@ NOINLINE void __fastcall hkGetServerInfo( IpAddressInfo& info )
 ConVar* sv_cheats = nullptr;
 
 static std::unique_ptr<PLH::x86Detour> g_pCanCheatHook;
-static uint64_t g_CanCheatOrig = NULL;
+static uint64_t g_CanCheatOrig = 0;
 
 NOINLINE bool __fastcall hkCanCheat()
 {
@@ -62,7 +62,7 @@ NOINLINE bool __fastcall hkCanCheat()
 }
 
 static std::unique_ptr<PLH::x86Detour> g_pColorPrintHook;
-static uint64_t g_ColorPrintOrig = NULL;
+static uint64_t g_ColorPrintOrig = 0;
 
 NOINLINE void __fastcall hkCon_ColorPrint( Color& clr, const char* msg )
 {
@@ -91,7 +91,7 @@ NOINLINE void __fastcall hkCon_ColorPrint( Color& clr, const char* msg )
 }
 
 static std::unique_ptr<PLH::x86Detour> g_pEngineWinHook;
-static uint64_t g_EngineWinOrig = NULL;
+static uint64_t g_EngineWinOrig = 0;
 
 NOINLINE LRESULT WINAPI hkHLEngineWindowProc( HWND hWnd, UINT Msg,
                                               WPARAM wParam, LPARAM lParam )
@@ -100,7 +100,7 @@ NOINLINE LRESULT WINAPI hkHLEngineWindowProc( HWND hWnd, UINT Msg,
         g_GameConsole.OnWindowCallback( hWnd, Msg, wParam, lParam );
 
     if ( !conRes )
-        return NULL;
+        return 0;
 
     return PLH::FnCast( g_EngineWinOrig, &hkHLEngineWindowProc )(
         hWnd, Msg, wParam, lParam );

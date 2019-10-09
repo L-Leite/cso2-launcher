@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <vector>
+
 #ifdef _WIN32
 #include <windows.h>
 #include <d3d9.h>

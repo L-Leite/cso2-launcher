@@ -11,10 +11,10 @@
 #endif
 
 #if defined( _WIN32 ) && !defined( _X360 )
-#include <windows.h>
 #include <direct.h>
 #include <io.h>
 #include <process.h>
+#include <windows.h>
 #elif defined( POSIX )
 #include <unistd.h>
 #define _chdir chdir
@@ -620,7 +620,7 @@ FSReturnCode_t FileSystem_LoadSearchPaths( CFSSearchPathsInit& initInfo )
         }
         else
         {
-            FileFindHandle_t findHandle = NULL;
+            FileFindHandle_t findHandle = 0;
             const char* pszFoundShortName = initInfo.m_pFileSystem->FindFirst(
                 szAbsSearchPath, &findHandle );
             if ( pszFoundShortName )

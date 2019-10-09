@@ -4,7 +4,7 @@
 #include "tier0/ICommandLine.h"
 
 static std::unique_ptr<PLH::x86Detour> g_pInitUIHook;
-static uint64_t g_InitUIOrig = NULL;
+static uint64_t g_InitUIOrig = 0;
 
 NOINLINE bool __fastcall hkCSO2UIManager_InitMainUI( void* ecx, void* edx )
 {
