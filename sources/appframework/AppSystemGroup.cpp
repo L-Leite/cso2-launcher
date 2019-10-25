@@ -17,7 +17,6 @@
 #include "interface.h"
 
 #include "cso2/iloadingsplash.h"
-#include "cso2/log.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -199,8 +198,6 @@ void CAppSystemGroup::ReportStartupFailure( int nErrorStage, int nSysIndex )
     // Walk the dictionary
     Warning( "[Error] System (%s) failed during stage %s\n", pszSystemName,
              pszStageDesc );
-    g_CSO2DocLog.AddMsg( 1, "[Error] System (%s) failed during stage %s\n",
-                         pszSystemName, pszStageDesc );
 }
 
 void CAppSystemGroup::AddSystem( IAppSystem* pAppSystem,
@@ -233,10 +230,6 @@ bool CAppSystemGroup::AddSystems( AppSystemInfo_t* pSystemList )
 {
     while ( pSystemList->m_pModuleName[0] )
     {
-        g_CSO2DocLog.AddMsg( 1, "AddSystem %s %s",
-                             pSystemList->m_pInterfaceName,
-                             pSystemList->m_pModuleName );
-
         AppModule_t module = LoadModule( pSystemList->m_pModuleName );
         IAppSystem* pSystem =
             AddSystem( module, pSystemList->m_pInterfaceName );
@@ -246,8 +239,6 @@ bool CAppSystemGroup::AddSystems( AppSystemInfo_t* pSystemList )
                    pSystemList->m_pInterfaceName, pSystemList->m_pModuleName );
             return false;
         }
-
-        g_CSO2DocLog.AddMsg( 1, "AddSystem done." );
 
         ++pSystemList;
     }
@@ -393,9 +384,6 @@ int CAppSystemGroup::Run()
     int nRetVal = OnStartup();
     if ( m_nErrorStage != NONE )
     {
-        g_CSO2DocLog.AddMsg( 1,
-                             "[Error] System init has failed (ErrorStage:%d)",
-                             m_nErrorStage );
         return nRetVal;
     }
 
@@ -436,16 +424,12 @@ int CAppSystemGroup::OnStartup()
 
     m_nErrorStage = NONE;
 
-    g_CSO2DocLog.AddMsg( 1, "Create App" );
-
     // Call an installed application creation function
     if ( !Create() )
     {
         m_nErrorStage = CREATION;
         return -1;
     }
-
-    g_CSO2DocLog.AddMsg( 1, "App ConnectSystems" );
 
     // Let all systems know about each other
     if ( !ConnectSystems() )
@@ -454,16 +438,12 @@ int CAppSystemGroup::OnStartup()
         return -1;
     }
 
-    g_CSO2DocLog.AddMsg( 1, "App PreInit" );
-
     // Allow the application to do some work before init
     if ( !PreInit() )
     {
         m_nErrorStage = PREINITIALIZATION;
         return -1;
     }
-
-    g_CSO2DocLog.AddMsg( 1, "App InitSystems" );
 
     // Call Init on all App Systems
     int nRetVal = InitSystems();

@@ -4,6 +4,8 @@
 //
 //===========================================================================//
 
+#include <windows.h>
+
 #include <tier2/tier2.h>
 #include "filesystem.h"
 #include "filesystem/IQueuedLoader.h"

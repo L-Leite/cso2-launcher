@@ -30,7 +30,7 @@ NOINLINE bool __fastcall hkStrTblAddFile( void* ecx, void* edx,
                                           const char* pPathID,
                                           bool bIncludeFallbackSearchPaths )
 {
-    const char* szDesiredLang = CommandLine()->ParmValue( "-lang" );
+    const char* szDesiredLang = CommandLine()->ParmValueStr( "-lang" );
 
     // Make sure we have a command argument
     if ( !szDesiredLang )

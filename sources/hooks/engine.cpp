@@ -30,8 +30,8 @@ static uint64_t g_ServerAddrOrig = 0;
 //
 NOINLINE void __fastcall hkGetServerInfo( IpAddressInfo& info )
 {
-    const char* szMasterIp = CommandLine()->ParmValue( "-masterip" );
-    const char* szMasterPort = CommandLine()->ParmValue( "-masterport" );
+    const char* szMasterIp = CommandLine()->ParmValueStr( "-masterip" );
+    const char* szMasterPort = CommandLine()->ParmValueStr( "-masterport" );
 
     info.szIpAddress = szMasterIp ? szMasterIp : "127.0.0.1"s;
     info.iPort =

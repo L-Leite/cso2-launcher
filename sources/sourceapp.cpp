@@ -251,7 +251,7 @@ const char* CSourceAppSystemGroup::DetermineDefaultMod() const
 {
     if ( !m_bEditMode )
     {
-        return CommandLine()->ParmValue( "-game", DEFAULT_HL2_GAMEDIR );
+        return CommandLine()->ParmValueStr( "-game", DEFAULT_HL2_GAMEDIR );
     }
 
     return g_pHammer->GetDefaultMod();
@@ -261,8 +261,8 @@ const char* CSourceAppSystemGroup::DetermineDefaultGame() const
 {
     if ( !m_bEditMode )
     {
-        return CommandLine()->ParmValue( "-defaultgamedir",
-                                         DEFAULT_HL2_GAMEDIR );
+        return CommandLine()->ParmValueStr( "-defaultgamedir",
+                                            DEFAULT_HL2_GAMEDIR );
     }
 
     return g_pHammer->GetDefaultGame();

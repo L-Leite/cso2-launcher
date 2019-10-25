@@ -1,32 +1,46 @@
 cmake_minimum_required(VERSION 3.13.0)
 
+if(POLICY CMP0091)
+  cmake_policy(SET CMP0091 NEW)
+endif()
+
 project(launcher LANGUAGES CXX)
 
 if(NOT CMAKE_SIZEOF_VOID_P EQUAL 4)
-  # message(FATAL_ERROR "The launcher must be built for 32 bit platforms.")
+  message(
+    WARNING
+      "Building the launcher for a different platform than 32 bit is not recommended."
+    )
 endif()
 
-add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
+#
+# Put Visual Studio resulting binaries out of their config directory
+#
+if(MSVC)
+  set(PKG_POSSIBLE_CONFIGS "Debug;Release;MinSizeRel;RelWithDebInfo")
+  foreach(CUR_CONFIG ${PKG_POSSIBLE_CONFIGS})
+    string(TOUPPER ${CUR_CONFIG} CUR_CONFIG)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CUR_CONFIG} "${OUTPUT_DIRECTORY}")
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CUR_CONFIG} "${OUTPUT_DIRECTORY}")
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CUR_CONFIG} "${OUTPUT_DIRECTORY}")
+  endforeach()
+endif()
 
-set(CMAKE_CXX_STANDARD 17)
+option(LAUNCHER_USE_LTO "Use 'Link Time Optimizations'" ON)
+if(MSVC)
+  option(LAUNCHER_USE_SHARED_RUNTIME
+         "Use MSVC's shared runtime library instead of the static library?" ON)
+endif()
 
 set(LAUNCHER_ROOT_DIR "${PROJECT_SOURCE_DIR}")
 set(LAUNCHER_GENERATED_DIR "${CMAKE_BINARY_DIR}/generated")
+set(LAUNCHER_LIB_PHOOK_DIR "${LAUNCHER_ROOT_DIR}/libs/PolyHook_2_0")
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-set(LAUNCHER_REQUIRED_LIBRARIES capstone-static PolyHook_2)
-
-# force PolyHook to build as a library
-set(BUILD_DLL ON CACHE BOOL "")
-
-# disable unused polyhook features
-set(FEATURE_EXCEPTION OFF CACHE BOOL "")
-set(FEATURE_INLINENTD OFF CACHE BOOL "")
-
-add_subdirectory(libs/PolyHook_2_0)
+add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 
 set(LAUNCHER_VERSION_FILE "${LAUNCHER_ROOT_DIR}/version.txt")
 set(LAUNCHER_VERSION_TEMPLATE
@@ -45,67 +59,30 @@ generate_launcher_version(VERSION_FILE
                           ${LAUNCHER_GIT_DIR})
 
 #
-# project's include directories
-#
-set(LAUNCHER_PROJECT_INCLUDES "headers")
-
-set(LAUNCHER_SOURCE_SDK_INCLUDES
-    ${LAUNCHER_ROOT_DIR}/sdk/common
-    ${LAUNCHER_ROOT_DIR}/sdk/public
-    ${LAUNCHER_ROOT_DIR}/sdk/public/appframework
-    ${LAUNCHER_ROOT_DIR}/sdk/public/mathlib
-    ${LAUNCHER_ROOT_DIR}/sdk/public/tier0
-    ${LAUNCHER_ROOT_DIR}/sdk/public/tier1
-    ${LAUNCHER_ROOT_DIR}/sdk/public/vgui
-    ${LAUNCHER_ROOT_DIR}/sdk/public/vstdlib)
-
-set(LAUNCHER_LIBRARIES_INCLUDES ${LAUNCHER_ROOT_DIR}/libs/PolyHook_2_0)
-
-set(LAUNCHER_IMGUI_INCLUDES "sources/imgui" "sources/imgui/imgui_impl")
-
-set(LAUNCHER_ALL_INCLUDES
-    ${LAUNCHER_PROJECT_INCLUDES}
-    ${LAUNCHER_SOURCE_SDK_INCLUDES}
-    ${LAUNCHER_LIBRARIES_INCLUDES}
-    ${LAUNCHER_IMGUI_INCLUDES})
-
-include_directories(${LAUNCHER_ALL_INCLUDES})
-
-#
-# macros
-#
-if(WIN32)
-  add_definitions(-DWIN32_LEAN_AND_MEAN)
-endif()
-
-# ensures compatibility with the game's std::string
-add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)
-
-# source sdk specific
-add_definitions(-DNO_VCR -D_DLL_EXT=.dll)
-
-#
-# extra compiler flags warning level 4, exception handling, multi threaded
-# runtime lib also enables whole program optimization for release builds
+# setup MSVC runtime lib
 #
 if(MSVC)
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W4 /EHsc /MTd")
-  set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} /W4 /EHsc /MT")
-  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO
-      "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /W4 /EHsc /MT /GL")
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /W4 /EHsc /MT /GL")
+  if(LAUNCHER_USE_SHARED_RUNTIME MATCHES ON)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+  elseif(LAUNCHER_USE_SHARED_RUNTIME MATCHES OFF)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+  endif()
 endif()
 
 #
-# extra linker flags make app support large addresses (>2gb) and enable whole
-# program optimization for release builds
+# Dependencies
 #
-if(MSVC)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /LARGEADDRESSAWARE")
-  set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LTCG")
-  set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO
-      "${CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO} /LTCG")
-endif()
+
+# PolyHook
+
+# force PolyHook to build as a library
+set(BUILD_DLL ON CACHE BOOL "")
+
+# disable unused polyhook features
+set(FEATURE_EXCEPTION OFF CACHE BOOL "")
+set(FEATURE_INLINENTD OFF CACHE BOOL "")
+
+add_subdirectory("${LAUNCHER_LIB_PHOOK_DIR}")
 
 #
 # add source files to the project
@@ -178,8 +155,12 @@ set(LAUNCHER_HEADERS_BASE
     "headers/utilities.hpp"
     ${LAUNCHER_VERSION_OUT})
 
-set(LAUNCHER_RESOURCES_BASE "resources/launcher.ico" "resources/launcher.rc"
-                            "resources/resource.hpp")
+if(WIN32)
+  set(LAUNCHER_RESOURCES_WIN32 "resources/launcher.ico" "resources/launcher.rc"
+                               "resources/resource.hpp")
+else()
+  set(LAUNCHER_RESOURCES_WIN32)
+endif()
 
 file(GLOB
      LAUNCHER_ALL_SOURCES
@@ -191,7 +172,8 @@ file(GLOB
      ${LAUNCHER_SOURCES_TIER2}
      ${LAUNCHER_SOURCES_TIER3}
      ${LAUNCHER_HEADERS_BASE}
-     ${LAUNCHER_HEADERS_IMGUIS})
+     ${LAUNCHER_HEADERS_IMGUIS}
+     ${LAUNCHER_RESOURCES_WIN32})
 
 source_group("Source Files" FILES ${LAUNCHER_SOURCES_BASE})
 source_group("Source Files\\AppFramework" FILES
@@ -205,42 +187,90 @@ source_group("Header Files" FILES ${LAUNCHER_HEADERS_BASE})
 source_group("Header Files\\ImGui" FILES ${LAUNCHER_HEADERS_IMGUIS})
 source_group("Resource Files" FILES ${LAUNCHER_RESOURCES_BASE})
 
+# force c++17 standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 #
 # Add executable to build.
 #
 if(WIN32)
   add_executable(launcher WIN32 ${LAUNCHER_ALL_SOURCES})
+else()
+  add_executable(launcher WIN32 ${LAUNCHER_ALL_SOURCES})
 endif()
-
-# set the builds out directory
-if(WIN32)
-  set(LAUNCHER_SYSTEM_OUT_DIR
-      "Win32"
-      CACHE INTERNAL "The directory where to save platform specific binaries")
-endif()
-
-set(LAUNCHER_OUT_DIR_BIN
-    "${LAUNCHER_ROOT_DIR}/out/bin/${LAUNCHER_SYSTEM_OUT_DIR}"
-    CACHE STRING "The directory where to output compiled executables")
-
-set(LAUNCHER_OUT_DIR_LIB
-    "${LAUNCHER_ROOT_DIR}/out/lib/${LAUNCHER_SYSTEM_OUT_DIR}"
-    CACHE STRING "The directory where to output compiled libraries")
-
-set_target_properties(launcher
-                      PROPERTIES ARCHIVE_OUTPUT_DIRECTORY
-                                 ${LAUNCHER_OUT_DIR_LIB}
-                                 LIBRARY_OUTPUT_DIRECTORY
-                                 ${LAUNCHER_OUT_DIR_LIB}
-                                 RUNTIME_OUTPUT_DIRECTORY
-                                 ${LAUNCHER_OUT_DIR_BIN})
 
 #
-# resource file for windows
+# macros
 #
 if(WIN32)
-  target_sources(launcher PRIVATE "resources/launcher.rc")
+  target_compile_definitions(launcher
+                             PRIVATE
+                             -DWIN32_LEAN_AND_MEAN
+                             -DNOMINMAX)
 endif()
+
+# ensures compatibility with the game's std::string
+target_compile_definitions(launcher PRIVATE -D_ITERATOR_DEBUG_LEVEL=0)
+
+# source sdk specific
+target_compile_definitions(launcher
+                           PRIVATE
+                           -DNO_VCR
+                           -D_DLL_EXT=.dll)
+
+#
+# Enable all warnings
+#
+if(MSVC)
+  target_compile_options(launcher PRIVATE /W4 /WX /SAFESEH:NO)
+  target_link_options(launcher PRIVATE /SAFESEH:NO)
+else()
+  target_compile_options(launcher
+                         PRIVATE -Wall
+                                 -Wextra
+                                 -Wconversion
+                                 -pedantic)
+  target_compile_options(launcher PRIVATE -g)
+endif()
+
+#
+# support large addresses (>2gb)
+#
+if(MSVC)
+  # target_link_options(launcher PRIVATE /LARGEADDRESSAWARE)
+elseif(MINGW)
+  # target_link_options(launcher PRIVATE --large-address-aware)
+else()
+  # message( FATAL_ERROR "Please implement the large address aware option for
+  # your compiler.")
+endif()
+
+if(UNCSO2_USE_LTO)
+  set_property(TARGET uc2 PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+  set_property(TARGET uncso2 PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()
+
+#
+# project's include directories
+#
+set(LAUNCHER_SOURCE_SDK_INCLUDES
+    "${LAUNCHER_ROOT_DIR}/sdk/common"
+    "${LAUNCHER_ROOT_DIR}/sdk/public"
+    "${LAUNCHER_ROOT_DIR}/sdk/public/appframework"
+    "${LAUNCHER_ROOT_DIR}/sdk/public/mathlib"
+    "${LAUNCHER_ROOT_DIR}/sdk/public/tier0"
+    "${LAUNCHER_ROOT_DIR}/sdk/public/tier1"
+    "${LAUNCHER_ROOT_DIR}/sdk/public/vgui"
+    "${LAUNCHER_ROOT_DIR}/sdk/public/vstdlib")
+
+set(LAUNCHER_IMGUI_INCLUDES "sources/imgui" "sources/imgui/imgui_impl")
+
+target_include_directories(launcher
+                           PRIVATE "headers"
+                                   ${LAUNCHER_SOURCE_SDK_INCLUDES}
+                                   ${LAUNCHER_LIB_PHOOK_DIR}
+                                   ${LAUNCHER_IMGUI_INCLUDES})
 
 # the generated version header's directory
 target_include_directories(launcher PRIVATE ${LAUNCHER_GENERATED_DIR})
@@ -248,18 +278,16 @@ target_include_directories(launcher PRIVATE ${LAUNCHER_GENERATED_DIR})
 #
 # library dependencies
 #
-target_link_libraries(launcher ${LAUNCHER_REQUIRED_LIBRARIES})
+target_link_libraries(launcher capstone-static PolyHook_2)
 
 # source sdk
 target_link_directories(launcher PRIVATE "${LAUNCHER_ROOT_DIR}/sdk/lib/public")
 
+# if(MSVC) target_link_libraries(launcher tier0_msvc.lib vstdlib.lib)
+# elseif(MINGW) target_link_libraries(launcher tier0_mingw.lib vstdlib.lib)
+# else() message(FATAL_ERROR "Please implement an option to link the Source SDK
+# libraries in your compiler.") endif()
 target_link_libraries(launcher tier0.lib vstdlib.lib)
-
-# enable whole program optimization for dependencies
-foreach(lib ${LAUNCHER_REQUIRED_LIBRARIES})
-  target_compile_options(${lib} PRIVATE "$<$<CONFIG:Release>:/GL>")
-  target_link_options(${lib} PRIVATE "$<$<CONFIG:Release>:/LTCG>")
-endforeach()
 
 # make polyhook's std::string compatible with the game bin
 target_compile_definitions(PolyHook_2 PRIVATE _ITERATOR_DEBUG_LEVEL=0)

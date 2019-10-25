@@ -8,8 +8,8 @@ static uint64_t g_InitUIOrig = 0;
 
 NOINLINE bool __fastcall hkCSO2UIManager_InitMainUI( void* ecx, void* edx )
 {
-    const char* szUsername = CommandLine()->ParmValue( "-username" );
-    const char* szPassword = CommandLine()->ParmValue( "-password" );
+    const char* szUsername = CommandLine()->ParmValueStr( "-username" );
+    const char* szPassword = CommandLine()->ParmValueStr( "-password" );
 
     if ( szUsername && szPassword )
     {

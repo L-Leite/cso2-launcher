@@ -4,6 +4,8 @@
 //
 //===========================================================================//
 
+#include <windows.h>
+
 #include "tier3/tier3.h"
 #include "SoundEmitterSystem/isoundemittersystembase.h"
 #include "VGuiMatSurface/IMatSystemSurface.h"
