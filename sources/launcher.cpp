@@ -316,6 +316,30 @@ static std::string BuildCommand()
     return cmdStr;
 }
 
+bool CreateDebugConsole()
+{
+    BOOL bCreated = AllocConsole();
+
+    if ( bCreated == FALSE )
+    {
+        return false;
+    }
+
+    FILE* conIn;
+    FILE* conOut;
+    FILE* conErr;
+
+    freopen_s( &conIn, "CONIN$", "r", stdin );
+    freopen_s( &conOut, "CONOUT$", "w", stdout );
+    freopen_s( &conErr, "CONOUT$", "w", stderr );
+
+    SetConsoleTitleA( "cso2-launcher -- Debug Console" );
+    SetConsoleCP( CP_UTF8 );
+    SetConsoleOutputCP( CP_UTF8 );
+
+    return true;
+}
+
 extern void HookTier0();
 extern void HookWinapi();
 
@@ -339,6 +363,16 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
     const char* filename;
     CommandLine()->CreateCmdLine( IsPC() ? VCRHook_GetCommandLine() :
                                            lpCmdLine );
+
+    if ( CommandLine()->FindParm( "-debugconsole" ) != 0 )
+    {
+        bool bConCreated = CreateDebugConsole();
+
+        if ( bConCreated == false )
+        {
+            Warning( "Could not create a debug console" );
+        }
+    }
 
     // show the splash screen
     GetCSO2LoadingSplash()->StartLoadingScreenThread( hInstance );
