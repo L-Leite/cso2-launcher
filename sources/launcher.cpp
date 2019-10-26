@@ -125,84 +125,6 @@ void InitTextMode()
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: Figure out if Steam is running, then load the
-// GameOverlayRenderer.dll
-//-----------------------------------------------------------------------------
-void TryToLoadSteamOverlayDLL()
-{
-    // First, check if the module is already loaded, perhaps because we were run
-    // from Steam directly
-    HMODULE hMod = GetModuleHandle( "GameOverlayRenderer.dll" );
-    if ( hMod )
-    {
-        return;
-    }
-
-    bool bSteamActive = false;
-    HKEY hKey;
-    char rgchSteamPath[MAX_PATH];
-
-    if ( RegOpenKeyEx( HKEY_CURRENT_USER,
-                       R"(Software\Valve\Steam\ActiveProcess)", NULL, KEY_READ,
-                       &hKey ) == ERROR_SUCCESS )
-    {
-        // Get the pid
-        DWORD dwSteamPID = 0;
-        DWORD dwLength = sizeof( DWORD );
-        if ( RegQueryValueEx( hKey, "pid", nullptr, nullptr,
-                              reinterpret_cast<LPBYTE>( &dwSteamPID ),
-                              &dwLength ) == ERROR_SUCCESS )
-        {
-            HANDLE hProcess =
-                ::OpenProcess( PROCESS_QUERY_INFORMATION, false, dwSteamPID );
-            if ( hProcess != nullptr )
-            {
-                DWORD dwExitCode = 0;
-                bSteamActive = (::GetExitCodeProcess( hProcess, &dwExitCode ) &&
-                                dwExitCode == STILL_ACTIVE );
-                ::CloseHandle( hProcess );
-            }
-        }
-
-        // If active we also need to get the pathname
-        if ( bSteamActive )
-        {
-            dwLength = sizeof( rgchSteamPath );
-            if ( RegQueryValueEx(
-                     hKey, "SteamClientDll", nullptr, nullptr,
-                     reinterpret_cast<unsigned char*>( rgchSteamPath ),
-                     &dwLength ) == ERROR_SUCCESS )
-            {
-                if ( dwLength < 1 || Q_strlen( rgchSteamPath ) < 1 )
-                {
-                    // If we can't figure out the path we can't do anything, so
-                    // flag inactive
-                    bSteamActive = false;
-                }
-                else
-                {
-                    // Need to strip the filename since we got the
-                    // steamclient.dll filename, but we want the path
-                    Q_StripFilename( rgchSteamPath );
-                }
-            }
-        }
-
-        RegCloseKey( hKey );
-    }
-
-    if ( bSteamActive )
-    {
-        Q_strcat( rgchSteamPath, "\\GameOverlayRenderer.dll",
-                  Q_ARRAYSIZE( rgchSteamPath ) );
-
-        // This could fail, but we can't fix it if it does so just ignore
-        // failures
-        LoadLibrary( rgchSteamPath );
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Allow only one windowed source app to run at a time
 //-----------------------------------------------------------------------------
 HANDLE g_hMutex = nullptr;
@@ -421,12 +343,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
     // Figure out the directory the executable is running from
     // and make that be the current working directory
     CBaseDirectory baseDir;
-
-    // This call is to emulate steam's injection of the GameOverlay DLL into our
-    // process if we are running from the command line directly, this allows the
-    // same experience the user gets to be present when running from perforce,
-    // the call has no effect on X360
-    TryToLoadSteamOverlayDLL();
 
     // Start VCR mode?
     if ( CommandLine()->CheckParm( "-vcrrecord", &filename ) )
