@@ -340,6 +340,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
     CommandLine()->CreateCmdLine( IsPC() ? VCRHook_GetCommandLine() :
                                            lpCmdLine );
 
+    // show the splash screen
+    GetCSO2LoadingSplash()->StartLoadingScreenThread( hInstance );
+
     // Figure out the directory the executable is running from
     // and make that be the current working directory
     CBaseDirectory baseDir;
