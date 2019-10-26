@@ -318,7 +318,7 @@ bool FileSystem_GetExecutableDir( char* exedir, int exeDirLen )
         // use the optional basedir as the exe dir
         if ( CommandLine()->FindParm( "-basedir" ) )
         {
-            strcpy( exedir, CommandLine()->ParmValue( "-basedir", "" ) );
+            strcpy( exedir, CommandLine()->ParmValueStr( "-basedir", "" ) );
         }
     }
 
