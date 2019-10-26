@@ -25,12 +25,3 @@ extern "C" __declspec( dllexport ) HMODULE
 
     return hModule;
 }
-
-int LauncherMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
-                  int nCmdShow );
-
-int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    LPSTR lpCmdLine, int nShowCmd )
-{
-    return LauncherMain( hInstance, hPrevInstance, lpCmdLine, nShowCmd );
-}

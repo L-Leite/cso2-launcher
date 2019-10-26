@@ -90,9 +90,9 @@ add_subdirectory("${LAUNCHER_LIB_PHOOK_DIR}")
 set(LAUNCHER_SOURCES_BASE
     "sources/console.cpp"
     "sources/consolethread.cpp"
+    "sources/exports.cpp"
     "sources/filesystem_init.cpp"
     "sources/launcher.cpp"
-    "sources/main.cpp"
     "sources/modulelist.cpp"
     "sources/sourceapp.cpp"
     "sources/tierextra.cpp")

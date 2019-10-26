@@ -397,16 +397,8 @@ static std::string BuildCommand()
 extern void HookTier0();
 extern void HookWinapi();
 
-//-----------------------------------------------------------------------------
-// Purpose: The real entry point for the application
-// Input  : hInstance -
-//			hPrevInstance -
-//			lpCmdLine -
-//			nCmdShow -
-// Output : int APIENTRY
-//-----------------------------------------------------------------------------
-int LauncherMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
-                  int nCmdShow )
+int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
+                    LPSTR lpCmdLine, int nShowCmd )
 {
     SetAppInstance( hInstance );
 
