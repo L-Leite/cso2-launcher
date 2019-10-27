@@ -1,6 +1,9 @@
 #include <array>
 #include <cstdint>
+#include <iostream>
 #include <string>
+
+#include "msvc/string.hpp"
 
 #include "Color.h"
 #include "convar.h"
@@ -15,7 +18,7 @@ using namespace std::string_literals;
 
 struct IpAddressInfo
 {
-    std::string szIpAddress;
+    msvc::string szIpAddress;
     uint16_t iPort;
 };
 
@@ -33,7 +36,10 @@ NOINLINE void __fastcall hkGetServerInfo( IpAddressInfo& info )
     const char* szMasterIp = CommandLine()->ParmValueStr( "-masterip" );
     const char* szMasterPort = CommandLine()->ParmValueStr( "-masterport" );
 
-    info.szIpAddress = szMasterIp ? szMasterIp : "127.0.0.1"s;
+    std::cout << "GetServerInfo - IP: " << szMasterIp
+              << " port: " << szMasterPort << "\n";
+
+    info.szIpAddress = szMasterIp != nullptr ? szMasterIp : "127.0.0.1";
     info.iPort =
         szMasterPort ? static_cast<uint16_t>( atoi( szMasterPort ) ) : 30001;
 }
