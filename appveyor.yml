@@ -1,53 +1,43 @@
-version: '{build}'
+version: 0.4.1-{build}
 pull_requests:
   do_not_increment_build_number: true
-skip_tags: true
-image: Visual Studio 2017
+
+image:
+  - Visual Studio 2017
+
+environment:
+  matrix:
+    - BUILD_COMBO: windows-mingw
+    - BUILD_COMBO: windows-msvc
+
 configuration:
-- Debug
-- Release
-platform: Win32
+  - Debug
+  - Release
+
 install:
-- ps: |
-    # install cmake 3.13 or better
-    # REMOVE THIS when AppVeyor updates CMake
-    iex (new-object net.webclient).downloadstring('https://get.scoop.sh')
-    scoop install cmake
+  - ps: ./ci/setup.ps1
 
-    # init submodules recusivelly
-    git submodule update --init --recursive
+build_script:
+  - ps: ./ci/build.ps1
 
-    # versioning vars
-    $env:GIT_COMMIT_HASH = $(git rev-parse --short=8 HEAD)
-    $env:LAUNCHER_VERSION = $(Get-Content .\version.txt)
-
-    # generate project files
-    cmake -G "Visual Studio 15 2017" ./
-build:
-  project: launcher.sln
-  verbosity: minimal
 after_build:
-- ps: |    
-    $artifactPrefix = $env:APPVEYOR_PROJECT_NAME + "_" + $env:LAUNCHER_VERSION + "-" + $env:APPVEYOR_REPO_BRANCH + "-" + $env:GIT_COMMIT_HASH + "-" + $env:CONFIGURATION
-    7z a -m0=lzma2 -mx9 $($artifactPrefix + "_binaries.7z") $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\$env:CONFIGURATION\launcher.exe `
-      $env:APPVEYOR_BUILD_FOLDER\start-cso2.bat
-    7z a -m0=lzma2 -mx9 $($artifactPrefix + "_symbols.7z") $env:APPVEYOR_BUILD_FOLDER\out\bin\Win32\$env:CONFIGURATION\launcher.pdb
-test: off
+  - ps: ./ci/pack.ps1
+  - ps: $env:VERSION_STR = Get-Content -Path ./version.txt -TotalCount 1
+
 artifacts:
-- path: $(APPVEYOR_PROJECT_NAME)_$(LAUNCHER_VERSION)-$(APPVEYOR_REPO_BRANCH)-$(GIT_COMMIT_HASH)-$(CONFIGURATION)_binaries.7z
-  name: binaries
-- path: $(APPVEYOR_PROJECT_NAME)_$(LAUNCHER_VERSION)-$(APPVEYOR_REPO_BRANCH)-$(GIT_COMMIT_HASH)-$(CONFIGURATION)_symbols.7z
-  name: symbols
+- path: build/cso2_launcher-*-win64_mingw.7z
+  name: mingw_binaries
+- path: build/cso2_launcher-*-win64_msvc.7z
+  name: msvc_binaries
+
+test: off
+
 deploy:
 - provider: GitHub
-  release: $(LAUNCHER_VERSION)
+  release: Version $(VERSION_STR)
   auth_token:
     secure: XnUsE3jqzulQ4cWVkK2ALBR7qfnfwbBdoMDChmcnx1RcGtRgXV0QLMPo+GcIf8YU
-  artifact: binaries,symbols
+  artifact: mingw_binaries,msvc_binaries
   on:
-    branch: master
+    APPVEYOR_REPO_TAG: true
     configuration: Release
-on_success:
-- ps: |
-    # set appveyor build version
-    update-appveyorbuild -version $env:LAUNCHER_VERSION-$env:APPVEYOR_REPO_BRANCH-$env:GIT_COMMIT_HASH
