@@ -121,7 +121,11 @@ ConCommandBase::ConCommandBase( const char* pName,
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
-ConCommandBase::~ConCommandBase( void ) {}
+#ifdef __MINGW32__
+void ConCommandBase::_ConCommandBase_destructor() {}
+#else
+ConCommandBase::~ConCommandBase() {}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose:
@@ -550,7 +554,11 @@ ConCommand::ConCommand(
 //-----------------------------------------------------------------------------
 // Destructor
 //-----------------------------------------------------------------------------
-ConCommand::~ConCommand( void ) {}
+#ifdef __MINGW32__
+void ConCommand::_ConCommand_destructor() {}
+#else
+ConCommand::~ConCommand() {}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Returns true if this is a command
@@ -678,7 +686,11 @@ ConVar::ConVar( const char* pName, const char* pDefaultValue, int flags,
 //-----------------------------------------------------------------------------
 // Destructor
 //-----------------------------------------------------------------------------
+#ifdef __MINGW32__
+void ConVar::_ConVar_destructor()
+#else
 ConVar::~ConVar( void )
+#endif
 {
     if ( m_pszString )
     {
@@ -1004,7 +1016,7 @@ void ConVar::SetValue( const char* value )
 // Purpose:
 // Input  : value -
 //-----------------------------------------------------------------------------
-void ConVar::SetValue( float value )
+void ConVar::SetFloatValue( float value )
 {
     ConVar* var = (ConVar*)m_pParent;
     var->InternalSetFloatValue( value );
@@ -1014,7 +1026,7 @@ void ConVar::SetValue( float value )
 // Purpose:
 // Input  : value -
 //-----------------------------------------------------------------------------
-void ConVar::SetValue( int value )
+void ConVar::SetIntValue( int value )
 {
     ConVar* var = (ConVar*)m_pParent;
     var->InternalSetIntValue( value );
