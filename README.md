@@ -20,9 +20,13 @@ This might be avoidable in the future once a dedicated server launcher is develo
 
 ### Obtaining CSO2
 
-You can grab a copy of **Nexon's Counter-Strike: Online 2** at [MEGA](https://mega.nz/#!nhgnBJgD!iR57D5Mf3_1GCcAR36tqFQ7H7KN_F0e3XicD2JBoSN4) or [Google Drive](https://drive.google.com/open?id=1y0diL2nTERlOaJZQTA3xPb8owx82GjtB). 
+You can grab a copy of **Nexon's Counter-Strike: Online 2** through:
 
-```SHA-256: 02F76DBDD083EF78ECC92EB963C7C7A7576FF2E2C695671A4F358C2580584965```
+- BitTorrent, magnet link: `magnet:?xt=urn:btih:7BUJS77RR2AYAXCFPF7TSSSRF2NWUOU6`
+- [MEGA](https://mega.nz/#!nhgnBJgD!iR57D5Mf3_1GCcAR36tqFQ7H7KN_F0e3XicD2JBoSN4);
+- [Google Drive](https://drive.google.com/open?id=1y0diL2nTERlOaJZQTA3xPb8owx82GjtB). 
+
+SHA-256 of `cso2_nexon_v24406.7z`: `02F76DBDD083EF78ECC92EB963C7C7A7576FF2E2C695671A4F358C2580584965`
 
 ### Obtaining the launcher
 
