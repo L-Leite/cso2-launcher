@@ -70,6 +70,20 @@ if(MSVC)
 endif()
 
 #
+# support large addresses (>2gb)
+#
+if(MSVC)
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /LARGEADDRESSAWARE")
+elseif(MINGW)
+  set(CMAKE_EXE_LINKER_FLAGS
+      "${CMAKE_EXE_LINKER_FLAGS} -Wl,--large-address-aware")
+else()
+  message(
+    FATAL_ERROR
+      "Please implement the large address aware option for your compiler.")
+endif()
+
+#
 # Dependencies
 #
 
@@ -232,18 +246,6 @@ else()
                                  -Wconversion
                                  -pedantic)
   target_compile_options(launcher PRIVATE -g)
-endif()
-
-#
-# support large addresses (>2gb)
-#
-if(MSVC)
-  # target_link_options(launcher PRIVATE /LARGEADDRESSAWARE)
-elseif(MINGW)
-  # target_link_options(launcher PRIVATE --large-address-aware)
-else()
-  # message( FATAL_ERROR "Please implement the large address aware option for
-  # your compiler.")
 endif()
 
 if(UNCSO2_USE_LTO)
