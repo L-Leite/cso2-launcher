@@ -107,7 +107,7 @@ set(LAUNCHER_SOURCES_BASE
     "sources/exports.cpp"
     "sources/filesystem_init.cpp"
     "sources/launcher.cpp"
-    "sources/modulelist.cpp"
+    "sources/modulecache.cpp"
     "sources/sourceapp.cpp"
     "sources/tierextra.cpp")
 
@@ -162,7 +162,7 @@ set(LAUNCHER_HEADERS_BASE
     "headers/hooks.hpp"
     "headers/ifilesystem.hpp"
     "headers/leakdump.hpp"
-    "headers/modulelist.hpp"
+    "headers/modulecache.hpp"
     "headers/onloadlib.hpp"
     "headers/sourceapp.hpp"
     "headers/tierextra.hpp"
