@@ -31,6 +31,8 @@
 #include "utlqueue.h"
 #include "utlvector.h"
 
+#include <tier0/valve_minmax_off.h>
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
 

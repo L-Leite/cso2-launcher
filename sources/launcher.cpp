@@ -30,8 +30,9 @@
 
 #include "tier1/interface.h"
 
-#include "cso2/log.h"
-#include "cso2/messagebox.h"
+#include <tier0/cso2/log.h>
+#include <tier0/cso2/messagebox.h>
+#include <tier0/cso2/iloadingsplash.h>
 
 // copied from sys.h
 struct FileAssociationInfo

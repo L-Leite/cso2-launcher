@@ -17,6 +17,8 @@
 #include "tier1/strtools.h"
 #include "tier1/characterset.h"
 
+#include <tier0/valve_minmax_off.h>
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 			    

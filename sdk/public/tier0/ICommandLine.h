@@ -18,8 +18,8 @@
 abstract_class ICommandLine
 {
 public:
-    virtual void CreateCmdLineArgv( int argc, char** argv ) = 0;
     virtual void CreateCmdLine( const char* commandline ) = 0;
+    virtual void CreateCmdLine( int argc, char** argv ) = 0;
     virtual const char* GetCmdLine( void ) const = 0;
 
     // Check whether a particular parameter exists
@@ -29,11 +29,10 @@ public:
     virtual void AppendParm( const char* pszParm, const char* pszValues ) = 0;
 
     // Returns the argument after the one specified, or the default if not found
-    virtual float ParmValueFloat( const char* psz, float flDefaultVal )
-        const = 0;
-    virtual int ParmValueInt( const char* psz, int nDefaultVal ) const = 0;
-    virtual const char* ParmValueStr( const char* psz,
-                                      const char* pDefaultVal = 0 ) const = 0;
+    virtual const char* ParmValue( const char* psz,
+                                   const char* pDefaultVal = 0 ) const = 0;
+    virtual int ParmValue( const char* psz, int nDefaultVal ) const = 0;
+    virtual float ParmValue( const char* psz, float flDefaultVal ) const = 0;
 
     // Gets at particular parameters
     virtual int ParmCount() const = 0;
