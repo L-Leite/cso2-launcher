@@ -925,7 +925,7 @@ char *V_strncat(char *pDest, const char *pSrc, size_t destBufferSize, int max_ch
 	}
 	else
 	{
-		charstocopy = (size_t)(std::min)( max_chars_to_copy, (int)srclen );
+		charstocopy = (size_t)std::min( max_chars_to_copy, (int)srclen );
 	}
 
 	if ( len + charstocopy >= destBufferSize )
@@ -957,7 +957,7 @@ wchar_t *V_wcsncat( INOUT_Z_CAP(cchDest) wchar_t *pDest, const wchar_t *pSrc, si
 	}
 	else
 	{
-		charstocopy = (size_t)(std::min)( max_chars_to_copy, (int)srclen );
+		charstocopy = (size_t)std::min( max_chars_to_copy, (int)srclen );
 	}
 
 	if ( len + charstocopy >= cchDest )
@@ -1017,7 +1017,7 @@ char *V_pretifymem( float value, int digitsafterdecimal /*= 2*/, bool usebinaryo
 	char val[ 32 ];
 
 	// Clamp to >= 0
-	digitsafterdecimal = (std::max)( digitsafterdecimal, 0 );
+	digitsafterdecimal = std::max( digitsafterdecimal, 0 );
 
 	// If it's basically integral, don't do any decimals
 	if ( FloatMakePositive( value - (int)value ) < 0.00001 )
@@ -1436,7 +1436,7 @@ int _V_UnicodeToUCS2( const wchar_t *pUnicode, int cubSrcInBytes, char *pUCS2, i
 #ifdef _WIN32
 	// Figure out which buffer is smaller and convert from bytes to character
 	// counts.
-	int cchResult = (std::min)( (size_t)cubSrcInBytes/sizeof(wchar_t), cubDestSizeInBytes/sizeof(wchar_t) );
+	int cchResult = std::min( (size_t)cubSrcInBytes/sizeof(wchar_t), cubDestSizeInBytes/sizeof(wchar_t) );
 	wchar_t *pDest = (wchar_t*)pUCS2;
 	wcsncpy( pDest, pUnicode, cchResult );
 	// Make sure we NULL-terminate.
@@ -1596,7 +1596,7 @@ unsigned char V_nibble( char c )
 void V_hextobinary( char const *in, int numchars, byte *out, int maxoutputbytes )
 {
 	int len = V_strlen( in );
-	numchars = (std::min)( len, numchars );
+	numchars = std::min( len, numchars );
 	// Make sure it's even
 	numchars = ( numchars ) & ~0x1;
 
@@ -1712,7 +1712,7 @@ void V_FileBase( const char *in, char *out, int maxlen )
 	// Length of new sting
 	len = end - start + 1;
 
-	int maxcopy = (std::min)( len + 1, maxlen );
+	int maxcopy = std::min( len + 1, maxlen );
 
 	// Copy partial string
 	V_strncpy( out, &in[start], maxcopy );
@@ -1756,7 +1756,7 @@ void V_StripExtension( const char *in, char *out, int outSize )
 
 	if (end > 0 && !PATHSEPARATOR( in[end] ) && end < outSize)
 	{
-		int nChars = (std::min)( end, outSize-1 );
+		int nChars = std::min( end, outSize-1 );
 		if ( out != in )
 		{
 			memcpy( out, in, nChars );
@@ -1787,7 +1787,7 @@ void V_StripExtension( const wchar_t *in, wchar_t *out, int outSize )
 
 	if ( end > 0 && !PATHSEPARATOR( in[end] ) && end < outSize )
 	{
-		int nChars = (std::min)( end, outSize - 1 );
+		int nChars = std::min( end, outSize - 1 );
 		if ( out != in )
 		{
 			memcpy( out, in, nChars * sizeof( wchar_t ) );
@@ -2051,7 +2051,7 @@ bool V_ExtractFilePath (const char *path, char *dest, int destSize )
 		src--;
 	}
 
-	int copysize = (std::min)( src - path, destSize - 1 );
+	int copysize = std::min( src - path, destSize - 1 );
 	memcpy( dest, path, copysize );
 	dest[copysize] = 0;
 
@@ -2463,7 +2463,7 @@ char* AllocString( const char *pStr, int nMaxChars )
 	if ( nMaxChars == -1 )
 		allocLen = strlen( pStr ) + 1;
 	else
-		allocLen = (std::min)( (int)strlen(pStr), nMaxChars ) + 1;
+		allocLen = std::min( (int)strlen(pStr), nMaxChars ) + 1;
 
 	char *pOut = new char[allocLen];
 	V_strncpy( pOut, pStr, allocLen );

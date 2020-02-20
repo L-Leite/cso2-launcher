@@ -34,6 +34,7 @@
 #endif
 
 #include <cso2/iprecommandlineparser.h>
+#include <cso2/log.h>
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
@@ -364,8 +365,8 @@ void LaunchVConfig()
 
 const char* GetVProjectCmdLineValue()
 {
-    return CommandLine()->ParmValueStr(
-        "-vproject", CommandLine()->ParmValueStr( "-game" ) );
+    return CommandLine()->ParmValue( "-vproject",
+                                     CommandLine()->ParmValue( "-game" ) );
 }
 
 FSReturnCode_t SetupFileSystemError( bool bRunVConfig, FSReturnCode_t retVal,
@@ -543,7 +544,7 @@ FSReturnCode_t FileSystem_LoadSearchPaths( CFSSearchPathsInit& initInfo )
 #define BASESOURCEPATHS_TOKEN "|all_source_engine_paths|"
 
     const char* pszExtraSearchPath =
-        CommandLine()->ParmValueStr( "-insert_search_path" );
+        CommandLine()->ParmValue( "-insert_search_path" );
     if ( pszExtraSearchPath )
     {
         CUtlStringList vecPaths;
@@ -848,8 +849,7 @@ FSReturnCode_t LocateGameInfoFile( const CFSSteamSetupInfo& fsInfo,
             if ( IsX360() && CommandLine()->FindParm( "-basedir" ) )
             {
                 char basePath[MAX_PATH];
-                strcpy( basePath,
-                        CommandLine()->ParmValueStr( "-basedir", "" ) );
+                strcpy( basePath, CommandLine()->ParmValue( "-basedir", "" ) );
                 Q_AppendSlash( basePath, sizeof( basePath ) );
                 Q_strncat( basePath, fsInfo.m_pDirectoryName,
                            sizeof( basePath ), COPY_ALL_CHARACTERS );
@@ -897,7 +897,7 @@ FSReturnCode_t LocateGameInfoFile( const CFSSteamSetupInfo& fsInfo,
         if ( IsX360() && CommandLine()->FindParm( "-basedir" ) )
         {
             char basePath[MAX_PATH];
-            strcpy( basePath, CommandLine()->ParmValueStr( "-basedir", "" ) );
+            strcpy( basePath, CommandLine()->ParmValue( "-basedir", "" ) );
             Q_AppendSlash( basePath, sizeof( basePath ) );
             Q_strncat( basePath, pProject, sizeof( basePath ),
                        COPY_ALL_CHARACTERS );
@@ -1150,6 +1150,7 @@ FSReturnCode_t FileSystem_GetFileSystemDLLName( char* pFileSystemDLL,
         if ( SetupFileSystemError( false, FS_INVALID_PARAMETERS,
                                    "FileSystem_GetExecutableDir failed." ) )
         {
+            g_CSO2DocLog.AddMsg( 1, "[Error] FileSystem Dll Error" );
             return FS_OK;
         }
     }

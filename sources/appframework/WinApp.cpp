@@ -169,7 +169,7 @@ int AppMain( int argc, char** argv, CAppSystemGroup* pAppSystemGroup )
     g_DefaultSpewFunc = ConsoleAppDefaultSpewFunc;
     s_HInstance = NULL;
 #if !defined( _X360 )
-    CommandLine()->CreateCmdLineArgv( argc, argv );
+    CommandLine()->CreateCmdLine( argc, argv );
 #else
     SetupEnvironment360();
 #endif
@@ -203,7 +203,7 @@ int AppStartup( int argc, char** argv, CAppSystemGroup* pAppSystemGroup )
     g_DefaultSpewFunc = ConsoleAppDefaultSpewFunc;
     s_HInstance = NULL;
 #if !defined( _X360 )
-    CommandLine()->CreateCmdLineArgv( argc, argv );
+    CommandLine()->CreateCmdLine( argc, argv );
 #else
     SetupEnvironment360();
 #endif
