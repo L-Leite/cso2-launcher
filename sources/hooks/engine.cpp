@@ -18,7 +18,7 @@ using namespace std::string_literals;
 
 struct IpAddressInfo
 {
-    msvc::string szIpAddress;
+    std::string szIpAddress;
     uint16_t iPort;
 };
 
@@ -33,15 +33,15 @@ static uint64_t g_ServerAddrOrig = 0;
 //
 NOINLINE void __fastcall hkGetServerInfo( IpAddressInfo& info )
 {
-    const char* szMasterIp = CommandLine()->ParmValueStr( "-masterip" );
-    const char* szMasterPort = CommandLine()->ParmValueStr( "-masterport" );
+    const char* szMasterIp =
+        CommandLine()->ParmValue( "-masterip", "127.0.0.1" );
+    const int iMasterPort = CommandLine()->ParmValue( "-masterport", 30001 );
 
     std::cout << "GetServerInfo - IP: " << szMasterIp
-              << " port: " << szMasterPort << "\n";
+              << " port: " << iMasterPort << "\n";
 
-    info.szIpAddress = szMasterIp != nullptr ? szMasterIp : "127.0.0.1";
-    info.iPort =
-        szMasterPort ? static_cast<uint16_t>( atoi( szMasterPort ) ) : 30001;
+    info.szIpAddress = szMasterIp;
+    info.iPort = iMasterPort;
 }
 
 //

@@ -1813,7 +1813,8 @@ FORCEINLINE fltx4 ReplicateX4( float flValue )
 FORCEINLINE float SubFloat( const fltx4 & a, int idx )
 {
 	// NOTE: if the output goes into a register, this causes a Load-Hit-Store stall (don't mix fpu/vpu math!)
-#if !defined( POSIX ) && !defined( COMPILER_MINGW )
+#if !defined( POSIX ) && !defined( COMPILER_MINGW ) && \
+    !defined( COMPILER_CLANG )
 	return a.m128_f32[ idx ];
 #else
 	return (reinterpret_cast<float const *>(&a))[idx];
@@ -1822,7 +1823,8 @@ FORCEINLINE float SubFloat( const fltx4 & a, int idx )
 
 FORCEINLINE float & SubFloat( fltx4 & a, int idx )
 {
-#if !defined( POSIX ) && !defined( COMPILER_MINGW )
+#if !defined( POSIX ) && !defined( COMPILER_MINGW ) && \
+    !defined( COMPILER_CLANG )
 	return a.m128_f32[ idx ];
 #else
 	return (reinterpret_cast<float *>(&a))[idx];
@@ -1836,7 +1838,8 @@ FORCEINLINE uint32 SubFloatConvertToInt( const fltx4 & a, int idx )
 
 FORCEINLINE uint32 SubInt( const fltx4 & a, int idx )
 {
-#if !defined( POSIX ) && !defined( COMPILER_MINGW )
+#if !defined( POSIX ) && !defined( COMPILER_MINGW ) && \
+    !defined( COMPILER_CLANG )
 	return a.m128_u32[idx];
 #else
 	return (reinterpret_cast<uint32 const *>(&a))[idx];
@@ -1845,7 +1848,8 @@ FORCEINLINE uint32 SubInt( const fltx4 & a, int idx )
 
 FORCEINLINE uint32 & SubInt( fltx4 & a, int idx )
 {
-#if !defined( POSIX ) && !defined( COMPILER_MINGW )
+#if !defined( POSIX ) && !defined( COMPILER_MINGW ) && \
+    !defined( COMPILER_CLANG )
 	return a.m128_u32[idx];
 #else
 	return (reinterpret_cast<uint32 *>(&a))[idx];

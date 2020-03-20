@@ -121,11 +121,7 @@ ConCommandBase::ConCommandBase( const char* pName,
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
-#ifdef __MINGW32__
-void ConCommandBase::_ConCommandBase_destructor() {}
-#else
-ConCommandBase::~ConCommandBase() {}
-#endif
+ConCommandBase::~ConCommandBase( void ) {}
 
 //-----------------------------------------------------------------------------
 // Purpose:
@@ -554,11 +550,7 @@ ConCommand::ConCommand(
 //-----------------------------------------------------------------------------
 // Destructor
 //-----------------------------------------------------------------------------
-#ifdef __MINGW32__
-void ConCommand::_ConCommand_destructor() {}
-#else
-ConCommand::~ConCommand() {}
-#endif
+ConCommand::~ConCommand( void ) {}
 
 //-----------------------------------------------------------------------------
 // Purpose: Returns true if this is a command
@@ -686,11 +678,7 @@ ConVar::ConVar( const char* pName, const char* pDefaultValue, int flags,
 //-----------------------------------------------------------------------------
 // Destructor
 //-----------------------------------------------------------------------------
-#ifdef __MINGW32__
-void ConVar::_ConVar_destructor()
-#else
 ConVar::~ConVar( void )
-#endif
 {
     if ( m_pszString )
     {
@@ -1016,7 +1004,7 @@ void ConVar::SetValue( const char* value )
 // Purpose:
 // Input  : value -
 //-----------------------------------------------------------------------------
-void ConVar::SetFloatValue( float value )
+void ConVar::SetValue( float value )
 {
     ConVar* var = (ConVar*)m_pParent;
     var->InternalSetFloatValue( value );
@@ -1026,7 +1014,7 @@ void ConVar::SetFloatValue( float value )
 // Purpose:
 // Input  : value -
 //-----------------------------------------------------------------------------
-void ConVar::SetIntValue( int value )
+void ConVar::SetValue( int value )
 {
     ConVar* var = (ConVar*)m_pParent;
     var->InternalSetIntValue( value );

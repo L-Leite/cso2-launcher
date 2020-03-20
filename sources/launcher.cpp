@@ -7,12 +7,11 @@
 //===========================================================================//
 
 #ifdef _WIN32
-#include <winsock2.h>
-
 #include <windows.h>
 
 #include <shellapi.h>
 #include <shlwapi.h>
+#include <winsock2.h>
 #endif
 
 #include "basedir.hpp"
@@ -31,8 +30,9 @@
 
 #include "tier1/interface.h"
 
-#include "cso2/iloadingsplash.h"
-#include "cso2/messagebox.h"
+#include <tier0/cso2/iloadingsplash.h>
+#include <tier0/cso2/log.h>
+#include <tier0/cso2/messagebox.h>
 
 // copied from sys.h
 struct FileAssociationInfo
@@ -52,10 +52,10 @@ CLeakDump g_LeakDump;
 //-----------------------------------------------------------------------------
 // Spew function!
 //-----------------------------------------------------------------------------
-SpewRetval_t LauncherDefaultSpewFunc( SpewType_t spewType, const char* pMsg )
+SpewRetval_t LauncherDefaultSpewFunc( SpewType_t spewType, char const* pMsg )
 {
+#ifndef _CERT
     OutputDebugStringA( pMsg );
-
     switch ( spewType )
     {
         case SPEW_MESSAGE:
@@ -84,6 +84,11 @@ SpewRetval_t LauncherDefaultSpewFunc( SpewType_t spewType, const char* pMsg )
                             MB_OK | MB_SYSTEMMODAL | MB_ICONERROR );
             _exit( 1 );
     }
+#else
+    if ( spewType != SPEW_ERROR )
+        return SPEW_CONTINUE;
+    _exit( 1 );
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -94,7 +99,7 @@ class CVCRHelpers : public IVCRHelpers
 public:
     void ErrorMessage( const char* pMsg ) override
     {
-        NOVCR(::MessageBox( nullptr, pMsg, "VCR Error", MB_OK ) );
+        NOVCR( ::MessageBox( nullptr, pMsg, "VCR Error", MB_OK ) );
     }
 
     void* GetMainWindow() override { return nullptr; }
@@ -278,7 +283,7 @@ static std::string BuildCommand()
         if ( szParm[0] == '-' )
         {
             // skip -XXX options and eat their args
-            const char* szValue = CommandLine()->ParmValueStr( szParm );
+            const char* szValue = CommandLine()->ParmValue( szParm );
             if ( szValue )
             {
                 i++;
@@ -288,7 +293,7 @@ static std::string BuildCommand()
         if ( szParm[0] == '+' )
         {
             // convert +XXX options and stuff them into the build buffer
-            const char* szValue = CommandLine()->ParmValueStr( szParm );
+            const char* szValue = CommandLine()->ParmValue( szParm );
             if ( szValue )
             {
                 cmdStr += va( "%s %s;", szParm + 1, szValue );
@@ -350,6 +355,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     HookTier0();
     HookWinapi();
+
+    g_CSO2DocLog.Create();
 
     // Hook the debug output stuff.
     SpewOutputFunc( LauncherDefaultSpewFunc );
@@ -543,6 +550,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
     // Allow other source apps to run
     ReleaseSourceMutex();
 
+#ifndef _X360
     // Now that the mutex has been released, check
     // HKEY_CURRENT_USER\Software\Valve\Source\Relaunch URL. If there is a URL
     // here, exec it. This supports the capability of immediately re-launching
@@ -565,6 +573,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
         RegCloseKey( hKey );
     }
+
+#endif
 
     return 0;
 }

@@ -17,6 +17,8 @@
 #include "tier1/strtools.h"
 #include "tier1/characterset.h"
 
+#include <tier0/valve_minmax_off.h>
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 			    
@@ -638,7 +640,7 @@ void CUtlBuffer::GetStringInternal( char *pString, size_t maxLenInChars )
 		return;
 	}
 
-	const size_t nCharsToRead = (std::min)( (size_t)nLen, maxLenInChars ) - 1;
+	const size_t nCharsToRead = std::min( (size_t)nLen, maxLenInChars ) - 1;
 
 	Get( pString, nCharsToRead );
 	pString[nCharsToRead] = 0;

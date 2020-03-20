@@ -15,8 +15,6 @@
 #define _wtoi64( arg ) wcstoll( arg, NULL, 10 )
 #endif
 
-#include <mutex>
-
 #include <KeyValues.h>
 #include <vstdlib/IKeyValuesSystem.h>
 #include "filesystem.h"
@@ -32,6 +30,8 @@
 #include "utlhash.h"
 #include "utlqueue.h"
 #include "utlvector.h"
+
+#include <tier0/valve_minmax_off.h>
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
@@ -77,7 +77,7 @@ public:
             m_errorStack[m_errorIndex] = symName;
         }
         m_errorIndex++;
-        m_maxErrorIndex = ( std::max )( m_maxErrorIndex, ( m_errorIndex - 1 ) );
+        m_maxErrorIndex = std::max( m_maxErrorIndex, ( m_errorIndex - 1 ) );
         return m_errorIndex - 1;
     }
 
@@ -241,7 +241,7 @@ public:
     // Translates a string to an index
     int GetSymbolForString( const char* name, bool bCreate = true )
     {
-        std::lock_guard<std::mutex> guard( m_mutex );
+        AUTO_LOCK( m_mutex );
 
         // Put the current details into our hash functor
         m_Functor.SetCurString( name );
@@ -316,7 +316,7 @@ private:
         const char* m_pchCurBase;
     };
 
-    std::mutex m_mutex;
+    CThreadFastMutex m_mutex;
     CLookupFunctor m_Functor;
     CUtlHash<int, CLookupFunctor&, CLookupFunctor&> m_hashLookup;
     CUtlVector<char> m_vecStrings;
@@ -1214,9 +1214,9 @@ void KeyValues::AddSubkeyUsingKnownLastChild( KeyValues* pSubkey,
         Assert( pLastChild->m_pPeer == NULL );
 
         //		// In debug, make sure that they really do know which child is
-        // the
-        // last one 		#ifdef _DEBUG 			KeyValues *pTempDat = m_pSub;
-        // while ( pTempDat->GetNextKey() != NULL )
+        //the
+        // last one 		#ifdef _DEBUG 			KeyValues *pTempDat = m_pSub; 			while
+        // ( pTempDat->GetNextKey() != NULL )
         //			{
         //				pTempDat = pTempDat->GetNextKey();
         //			}
