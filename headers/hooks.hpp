@@ -2,10 +2,14 @@
 
 #include <memory>
 
-#include <headers/CapstoneDisassembler.hpp>
-#include <headers/Detour/x86Detour.hpp>
-#include <headers/PE/EatHook.hpp>
-#include <headers/Virtuals/VTableSwapHook.hpp>
+#include <polyhook2/CapstoneDisassembler.hpp>
+#include <polyhook2/Detour/x86Detour.hpp>
+#include <polyhook2/PE/EatHook.hpp>
+#include <polyhook2/Virtuals/VTableSwapHook.hpp>
+
+#ifndef NOINLINE
+#define NOINLINE __declspec( noinline )
+#endif
 
 template <typename DetourDestType>
 inline auto SetupDetourHook( const uintptr_t fnAddress,

@@ -29,7 +29,7 @@ endif()
 option(LAUNCHER_USE_LTO "Use 'Link Time Optimizations'" ON)
 if(MSVC)
   option(LAUNCHER_USE_SHARED_RUNTIME
-         "Use MSVC's shared runtime library instead of the static library?" ON)
+         "Use MSVC's shared runtime library instead of the static library?" OFF)
 endif()
 
 set(LAUNCHER_ROOT_DIR "${PROJECT_SOURCE_DIR}")
@@ -62,12 +62,21 @@ generate_launcher_version(VERSION_FILE
 # setup MSVC runtime lib
 #
 if(MSVC)
-  if(LAUNCHER_USE_SHARED_RUNTIME MATCHES ON)
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
-  elseif(LAUNCHER_USE_SHARED_RUNTIME MATCHES OFF)
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-  endif()
+  # force static lib
+  set(CompilerFlags
+        CMAKE_CXX_FLAGS
+        CMAKE_CXX_FLAGS_DEBUG
+        CMAKE_CXX_FLAGS_RELEASE
+        CMAKE_C_FLAGS
+        CMAKE_C_FLAGS_DEBUG
+        CMAKE_C_FLAGS_RELEASE
+        )
+	foreach(CompilerFlag ${CompilerFlags})
+		string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
+	endforeach()
 endif()
+
+message(STATUS "CMAKE_MSVC_RUNTIME_LIBRARY: ${CMAKE_MSVC_RUNTIME_LIBRARY}")
 
 #
 # support large addresses (>2gb)
@@ -107,7 +116,7 @@ set(LAUNCHER_SOURCES_BASE
     "sources/exports.cpp"
     "sources/filesystem_init.cpp"
     "sources/launcher.cpp"
-    "sources/modulelist.cpp"
+    "sources/modulecache.cpp"
     "sources/sourceapp.cpp"
     "sources/tierextra.cpp")
 
@@ -162,7 +171,7 @@ set(LAUNCHER_HEADERS_BASE
     "headers/hooks.hpp"
     "headers/ifilesystem.hpp"
     "headers/leakdump.hpp"
-    "headers/modulelist.hpp"
+    "headers/modulecache.hpp"
     "headers/onloadlib.hpp"
     "headers/sourceapp.hpp"
     "headers/tierextra.hpp"
@@ -186,8 +195,7 @@ file(GLOB
      ${LAUNCHER_SOURCES_TIER2}
      ${LAUNCHER_SOURCES_TIER3}
      ${LAUNCHER_HEADERS_BASE}
-     ${LAUNCHER_HEADERS_IMGUIS}
-     ${LAUNCHER_RESOURCES_WIN32})
+     ${LAUNCHER_HEADERS_IMGUIS})
 
 source_group("Source Files" FILES ${LAUNCHER_SOURCES_BASE})
 source_group("Source Files\\AppFramework" FILES
@@ -237,8 +245,8 @@ target_compile_definitions(launcher
 # Enable all warnings
 #
 if(MSVC)
-  target_compile_options(launcher PRIVATE /W4 /WX /SAFESEH:NO)
-  target_link_options(launcher PRIVATE /SAFESEH:NO)
+  #target_compile_options(launcher PRIVATE /W4 /WX /SAFESEH:NO)
+  #target_link_options(launcher PRIVATE /SAFESEH:NO)
 else()
   target_compile_options(launcher
                          PRIVATE -Wall
