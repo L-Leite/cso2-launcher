@@ -162,9 +162,9 @@ void BytePatchEngine( const uintptr_t dwEngineBase )
     // don't allow nexon messenger to ovewrite our password
     //
     // nops
-    const std::array<uint8_t, 10> loginNMPatch4 = {
-        0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90
-    };
+    const std::array<uint8_t, 10> loginNMPatch4 = { 0x90, 0x90, 0x90, 0x90,
+                                                    0x90, 0x90, 0x90, 0x90,
+                                                    0x90, 0x90 };
     utils::WriteProtectedMemory( loginNMPatch4, dwEngineBase + 0x284A22 );
 
     //
