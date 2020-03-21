@@ -1,9 +1,7 @@
 function SetupVsToolsPath {
     # from https://allen-mack.blogspot.com/2008/03/replace-visual-studio-command-prompt.html
 
-    # split location to shorten the command
-    Push-Location 'C:\Program Files (x86)\Microsoft Visual Studio\2017'
-    Push-Location '.\Community\VC\Auxiliary\Build'
+    Push-Location 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build'
 
     cmd /c "vcvars32.bat&set" |
         ForEach-Object {
@@ -13,15 +11,16 @@ function SetupVsToolsPath {
         }
 
     Pop-Location
-    Pop-Location
 }
 
 function PrintToolsVersion {
     param ([string]$curBuildCombo)
 
+    Write-Host ''
     Write-Host '#'
     Write-Host '# TOOLS VERSIONS'
     Write-Host '#'
+    Write-Host ''
 
     switch ($curBuildCombo) {
         "windows-mingw" {
@@ -30,9 +29,15 @@ function PrintToolsVersion {
             break
         }
         "windows-msvc" {
-            which cl
             Write-Host '# MSVC'
+            which cl
             cl
+            break
+        }
+        "windows-clang_cl" {
+            Write-Host '# Clang-cl'
+            which clang-cl
+            clang-cl -v
             break
         }
         Default {
@@ -50,9 +55,11 @@ function PrintToolsVersion {
     Write-Host '# Git'
     git --version
 
+    Write-Host ''
     Write-Host '#'
     Write-Host '# END OF TOOLS VERSIONS'
     Write-Host '#'
+    Write-Host ''
 }
 
 $curBuildCombo = $env:BUILD_COMBO
@@ -87,9 +94,11 @@ else {
     exit 1
 }
 
+Write-Host ''
 Write-Host '#'
 Write-Host '# Environment path:'
 Write-Host '#'
+Write-Host ''
 Write-Host $env:PATH
 
 # print tools versions
