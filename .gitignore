@@ -416,3 +416,7 @@ build/
 
 # VScode configs
 /.vscode
+
+# allow tier0 and vstdlib static libraries
+!/sdk/lib/public/tier0.lib
+!/sdk/lib/public/vstdlib.lib
