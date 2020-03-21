@@ -22,6 +22,7 @@ $curBuildCombo = $env:BUILD_COMBO
 $curConfig = $env:CONFIGURATION
 
 $isMsvcBuild = $curBuildCombo -eq 'windows-msvc'
+$isClangClBuild = $curBuildCombo -eq 'windows-clang_cl'
 
 Write-Host "Running build script..."
 Write-Host "Current script build combo is: $curBuildCombo $curConfig"
@@ -38,7 +39,14 @@ switch ($curBuildCombo) {
     "windows-msvc" {
         $targetCompilerCC = 'cl'
         $targetCompilerCXX = 'cl'
-        # add msvc 17 tools to path
+        # add msvc 19 tools to path
+        SetupVsToolsPath
+        break
+    }
+    "windows-clang_cl" {
+        $targetCompilerCC = 'clang-cl'
+        $targetCompilerCXX = 'clang-cl'
+        # add msvc 19 tools to path
         SetupVsToolsPath
         break
     }
@@ -59,6 +67,16 @@ Push-Location ./build
 
 if ($isMsvcBuild) {
     cmake -G "Visual Studio 16 2019" -A "Win32" ../ 
+}
+elseif ($isClangClBuild) {
+    cmake -G "Ninja" `
+        -DCMAKE_CXX_COMPILER="$targetCompilerCXX" `
+        -DCMAKE_C_COMPILER="$targetCompilerCC" `
+        -DCMAKE_BUILD_TYPE="$curConfig" `
+        -DCMAKE_CXX_FLAGS="-m32 -fuse-ld=lld-link" `
+        -DCMAKE_C_FLAGS="-m32 -fuse-ld=lld-link" `
+        -DCMAKE_LINKER="lld-link" `
+        ../
 }
 else {
     cmake -G "Ninja" `

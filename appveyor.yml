@@ -9,6 +9,7 @@ environment:
   matrix:
     #- BUILD_COMBO: windows-mingw
     - BUILD_COMBO: windows-msvc
+    - BUILD_COMBO: windows-clang_cl
 
 configuration:
   - Debug
@@ -29,6 +30,8 @@ artifacts:
 #  name: mingw_binaries
 - path: build/cso2_launcher-*-win64_msvc.7z
   name: msvc_binaries
+- path: build/cso2_launcher-*-win64_clang.7z
+  name: clang_binaries
 
 test: off
 
@@ -37,7 +40,7 @@ deploy:
   release: Version $(VERSION_STR)
   auth_token:
     secure: XnUsE3jqzulQ4cWVkK2ALBR7qfnfwbBdoMDChmcnx1RcGtRgXV0QLMPo+GcIf8YU
-  artifact: msvc_binaries
+  artifact: clang_binaries
   on:
     APPVEYOR_REPO_TAG: true
     configuration: Release

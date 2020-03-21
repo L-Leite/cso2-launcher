@@ -14,6 +14,7 @@ if ($curConfig -ne 'Release') {
 
 $isMingwBuild = $curBuildCombo -eq 'windows-mingw'
 $isMsvcBuild = $curBuildCombo -eq 'windows-msvc'
+$isClangClBuild = $curBuildCombo -eq 'windows-clang_cl'
 
 Write-Host "Running packaging script..."
 Write-Host "Current setup build combo is: $curBuildCombo"
@@ -55,6 +56,9 @@ if ($isWindows) {
     }
     elseif ($isMsvcBuild) {       
         7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=64m -ms=on "cso2_launcher-$versionStr-win64_msvc.7z" ./package/*
+    }
+    elseif ($isClangClBuild) {       
+        7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=64m -ms=on "cso2_launcher-$versionStr-win64_clang.7z" ./package/*
     }
 }
 
