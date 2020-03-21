@@ -6,9 +6,7 @@ function CreateDirectory {
 function SetupVsToolsPath {
     # from https://allen-mack.blogspot.com/2008/03/replace-visual-studio-command-prompt.html
 
-    # split location to shorten the command
-    Push-Location 'C:\Program Files (x86)\Microsoft Visual Studio\2017'
-    Push-Location '.\Community\VC\Auxiliary\Build'
+    Push-Location 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build'
 
     cmd /c "vcvars32.bat&set" |
         ForEach-Object {
@@ -17,7 +15,6 @@ function SetupVsToolsPath {
             }
         }
 
-    Pop-Location
     Pop-Location
 }
 
@@ -61,7 +58,7 @@ CreateDirectory ./build
 Push-Location ./build
 
 if ($isMsvcBuild) {
-    cmake -G "Visual Studio 15 2017" -A "Win32" ../ 
+    cmake -G "Visual Studio 16 2019" -A "Win32" ../ 
 }
 else {
     cmake -G "Ninja" `
@@ -77,7 +74,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 if ($isMsvcBuild) {
-    msbuild uc2.sln /p:Configuration=$curConfig
+    msbuild launcher.sln -m /p:Platform="Win32" /p:Configuration=$curConfig
 }
 else {
     ninja all
