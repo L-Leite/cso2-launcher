@@ -94,7 +94,6 @@ If built successfully, you will find the launcher inside ```out/bin/Win32/[your 
 
 ## Libraries used
 
-- **[cotire](https://github.com/sakra/cotire)** by [Sascha Kratky](https://github.com/sakra)
 - **[Dear ImGui](https://github.com/ocornut/imgui)** by [Omar Cornut](https://github.com/sakra)
 - **[PolyHook 2.0](https://github.com/stevemk14ebr/PolyHook_2_0)** by [Stephen Eckels](https://github.com/stevemk14ebr)
 

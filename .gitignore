@@ -408,9 +408,6 @@ CTestTestfile.cmake
 _deps
 *.pc
 
-# cotire
-launcher/launcher_*_cotire.cmake
-
 # CMake build dir
 build/
 
