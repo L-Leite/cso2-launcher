@@ -28,7 +28,7 @@ public:
     virtual void Shutdown() {}
 
 private:
-    virtual CSysModule* LoadModuleDLL( const char* pDLLName )
+    virtual CSysModule* LoadModuleDLL( const char* /*pDLLName*/ )
     {
         return nullptr;
     }

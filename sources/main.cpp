@@ -1,6 +1,5 @@
 #include "launcher.hpp"
 #include "platform.hpp"
-#include "util.hpp"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -39,12 +38,9 @@ extern "C" __declspec( dllexport ) HMODULE
     }
 }
 
-int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    LPSTR lpCmdLine, int nShowCmd )
+int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/,
+                    LPSTR lpCmdLine, int /*nShowCmd*/ )
 {
-    UNUSED_VAR( hPrevInstance );
-    UNUSED_VAR( nShowCmd );
-
     try
     {
         Launcher l( reinterpret_cast<void*>( hInstance ), lpCmdLine );

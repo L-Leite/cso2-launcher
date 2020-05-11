@@ -60,8 +60,9 @@ public:
     virtual CVarDLLIdentifier_t GetDLLIdentifier() const { return -1; }
 
 protected:
-    virtual void CreateBase( const char* pName,
-                             const char* pHelpString = nullptr, int flags = 0 )
+    virtual void CreateBase( const char* /*pName*/,
+                             const char* /*pHelpString = nullptr*/,
+                             int /*flags = 0*/ )
     {
     }
 
@@ -94,15 +95,15 @@ public:
 
     virtual bool IsCommand() const { return true; };
 
-    virtual int AutoCompleteSuggest( const char* partial,
-                                     CUtlVector<CUtlString>& commands )
+    virtual int AutoCompleteSuggest( const char* /*partial*/,
+                                     CUtlVector<CUtlString>& /*commands*/ )
     {
         return 0;
     }
 
     virtual bool CanAutoComplete() { return false; }
 
-    virtual void Dispatch( const CCommand& command ) {}
+    virtual void Dispatch( const CCommand& /*command*/ ) {}
 
 private:
     // Call this function when executing the command
@@ -172,7 +173,7 @@ public:
         return m_pParent->m_bHasMax;
     }
 
-    inline const char* GetDefault( void ) const
+    inline const char* GetDefault() const
     {
         return m_pParent->m_pszDefaultValue;
     }
@@ -182,22 +183,27 @@ public:
         m_pszDefaultValue = pszDefault ? pszDefault : "";
     }
 
-    virtual void SetValue( const char* value ) {}
-    virtual void SetValue( float value ) {}
-    virtual void SetValue( int value ) {}
+    virtual void SetValue( const char* /*value*/ ) {}
+    virtual void SetValue( float /*value*/ ) {}
+    virtual void SetValue( int /*value*/ ) {}
 
 private:
-    virtual void InternalSetValue( const char* value ) {}
-    virtual void InternalSetFloatValue( float fNewValue ) {}
-    virtual void InternalSetIntValue( int nValue ) {}
+    virtual void InternalSetValue( const char* /*value*/ ) {}
+    virtual void InternalSetFloatValue( float /*fNewValue*/ ) {}
+    virtual void InternalSetIntValue( int /*nValue*/ ) {}
 
-    virtual bool ClampValue( float& value ) { return false; }
-    virtual void ChangeStringValue( const char* tempVal, float flOldValue ) {}
+    virtual bool ClampValue( float& /*value*/ ) { return false; }
+    virtual void ChangeStringValue( const char* /*tempVal*/,
+                                    float /*flOldValue*/ )
+    {
+    }
 
-    virtual void Create( const char* pName, const char* pDefaultValue,
-                         int flags = 0, const char* pHelpString = 0,
-                         bool bMin = false, float fMin = 0.0, bool bMax = false,
-                         float fMax = false, FnChangeCallback_t callback = 0 )
+    virtual void Create( const char* /* pName */,
+                         const char* /* pDefaultValue */, int /* flags = 0 */,
+                         const char* /* pHelpString = nullptr */,
+                         bool /* bMin = false */, float /* fMin = 0.0 */,
+                         bool /* bMax = false */, float /* fMax = false */,
+                         FnChangeCallback_t /* callback = nullptr */ )
     {
     }
 
