@@ -15,5 +15,4 @@ private:
 private:
     void* m_pInstance;
     bool m_bShowSplash;
-    bool m_bShowDebugCon;
 };

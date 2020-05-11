@@ -13,7 +13,7 @@ namespace fs = std::filesystem;
 extern void HookWinapi();
 
 Launcher::Launcher( void* instance, const char* cmdline )
-    : m_pInstance( instance ), m_bShowSplash( true ), m_bShowDebugCon( false )
+    : m_pInstance( instance ), m_bShowSplash( true )
 {
     HookWinapi();
 
