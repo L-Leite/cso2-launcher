@@ -91,7 +91,11 @@ int HandleLocalConvertion( const char* szInput, char* szOutBuffer,
         return 0;
     }
 
-    std::strncpy( szOutBuffer, szInput, iStrLen );
+    if ( strncpy_s( szOutBuffer, iOutBufferSize, szInput, iStrLen ) != 0 )
+    {
+        assert( false );
+        return 0;
+    }
 
     return iStrLen;
 }
