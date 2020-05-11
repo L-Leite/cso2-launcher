@@ -1,5 +1,6 @@
-#include "convar.h"
 #include "hooks.hpp"
+
+#include <tier1/convar.h>
 
 void BytePatchServer( const uintptr_t dwServerBase )
 {

@@ -4,7 +4,7 @@
 #include <direct.h>
 #include <io.h>
 
-#include <tier0/ICommandLine.h>
+#include <tier0/icommandline.hpp>
 
 #include "hooks.hpp"
 #include "utilities.hpp"

@@ -1,4 +1,5 @@
 #include <filesystem>
+#include <iostream>
 
 #include <windows.h>
 
@@ -8,6 +9,7 @@ extern void OnClientLoaded( const uintptr_t dwClientBase );
 extern void OnEngineLoaded( const uintptr_t dwEngineBase );
 extern void OnFileSystemLoaded( const uintptr_t dwFilesystemBase );
 extern void OnShaderApiLoaded( const uintptr_t dwShaderApiBase );
+extern void OnTierZeroLoaded( const uintptr_t dwTierBase );
 extern void OnVguiLoaded( const uintptr_t dwVguiBase );
 
 void OnLoadLibrary( HMODULE hLibrary, std::string_view libPathView )
@@ -37,6 +39,10 @@ void OnLoadLibrary( HMODULE hLibrary, std::string_view libPathView )
     else if ( szLibName == "client.dll" )
     {
         OnClientLoaded( dwLibraryBase );
+    }
+    else if ( szLibName == "tier0.dll" )
+    {
+        OnTierZeroLoaded( dwLibraryBase );
     }
 }
 

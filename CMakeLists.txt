@@ -7,10 +7,7 @@ endif()
 project(launcher LANGUAGES CXX)
 
 if(NOT CMAKE_SIZEOF_VOID_P EQUAL 4)
-  message(
-    WARNING
-      "Building the launcher for a different platform than 32 bit is not recommended."
-    )
+  message(WARNING "The launcher must be build for a 32 bit platform.")
 endif()
 
 #
@@ -49,14 +46,15 @@ set(LAUNCHER_VERSION_OUT "${LAUNCHER_GENERATED_DIR}/launcher_version.hpp")
 set(LAUNCHER_GIT_DIR "${CMAKE_SOURCE_DIR}/.git")
 
 include(launcher_version)
-generate_launcher_version(VERSION_FILE
-                          ${LAUNCHER_VERSION_FILE}
-                          HEADER_TEMPLATE
-                          ${LAUNCHER_VERSION_TEMPLATE}
-                          HEADER_OUT
-                          ${LAUNCHER_VERSION_OUT}
-                          GIT_DIR
-                          ${LAUNCHER_GIT_DIR})
+generate_launcher_version(
+  VERSION_FILE
+  ${LAUNCHER_VERSION_FILE}
+  HEADER_TEMPLATE
+  ${LAUNCHER_VERSION_TEMPLATE}
+  HEADER_OUT
+  ${LAUNCHER_VERSION_OUT}
+  GIT_DIR
+  ${LAUNCHER_GIT_DIR})
 
 #
 # setup MSVC runtime lib
@@ -64,16 +62,11 @@ generate_launcher_version(VERSION_FILE
 if(MSVC)
   # force static lib
   set(CompilerFlags
-        CMAKE_CXX_FLAGS
-        CMAKE_CXX_FLAGS_DEBUG
-        CMAKE_CXX_FLAGS_RELEASE
-        CMAKE_C_FLAGS
-        CMAKE_C_FLAGS_DEBUG
-        CMAKE_C_FLAGS_RELEASE
-        )
-	foreach(CompilerFlag ${CompilerFlags})
-		string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
-	endforeach()
+      CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+      CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE)
+  foreach(CompilerFlag ${CompilerFlags})
+    string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
+  endforeach()
 endif()
 
 message(STATUS "CMAKE_MSVC_RUNTIME_LIBRARY: ${CMAKE_MSVC_RUNTIME_LIBRARY}")
@@ -99,11 +92,17 @@ endif()
 # PolyHook
 
 # force PolyHook to build as a library
-set(BUILD_DLL ON CACHE BOOL "")
+set(BUILD_DLL
+    ON
+    CACHE BOOL "")
 
 # disable unused polyhook features
-set(FEATURE_EXCEPTION OFF CACHE BOOL "")
-set(FEATURE_INLINENTD OFF CACHE BOOL "")
+set(FEATURE_EXCEPTION
+    OFF
+    CACHE BOOL "")
+set(FEATURE_INLINENTD
+    OFF
+    CACHE BOOL "")
 
 add_subdirectory("${LAUNCHER_LIB_PHOOK_DIR}")
 
@@ -111,14 +110,25 @@ add_subdirectory("${LAUNCHER_LIB_PHOOK_DIR}")
 # add source files to the project
 #
 set(LAUNCHER_SOURCES_BASE
+    "sources/platform/platform.cpp"
+    "sources/source/appsystemgroup.cpp"
+    "sources/source/appsystemtable.cpp"
+    "sources/source/filesystem_util.cpp"
+    "sources/source/sourcesystem.cpp"
+    "sources/source/tierlibs.cpp"
     "sources/console.cpp"
-    "sources/consolethread.cpp"
-    "sources/exports.cpp"
-    "sources/filesystem_init.cpp"
     "sources/launcher.cpp"
+    "sources/main.cpp"
     "sources/modulecache.cpp"
-    "sources/sourceapp.cpp"
-    "sources/tierextra.cpp")
+    "sources/sourcemain.cpp")
+
+if(WIN32)
+  set(LAUNCHER_SOURCES_BASE "sources/platform/platform_windows.cpp"
+                            ${LAUNCHER_SOURCES_BASE})
+elseif(UNIX)
+  set(LAUNCHER_SOURCES_BASE "sources/platform/platform_unix.cpp"
+                            ${LAUNCHER_SOURCES_BASE})
+endif()
 
 set(LAUNCHER_SOURCES_HOOKS
     "sources/hooks/client.cpp"
@@ -137,44 +147,27 @@ set(LAUNCHER_SOURCES_IMGUIS
     "sources/imgui/imgui_impl/imgui_impl_dx9.cpp"
     "sources/imgui/imgui_impl/imgui_impl_win32.cpp")
 
-set(LAUNCHER_SOURCES_APPFRAMEWORK "sources/appframework/AppSystemGroup.cpp"
-                                  "sources/appframework/WinApp.cpp")
-
-set(LAUNCHER_SOURCES_TIER1
-    "sources/tier1/convar.cpp"
-    "sources/tier1/generichash.cpp"
-    "sources/tier1/interface.cpp"
-    "sources/tier1/KeyValues.cpp"
-    "sources/tier1/strtools.cpp"
-    "sources/tier1/strtools_unicode.cpp"
-    "sources/tier1/tier1.cpp"
-    "sources/tier1/utlbuffer.cpp"
-    "sources/tier1/utlstring.cpp")
-
-set(LAUNCHER_SOURCES_TIER2 "sources/tier2/tier2.cpp")
-
-set(LAUNCHER_SOURCES_TIER3 "sources/tier3/tier3.cpp")
-
 set(LAUNCHER_HEADERS_IMGUIS
     "sources/imgui/imconfig.h"
     "sources/imgui/imgui.h"
     "sources/imgui/imgui_internal.h"
     "sources/imgui/imstb_rectpack.h"
-    "sources/mgui/imstb_textedit.h"
+    "sources/imgui/imstb_textedit.h"
     "sources/imgui/imstb_truetype.h"
     "sources/imgui/imgui_impl/imgui_impl_dx9.h"
     "sources/imgui/imgui_impl/imgui_impl_win32.h")
 
 set(LAUNCHER_HEADERS_BASE
-    "headers/basedir.hpp"
+    "headers/source/appsystemgroup.hpp"
+    "headers/source/appsystemtable.hpp"
+    "headers/source/filesystem_util.hpp"
+    "headers/source/sourcesystem.hpp"
+    "headers/source/tierlibs.hpp"
     "headers/console.hpp"
     "headers/hooks.hpp"
-    "headers/ifilesystem.hpp"
     "headers/leakdump.hpp"
     "headers/modulecache.hpp"
-    "headers/onloadlib.hpp"
-    "headers/sourceapp.hpp"
-    "headers/tierextra.hpp"
+    "headers/platform.hpp"
     "headers/utilities.hpp"
     ${LAUNCHER_VERSION_OUT})
 
@@ -185,26 +178,18 @@ else()
   set(LAUNCHER_RESOURCES_WIN32)
 endif()
 
-file(GLOB
-     LAUNCHER_ALL_SOURCES
-     ${LAUNCHER_SOURCES_BASE}
-     ${LAUNCHER_SOURCES_HOOKS}
-     ${LAUNCHER_SOURCES_IMGUIS}
-     ${LAUNCHER_SOURCES_APPFRAMEWORK}
-     ${LAUNCHER_SOURCES_TIER1}
-     ${LAUNCHER_SOURCES_TIER2}
-     ${LAUNCHER_SOURCES_TIER3}
-     ${LAUNCHER_HEADERS_BASE}
-     ${LAUNCHER_HEADERS_IMGUIS})
+file(
+  GLOB
+  LAUNCHER_ALL_SOURCES
+  ${LAUNCHER_SOURCES_BASE}
+  ${LAUNCHER_SOURCES_HOOKS}
+  ${LAUNCHER_SOURCES_IMGUIS}
+  ${LAUNCHER_HEADERS_BASE}
+  ${LAUNCHER_HEADERS_IMGUIS})
 
 source_group("Source Files" FILES ${LAUNCHER_SOURCES_BASE})
-source_group("Source Files\\AppFramework" FILES
-             ${LAUNCHER_SOURCES_APPFRAMEWORK})
 source_group("Source Files\\Hooks" FILES ${LAUNCHER_SOURCES_HOOKS})
 source_group("Source Files\\ImGui" FILES ${LAUNCHER_SOURCES_IMGUIS})
-source_group("Source Files\\Tier1" FILES ${LAUNCHER_SOURCES_TIER1})
-source_group("Source Files\\Tier2" FILES ${LAUNCHER_SOURCES_TIER2})
-source_group("Source Files\\Tier3" FILES ${LAUNCHER_SOURCES_TIER3})
 source_group("Header Files" FILES ${LAUNCHER_HEADERS_BASE})
 source_group("Header Files\\ImGui" FILES ${LAUNCHER_HEADERS_IMGUIS})
 source_group("Resource Files" FILES ${LAUNCHER_RESOURCES_BASE})
@@ -226,61 +211,36 @@ endif()
 # macros
 #
 if(WIN32)
-  target_compile_definitions(launcher
-                             PRIVATE
-                             -DWIN32_LEAN_AND_MEAN
-                             -DNOMINMAX)
+  target_compile_definitions(launcher PRIVATE -DWIN32_LEAN_AND_MEAN -DNOMINMAX)
 endif()
 
 # ensures compatibility with the game's std::string
 target_compile_definitions(launcher PRIVATE -D_ITERATOR_DEBUG_LEVEL=0)
 
-# source sdk specific
-target_compile_definitions(launcher
-                           PRIVATE
-                           -DNO_VCR
-                           -D_DLL_EXT=.dll)
-
 #
 # Enable all warnings
 #
 if(MSVC)
-  #target_compile_options(launcher PRIVATE /W4 /WX /SAFESEH:NO)
-  #target_link_options(launcher PRIVATE /SAFESEH:NO)
+  target_compile_options(launcher PRIVATE "/W4")
 else()
-  target_compile_options(launcher
-                         PRIVATE -Wall
-                                 -Wextra
-                                 -Wconversion
-                                 -pedantic)
+  target_compile_options(launcher PRIVATE -Wall -Wextra -Wconversion -pedantic)
   target_compile_options(launcher PRIVATE -g)
 endif()
 
-if(UNCSO2_USE_LTO)
-  set_property(TARGET uc2 PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
-  set_property(TARGET uncso2 PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+if(LAUNCHER_USE_LTO)
+  set_property(TARGET launcher PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 
 #
 # project's include directories
 #
-set(LAUNCHER_SOURCE_SDK_INCLUDES
-    "${LAUNCHER_ROOT_DIR}/sdk/common"
-    "${LAUNCHER_ROOT_DIR}/sdk/public"
-    "${LAUNCHER_ROOT_DIR}/sdk/public/appframework"
-    "${LAUNCHER_ROOT_DIR}/sdk/public/mathlib"
-    "${LAUNCHER_ROOT_DIR}/sdk/public/tier0"
-    "${LAUNCHER_ROOT_DIR}/sdk/public/tier1"
-    "${LAUNCHER_ROOT_DIR}/sdk/public/vgui"
-    "${LAUNCHER_ROOT_DIR}/sdk/public/vstdlib")
+set(LAUNCHER_SOURCE_SDK_INCLUDES "${LAUNCHER_ROOT_DIR}/minimal_sdk/public")
 
 set(LAUNCHER_IMGUI_INCLUDES "sources/imgui" "sources/imgui/imgui_impl")
 
-target_include_directories(launcher
-                           PRIVATE "headers"
-                                   ${LAUNCHER_SOURCE_SDK_INCLUDES}
-                                   ${LAUNCHER_LIB_PHOOK_DIR}
-                                   ${LAUNCHER_IMGUI_INCLUDES})
+target_include_directories(
+  launcher PRIVATE "headers" ${LAUNCHER_SOURCE_SDK_INCLUDES}
+                   ${LAUNCHER_LIB_PHOOK_DIR} ${LAUNCHER_IMGUI_INCLUDES})
 
 # the generated version header's directory
 target_include_directories(launcher PRIVATE ${LAUNCHER_GENERATED_DIR})
@@ -289,15 +249,6 @@ target_include_directories(launcher PRIVATE ${LAUNCHER_GENERATED_DIR})
 # library dependencies
 #
 target_link_libraries(launcher capstone-static PolyHook_2)
-
-# source sdk
-target_link_directories(launcher PRIVATE "${LAUNCHER_ROOT_DIR}/sdk/lib/public")
-
-# if(MSVC) target_link_libraries(launcher tier0_msvc.lib vstdlib.lib)
-# elseif(MINGW) target_link_libraries(launcher tier0_mingw.lib vstdlib.lib)
-# else() message(FATAL_ERROR "Please implement an option to link the Source SDK
-# libraries in your compiler.") endif()
-target_link_libraries(launcher tier0.lib vstdlib.lib)
 
 # make polyhook's std::string compatible with the game bin
 target_compile_definitions(PolyHook_2 PRIVATE _ITERATOR_DEBUG_LEVEL=0)

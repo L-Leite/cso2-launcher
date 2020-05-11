@@ -1,7 +1,7 @@
 #include <sstream>
 #include <string_view>
 
-#include <tier0/ICommandLine.h>
+#include <tier0/icommandline.hpp>
 
 #include "hooks.hpp"
 

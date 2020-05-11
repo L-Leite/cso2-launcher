@@ -1,7 +1,7 @@
 #include "hooks.hpp"
 
-#include "engine/cso2/icso2msgmanager.h"
-#include "tier0/ICommandLine.h"
+#include <engine/cso2/icso2msgmanager.hpp>
+#include <tier0/icommandline.hpp>
 
 static std::unique_ptr<PLH::x86Detour> g_pInitUIHook;
 static uint64_t g_InitUIOrig = 0;

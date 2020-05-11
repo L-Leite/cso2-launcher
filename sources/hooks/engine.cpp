@@ -3,16 +3,15 @@
 #include <iostream>
 #include <string>
 
-#include "msvc/string.hpp"
-
-#include "Color.h"
-#include "convar.h"
-#include "tier0/ICommandLine.h"
+#include <math/color.hpp>
+#include <tier0/icommandline.hpp>
+#include <tier1/convar.hpp>
 
 #include "console.hpp"
 #include "hooks.hpp"
-#include "tierextra.hpp"
 #include "utilities.hpp"
+
+#include "source/tierlibs.hpp"
 
 using namespace std::string_literals;
 
@@ -238,10 +237,6 @@ void OnEngineLoaded( const uintptr_t dwEngineBase )
     }
 
     bHasLoaded = true;
-
-    // setup engine library interfaces
-    CreateInterfaceFn pEngineFactory = Sys_GetFactory( "engine.dll" );
-    ConnectExtraLibraries( &pEngineFactory, 1 );
 
     BytePatchEngine( dwEngineBase );
 

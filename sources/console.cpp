@@ -6,14 +6,14 @@
 #include "imgui_impl/imgui_impl_dx9.h"
 #include "imgui_impl/imgui_impl_win32.h"
 
-#include "cdll_int.h"
-#include "convar.h"
-#include "inputsystem/iinputsystem.h"
-#include "tier2/tier2.h"
+#include <engine/cdll_int.hpp>
+#include <inputsystem/iinputsystem.hpp>
+#include <tier1/convar.hpp>
+
+#include "source/tierlibs.hpp"
 
 #include "console.hpp"
 #include "hooks.hpp"
-#include "tierextra.hpp"
 #include "version.hpp"
 
 //
@@ -399,7 +399,7 @@ void GameConsole::Error( const char* fmt, ... )
 void GameConsole::VWrite( const char* fmt, va_list va )
 {
     char string[0x1000];
-    Q_vsnprintf( string, sizeof( string ), fmt, va );
+    _vsnprintf( string, sizeof( string ), fmt, va );
     if ( strlen( m_szOutputText ) + strlen( string ) > 0x3fff )
         ClearOutput();
 
@@ -411,7 +411,7 @@ void GameConsole::VWrite( const char* fmt, va_list va )
 void GameConsole::VWriteLine( const char* fmt, va_list va )
 {
     char string[0x1000];
-    Q_vsnprintf( string, sizeof( string ), fmt, va );
+    _vsnprintf( string, sizeof( string ), fmt, va );
 
     int len = strlen( string );
 
@@ -433,7 +433,7 @@ void GameConsole::VWriteLine( const char* fmt, va_list va )
 void GameConsole::VWarning( const char* fmt, va_list va )
 {
     char string[0x1000];
-    Q_vsnprintf( string, sizeof( string ), fmt, va );
+    _vsnprintf( string, sizeof( string ), fmt, va );
 
     WriteLine( "^3%s", string );
 }
@@ -441,7 +441,7 @@ void GameConsole::VWarning( const char* fmt, va_list va )
 void GameConsole::VDevInfo( const char* fmt, va_list va )
 {
     char string[0x1000];
-    Q_vsnprintf( string, sizeof( string ), fmt, va );
+    _vsnprintf( string, sizeof( string ), fmt, va );
 
     WriteLine( "^2%s", string );
 }
@@ -449,7 +449,7 @@ void GameConsole::VDevInfo( const char* fmt, va_list va )
 void GameConsole::VError( const char* fmt, va_list va )
 {
     char string[0x1000];
-    Q_vsnprintf( string, sizeof( string ), fmt, va );
+    _vsnprintf( string, sizeof( string ), fmt, va );
 
     WriteLine( "^1%s", string );
 }

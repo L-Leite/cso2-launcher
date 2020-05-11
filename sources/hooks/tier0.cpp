@@ -1,7 +1,7 @@
 #include <array>
 
-#include <tier0/ICommandLine.h>
-#include <tier0/platform.h>
+#include <tier0/icommandline.hpp>
+#include <tier0/platform.hpp>
 
 #include "console.hpp"
 #include "hooks.hpp"
@@ -59,9 +59,17 @@ void BytePatchTier( const uintptr_t dwTierBase )
     utils::WriteProtectedMemory( addArgPatch, ( dwTierBase + 0x1D63 ) );
 }
 
-void HookTier0()
+void OnTierZeroLoaded( const uintptr_t dwTierBase )
 {
-    const uintptr_t dwTierBase = utils::GetModuleBase( "tier0.dll" );
+    static bool bHasLoaded = false;
+
+    if ( bHasLoaded )
+    {
+        return;
+    }
+
+    bHasLoaded = true;
+
     BytePatchTier( dwTierBase );
 
     g_pTimestampedHook =

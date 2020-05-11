@@ -1,10 +1,10 @@
 # cso2-launcher
 
-[![Build status](https://ci.appveyor.com/api/projects/status/6ehjwfyekyfd9ipx/branch/master?svg=true)](https://ci.appveyor.com/project/Ochii/cso2-launcher/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/6ehjwfyekyfd9ipx/branch/master?svg=true)](https://ci.appveyor.com/project/L-Leite/cso2-launcher/branch/master)
 
 A custom client launcher for Nexon's Counter-Strike: Online 2, written in C++.
 
-Ready for [this CSO2 master server](https://github.com/Ochii/cso2-master-server/).
+Ready for [this CSO2 master server](https://github.com/L-Leite/cso2-master-server/).
 
 ## Installation
 
@@ -30,7 +30,7 @@ SHA-256 of `cso2_nexon_v24406.7z`: `02F76DBDD083EF78ECC92EB963C7C7A7576FF2E2C695
 
 ### Obtaining the launcher
 
-- Download a copy of the [launcher](https://github.com/Ochii/cso2-launcher/releases);
+- Download a copy of the [launcher](https://github.com/L-Leite/cso2-launcher/releases);
 - Then extract the files inside to ```[your CSO2 game folder]/Bin```.
 
 ## Starting the game
