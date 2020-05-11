@@ -1,4 +1,5 @@
 #include <array>
+#include <cstdio>
 
 #include <tier0/icommandline.hpp>
 #include <tier0/platform.hpp>
@@ -37,14 +38,18 @@ NOINLINE void hkCOM_TimestampedLog( char const* fmt, ... )
 
     if ( !s_bFirstWrite )
     {
-        unlink( "timestamped.log" );
+        _unlink( "timestamped.log" );
         s_bFirstWrite = true;
     }
 
-    FILE* fp = fopen( "timestamped.log", "at+" );
-    fprintf( fp, "%8.4f / %8.4f:  %s\n", curStamp, curStamp - s_LastStamp,
-             string );
-    fclose( fp );
+    FILE* file = nullptr;
+
+    if ( fopen_s( &file, "timestamped.log", "at+" ) == 0 )
+    {
+        fprintf_s( file, "%8.4f / %8.4f:  %s\n", curStamp,
+                   curStamp - s_LastStamp, string );
+        fclose( file );
+    }
 
     s_LastStamp = curStamp;
 }
