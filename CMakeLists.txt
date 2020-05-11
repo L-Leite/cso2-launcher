@@ -211,7 +211,7 @@ endif()
 # macros
 #
 if(WIN32)
-  target_compile_definitions(launcher PRIVATE -DWIN32_LEAN_AND_MEAN -DNOMINMAX)
+  target_compile_definitions(launcher PRIVATE -DWIN32_LEAN_AND_MEAN)
 endif()
 
 # ensures compatibility with the game's std::string
