@@ -52,7 +52,7 @@ public:
     //-----------------------------------------------------------------------------
     CUtlRBTree( int growSize = 0, int initSize = 0,
                 const LessFunc_t& lessfunc = 0 )
-        : m_Elements( growSize, initSize ), m_LessFunc( lessfunc ),
+        : m_LessFunc( lessfunc ), m_Elements( growSize, initSize ),
           m_Root( InvalidIndex() ), m_NumElements( 0 ),
           m_FirstFree( InvalidIndex() ),
           m_LastAlloc( m_Elements.InvalidIterator() )
