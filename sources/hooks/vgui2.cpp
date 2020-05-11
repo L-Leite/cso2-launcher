@@ -122,37 +122,35 @@ void* GetLocalizedStringTable( const uintptr_t base )
 static std::unique_ptr<PLH::VTableSwapHook> g_pStrTblHook;
 static PLH::VFuncMap g_StrTblOrig;
 
-NOINLINE int __fastcall hkLocalToUtf8( void* thisptr, void*,
-                                       const char* szInput, char* szOutBuffer,
+NOINLINE int __fastcall hkLocalToUtf8( void*, void*, const char* szInput,
+                                       char* szOutBuffer,
                                        std::uint32_t iOutBufferSize )
 {
     return HandleLocalConvertion( szInput, szOutBuffer, iOutBufferSize );
 }
 
-NOINLINE int __fastcall hkUtf8ToLocal( void* thisptr, void*,
-                                       const char* szInput, char* szOutBuffer,
+NOINLINE int __fastcall hkUtf8ToLocal( void*, void*, const char* szInput,
+                                       char* szOutBuffer,
                                        std::uint32_t iOutBufferSize )
 {
     return HandleLocalConvertion( szInput, szOutBuffer, iOutBufferSize );
 }
 
-NOINLINE int __fastcall hkWideCharToUtf8( void* thisptr, void*,
-                                          const wchar_t* szInput,
+NOINLINE int __fastcall hkWideCharToUtf8( void*, void*, const wchar_t* szInput,
                                           char* szOutBuffer,
                                           std::uint32_t iOutBufferSize )
 {
     return ConvertWideCharToUtf8( szInput, szOutBuffer, iOutBufferSize );
 }
 
-NOINLINE int __fastcall hkUtf8ToWideChar( void* thisptr, void*,
-                                          const char* szInput,
+NOINLINE int __fastcall hkUtf8ToWideChar( void*, void*, const char* szInput,
                                           wchar_t* szOutBuffer,
                                           std::uint32_t iOutBufferSize )
 {
     return ConvertUtf8ToWideChar( szInput, szOutBuffer, iOutBufferSize );
 }
 
-NOINLINE int __fastcall hkWideCharToUtf8_2( void* thisptr, void*,
+NOINLINE int __fastcall hkWideCharToUtf8_2( void*, void*,
                                             const wchar_t* szInput,
                                             char* szOutBuffer,
                                             std::uint32_t iOutBufferSize )
