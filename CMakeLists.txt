@@ -172,8 +172,7 @@ set(LAUNCHER_HEADERS_BASE
     ${LAUNCHER_VERSION_OUT})
 
 if(WIN32)
-  set(LAUNCHER_RESOURCES_WIN32 "resources/launcher.ico" "resources/launcher.rc"
-                               "resources/resource.hpp")
+  set(LAUNCHER_RESOURCES_WIN32 "resources/launcher.ico" "resources/launcher.rc")
 else()
   set(LAUNCHER_RESOURCES_WIN32)
 endif()
@@ -185,7 +184,8 @@ file(
   ${LAUNCHER_SOURCES_HOOKS}
   ${LAUNCHER_SOURCES_IMGUIS}
   ${LAUNCHER_HEADERS_BASE}
-  ${LAUNCHER_HEADERS_IMGUIS})
+  ${LAUNCHER_HEADERS_IMGUIS}
+  ${LAUNCHER_RESOURCES_WIN32})
 
 source_group("Source Files" FILES ${LAUNCHER_SOURCES_BASE})
 source_group("Source Files\\Hooks" FILES ${LAUNCHER_SOURCES_HOOKS})
