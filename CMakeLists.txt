@@ -221,7 +221,7 @@ target_compile_definitions(launcher PRIVATE -D_ITERATOR_DEBUG_LEVEL=0)
 # Enable all warnings
 #
 if(MSVC)
-  target_compile_options(launcher PRIVATE "/W4 /EHs")
+  target_compile_options(launcher PRIVATE /W4 /EHs)
 else()
   target_compile_options(launcher PRIVATE -Wall -Wextra -Wconversion -pedantic)
   target_compile_options(launcher PRIVATE -g)
