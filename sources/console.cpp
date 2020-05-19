@@ -1,20 +1,17 @@
+#include "console.hpp"
+
 #include <d3d9.h>
-
-#include "launcher_version.hpp"
-
-#include "imgui.h"
-#include "imgui_impl/imgui_impl_dx9.h"
-#include "imgui_impl/imgui_impl_win32.h"
 
 #include <engine/cdll_int.hpp>
 #include <inputsystem/iinputsystem.hpp>
 #include <tier1/convar.hpp>
 
-#include "source/tierlibs.hpp"
-
-#include "console.hpp"
 #include "hooks.hpp"
-#include "version.hpp"
+#include "imgui.h"
+#include "imgui_impl/imgui_impl_dx9.h"
+#include "imgui_impl/imgui_impl_win32.h"
+#include "launcher_version.hpp"
+#include "source/tierlibs.hpp"
 
 //
 // Global stuffs
