@@ -97,7 +97,7 @@ void Proc_SetLowPriority()
 
 void* Sys_LoadLibrary( const char* moduleName )
 {
-    return reinterpret_cast<void*>( LoadLibraryA( moduleName ) );
+    return reinterpret_cast<void*>( LoadLibraryExA( moduleName, nullptr, 0 ) );
 }
 
 void Sys_FreeLibrary( void* moduleBase )
