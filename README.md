@@ -2,9 +2,11 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/6ehjwfyekyfd9ipx/branch/master?svg=true)](https://ci.appveyor.com/project/L-Leite/cso2-launcher/branch/master)
 
+![cso2-launcher's logo](./.readme/logo-128.png)
+
 A custom client launcher for Nexon's Counter-Strike: Online 2, written in C++.
 
-Ready for [this CSO2 master server](https://github.com/L-Leite/cso2-master-server/).
+You may find a [custom CSO2 master server here](https://github.com/L-Leite/cso2-master-server/).
 
 ## Installation
 
@@ -23,6 +25,7 @@ This might be avoidable in the future once a dedicated server launcher is develo
 You can grab a copy of **Nexon's Counter-Strike: Online 2** through:
 
 - BitTorrent, magnet link: `magnet:?xt=urn:btih:7BUJS77RR2AYAXCFPF7TSSSRF2NWUOU6`
+- IPFS, [download here](https://ipfs.io/ipfs/QmQcam3bRr2xBDC81dJAYEoKz8tr32RoDsZNjb7rA6iEjL) (hash: `QmQcam3bRr2xBDC81dJAYEoKz8tr32RoDsZNjb7rA6iEjL`)
 - [MEGA](https://mega.nz/#!nhgnBJgD!iR57D5Mf3_1GCcAR36tqFQ7H7KN_F0e3XicD2JBoSN4);
 - [Google Drive](https://drive.google.com/open?id=1y0diL2nTERlOaJZQTA3xPb8owx82GjtB). 
 
@@ -117,6 +120,14 @@ Thank you for your contributions.
 
 ## License
 
-Read ```LICENSE``` for license information.
+Licensed under the MIT license, see ```COPYING``` for more information.
 
-I'm not affiliated with either Valve and/or Nexon, nor do I own Counter-Strike Online 2.
+This project is not affiliated with Nexon Co., Ltd. or Valve Corporation.
+
+## Screenshots
+
+![First screenshot](./.readme/screenshot-01.png)
+
+![Second screenshot](./.readme/screenshot-02.png)
+
+![Third screenshot](./.readme/screenshot-03.png)
