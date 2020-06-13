@@ -113,7 +113,7 @@ IAppSystem* AppSystemsTable::AddSystem( ASModuleIndex moduleIndex,
 
 AppSystemsTable* g_pRealAppSysTable = nullptr;
 
-void* AppSystemCreateInterfaceFn2( const char* pName, int* pReturnCode )
+void* AppSystemCreateInterfaceFn( const char* pName, int* pReturnCode )
 {
     void* pInterface = g_pRealAppSysTable->FindSystem( pName );
     if ( pReturnCode )
@@ -128,7 +128,7 @@ void* AppSystemCreateInterfaceFn2( const char* pName, int* pReturnCode )
 //-----------------------------------------------------------------------------
 CreateInterfaceFn AppSystemsTable::GetFactory() const
 {
-    return AppSystemCreateInterfaceFn2;
+    return AppSystemCreateInterfaceFn;
 }
 
 bool AppSystemsTable::ConnectSystems() const
