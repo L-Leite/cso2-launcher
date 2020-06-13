@@ -11,7 +11,8 @@ const char* FS_GetBinDirectory()
 fs::path FS_GetFileSystemLibPath()
 {
     fs::path path = FS_GetBinDirectory();
-    path /= "filesystem_stdio.dll";
+    path /= "FileSystem_Stdio.dll";
+    path.make_preferred();
     return path;
 }
 
