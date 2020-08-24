@@ -1,3 +1,6 @@
 [submodule "libs/PolyHook_2_0"]
 	path = libs/PolyHook_2_0
 	url = https://github.com/stevemk14ebr/PolyHook_2_0
+[submodule "libs/fmt"]
+	path = libs/fmt
+	url = https://github.com/fmtlib/fmt
