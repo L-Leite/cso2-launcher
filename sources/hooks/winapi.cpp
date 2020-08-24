@@ -7,7 +7,7 @@
 
 extern void OnClientLoaded();
 extern void OnEngineLoaded();
-extern void OnFileSystemLoaded( const uintptr_t dwFilesystemBase );
+extern void OnFileSystemLoaded();
 extern void OnShaderApiLoaded();
 extern void OnTierZeroLoaded();
 extern void OnVguiLoaded();
@@ -26,7 +26,7 @@ void OnLoadLibrary( HMODULE hLibrary, std::string_view libPathView )
     }
     else if ( szLibName == "filesystem_stdio.dll" )
     {
-        OnFileSystemLoaded( dwLibraryBase );
+        OnFileSystemLoaded();
     }
     else if ( szLibName == "shaderapidx9.dll" )
     {

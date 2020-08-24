@@ -8,6 +8,8 @@
 
 #include "hooks.hpp"
 #include "utilities.hpp"
+#include "utilities/log.hpp"
+#include "utilities/memorypatterns.hpp"
 
 std::filesystem::path GetCustomPath( const char* pFileName )
 {
@@ -94,7 +96,7 @@ NOINLINE int __fastcall hkGetFileExt( const char** ecx, void* edx,
                                                           path_size, ext_size );
 }
 
-void BytePatchFilesystem( const uintptr_t dwFilesystemBase )
+void BytePatchFilesystem()
 {
     //
     // IsFileEncrypted (1006A3B0, rva 6A3B0 @ FileSystem_Stdio.dll)
@@ -109,14 +111,62 @@ void BytePatchFilesystem( const uintptr_t dwFilesystemBase )
     //
     if ( CommandLine()->CheckParm( "-decryptedfiles", nullptr ) )
     {
-        // mov al, 1; retn
-        const std::array<uint8_t, 5> encryptPatch = { 0xB0, 0x00, 0xC3 };
-        utils::WriteProtectedMemory( encryptPatch,
-                                     ( dwFilesystemBase + 0x6A3B0 ) );
+        MemoryPatterns& patterns = MemoryPatterns::Singleton();
+        const uintptr_t fileEncAddr =
+            patterns.GetPattern( "FsIsFileEncrypted" );
+
+        if ( fileEncAddr != 0 )
+        {
+            // mov al, 0; retn
+            const std::array<uint8_t, 5> encryptPatch = { 0xB0, 0x00, 0xC3 };
+            utils::WriteProtectedMemory( encryptPatch, fileEncAddr );
+        }
     }
 }
 
-void OnFileSystemLoaded( const uintptr_t dwFsBase )
+bool LookupFSAddresses()
+{
+    Log::Debug( "Looking up addresses in filesystem_stdio.dll...\n" );
+
+    int results = 0;
+
+    MemoryPatterns& patterns = MemoryPatterns::Singleton();
+
+    results += !patterns.AddPattern(
+        "\xE8\xCC\xCC\xCC\xCC\x8B\xF0\x89\x74\x24\x18", "FsOpenEx",
+        IMemoryPatternsOptions( -1, 1, 5, "filesystem_stdio.dll", 0, true ) );
+
+    results += !patterns.AddPattern(
+        "\x81\xEC\xCC\xCC\xCC\xCC\x56\x8B\xB4\x24\xCC\xCC\xCC\xCC\x57\x8B\xF9"
+        "\x85\xF6\x75\x0D\x5F\x33\xC0\x5E\x81\xC4\xCC\xCC\xCC\xCC\xC2\x14\x00",
+        "FsOpenExGfx",
+        IMemoryPatternsOptions( -1, -1, -1, "filesystem_stdio.dll" ) );
+
+    results += !patterns.AddPattern(
+        "\x56\x8B\xF1\x57\x83\x7E\x14\x10\x8B\x7E\x10", "FsIsFileEncrypted",
+        IMemoryPatternsOptions( -1, -1, -1, "filesystem_stdio.dll" ) );
+
+    results += !patterns.AddPattern(
+        "\x51\x56\xFF\x74\x24\x14\x8B\x74\x24\x10\xFF\x74\x24\x14",
+        "FsGetFileExt",
+        IMemoryPatternsOptions( -1, -1, -1, "filesystem_stdio.dll" ) );
+
+    const bool foundAllAddresses = results == 0;
+
+    if ( foundAllAddresses == true )
+    {
+        Log::Debug( "Looked up filesystem_stdio.dll addresses successfully\n" );
+    }
+    else
+    {
+        Log::Error( "Failed to find {} filesystem_stdio.dll addresses\n",
+                    results );
+    }
+
+    return foundAllAddresses;
+}
+
+void OnFileSystemLoaded()
 {
     static bool bHasLoaded = false;
 
@@ -125,27 +175,54 @@ void OnFileSystemLoaded( const uintptr_t dwFsBase )
 
     bHasLoaded = true;
 
+    LookupFSAddresses();
+
+    MemoryPatterns& patterns = MemoryPatterns::Singleton();
+    PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
+
     if ( CommandLine()->CheckParm( "-enablecustom", nullptr ) &&
          std::filesystem::exists( GetCustomPath( "" ) ) )
     {
-        PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
+        const uintptr_t fsOpenExAddr = patterns.GetPattern( "FsOpenEx" );
 
-        g_pOpenExHook = SetupDetourHook( dwFsBase + 0x46D90, &hkFsOpenEx,
-                                         &g_OpenExOrig, dis );
-        g_pOpenExGfxHook = SetupDetourHook( dwFsBase + 0x46C60, &hkFsOpenExGfx,
-                                            &g_OpenExGfxOrig, dis );
-        g_pFileEncHook = SetupDetourHook(
-            dwFsBase + 0x6A3B0, &hkIsFileEncrypted, &g_FileEncOrig, dis );
-        g_pGetFileExtHook = SetupDetourHook( dwFsBase + 0x6A4E0, &hkGetFileExt,
-                                             &g_GetFileExtOrig, dis );
+        if ( fsOpenExAddr != 0 )
+        {
+            g_pOpenExHook = SetupDetourHook( fsOpenExAddr, &hkFsOpenEx,
+                                             &g_OpenExOrig, dis );
+            g_pOpenExHook->hook();
+        }
 
-        g_pOpenExHook->hook();
-        g_pOpenExGfxHook->hook();
-        g_pFileEncHook->hook();
-        g_pGetFileExtHook->hook();
+        const uintptr_t fsOpenExGfxAddr = patterns.GetPattern( "FsOpenExGfx" );
+
+        if ( fsOpenExGfxAddr != 0 )
+        {
+            g_pOpenExGfxHook = SetupDetourHook( fsOpenExGfxAddr, &hkFsOpenExGfx,
+                                                &g_OpenExGfxOrig, dis );
+            g_pOpenExGfxHook->hook();
+        }
+
+        const uintptr_t fileEncAddr =
+            patterns.GetPattern( "FsIsFileEncrypted" );
+
+        if ( fileEncAddr != 0 )
+        {
+            g_pFileEncHook = SetupDetourHook( fileEncAddr, &hkIsFileEncrypted,
+                                              &g_FileEncOrig, dis );
+            g_pFileEncHook->hook();
+        }
+
+        const uintptr_t fileExtAddr = patterns.GetPattern( "FsGetFileExt" );
+
+        if ( fileExtAddr != 0 )
+        {
+            g_pGetFileExtHook = SetupDetourHook( fileExtAddr, &hkGetFileExt,
+                                                 &g_GetFileExtOrig, dis );
+
+            g_pGetFileExtHook->hook();
+        }
     }
     else
     {
-        BytePatchFilesystem( dwFsBase );
+        BytePatchFilesystem();
     }
 }
