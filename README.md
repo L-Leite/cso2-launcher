@@ -98,7 +98,10 @@ If built successfully, you will find the launcher inside ```out/bin/Win32/[your 
 ## Libraries used
 
 - **[Dear ImGui](https://github.com/ocornut/imgui)** by [Omar Cornut](https://github.com/sakra)
+- **[fmt](https://github.com/fmtlib/fmt)**
 - **[PolyHook 2.0](https://github.com/stevemk14ebr/PolyHook_2_0)** by [Stephen Eckels](https://github.com/stevemk14ebr)
+
+It also uses code from [DarthTon's Blackbone](https://github.com/DarthTon/Blackbone).
 
 ## Contributors
 

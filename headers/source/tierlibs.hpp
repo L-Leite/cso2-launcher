@@ -19,6 +19,14 @@ extern class IFileSystem* g_pFullFileSystem;
 extern class IMaterialSystem* g_pMaterialSystem;
 extern class IInputSystem* g_pInputSystem;
 
+// tier3 libraries
+namespace vgui
+{
+class ILocalize;
+}
+
+extern class vgui::ILocalize* g_pVGuiLocalize;
+
 //
 // aditional libraries
 //

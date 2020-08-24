@@ -55,6 +55,11 @@ void Sys_FreeLibrary( void* moduleBase )
     dlclose( moduleBase );
 }
 
+void* Sys_GetModuleBase( const char* moduleName )
+{
+    return dlopen( moduleName, RTLD_NOLOAD );
+}
+
 void* Sys_GetModuleExport( void* moduleBase, const char* exportName )
 {
     return dlsym( moduleBase, exportName );

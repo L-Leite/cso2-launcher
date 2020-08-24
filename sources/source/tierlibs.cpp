@@ -15,6 +15,7 @@
 #include <tier0/dbg.hpp>
 #include <tier0/icommandline.hpp>
 #include <tier0/platform.hpp>
+#include <vgui/ilocalize.hpp>
 
 template <class T>
 inline T* FactoryCast( CreateInterfaceFn f, const char* szName, int* retCode )
@@ -52,6 +53,17 @@ void ConnectTier2Libraries( CreateInterfaceFn factory )
 }
 
 //
+// tier3 libraries
+//
+vgui::ILocalize* g_pVGuiLocalize = nullptr;
+
+void ConnectTier3Libraries( CreateInterfaceFn factory )
+{
+    g_pVGuiLocalize = FactoryCast<vgui::ILocalize>(
+        factory, VGUI_LOCALIZE_INTERFACE_VERSION, NULL );
+}
+
+//
 // aditional libraries
 //
 IVEngineClient* g_pEngineClient = nullptr;
@@ -70,10 +82,7 @@ void ConnectAllLibraries( CreateInterfaceFn factory )
 {
     ConnectTier1Libraries( factory );
     ConnectTier2Libraries( factory );
-
-    // we don't need any tier3 libraries at the moment
-    // ConnectTier3Libraries( factory );
-
+    ConnectTier3Libraries( factory );
     ConnectNonTierLibraries( factory );
 }
 

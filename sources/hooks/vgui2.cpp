@@ -2,8 +2,13 @@
 #include <string_view>
 
 #include <tier0/icommandline.hpp>
+#include <vgui/ilocalize.hpp>
 
 #include "hooks.hpp"
+#include "platform.hpp"
+#include "source/tierlibs.hpp"
+#include "utilities/log.hpp"
+#include "utilities/memorypatterns.hpp"
 
 //
 // Formats a string as "resource/[game prefix]_[language].txt"
@@ -118,11 +123,6 @@ int ConvertUtf8ToWideChar( const char* szInput, wchar_t* szOutput,
     return iLength;
 }
 
-void* GetLocalizedStringTable( const uintptr_t base )
-{
-    return reinterpret_cast<void*>( base + 0x96FB0 );
-}
-
 static std::unique_ptr<PLH::VTableSwapHook> g_pStrTblHook;
 static PLH::VFuncMap g_StrTblOrig;
 
@@ -162,7 +162,49 @@ NOINLINE int __fastcall hkWideCharToUtf8_2( void*, void*,
     return ConvertWideCharToUtf8( szInput, szOutBuffer, iOutBufferSize );
 }
 
-void OnVguiLoaded( const uintptr_t dwVguiBase )
+bool LookupVguiAddresses()
+{
+    Log::Debug( "Looking up addresses in vgui2.dll...\n" );
+
+    int results = 0;
+
+    MemoryPatterns& patterns = MemoryPatterns::Singleton();
+
+    results += !patterns.AddPattern(
+        "\x6A\xFF\x68\xCC\xCC\xCC\xCC\x64\xA1\xCC\xCC\xCC\xCC\x50\xB8",
+        "StrTblAddFile", IMemoryPatternsOptions( -1, -1, -1, "vgui2.dll" ) );
+
+    const bool foundAllAddresses = results == 0;
+
+    if ( foundAllAddresses == true )
+    {
+        Log::Debug( "Looked up vgui2.dll addresses successfully\n" );
+    }
+    else
+    {
+        Log::Error( "Failed to find {} vgui2.dll addresses\n", results );
+    }
+
+    return foundAllAddresses;
+}
+
+// we need this earlier than we link the tier libraries,
+// so get it through this way
+vgui::ILocalize* GetVGuiLocalize()
+{
+    auto factory = reinterpret_cast<CreateInterfaceFn>( Sys_GetModuleExport(
+        Sys_GetModuleBase( "vgui2.dll" ), "CreateInterface" ) );
+
+    if ( factory == nullptr )
+    {
+        return nullptr;
+    }
+
+    return reinterpret_cast<vgui::ILocalize*>(
+        factory( VGUI_LOCALIZE_INTERFACE_VERSION, NULL ) );
+}
+
+void OnVguiLoaded()
 {
     static bool bHasLoaded = false;
 
@@ -173,13 +215,20 @@ void OnVguiLoaded( const uintptr_t dwVguiBase )
 
     bHasLoaded = true;
 
+    LookupVguiAddresses();
+
+    MemoryPatterns& patterns = MemoryPatterns::Singleton();
+
     PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
 
-    g_pStrTblAddHook = SetupDetourHook( dwVguiBase + 0x8D90, &hkStrTblAddFile,
-                                        &g_StrTblAddOrig, dis );
-    g_pStrTblAddHook->hook();
+    const uintptr_t tblAddFileAddr = patterns.GetPattern( "StrTblAddFile" );
 
-    const void* pTableInstance = GetLocalizedStringTable( dwVguiBase );
+    if ( tblAddFileAddr != 0 )
+    {
+        g_pStrTblAddHook = SetupDetourHook( tblAddFileAddr, &hkStrTblAddFile,
+                                            &g_StrTblAddOrig, dis );
+        g_pStrTblAddHook->hook();
+    }
 
     // does multiple hooks in CLocalizedStringTable
     static const PLH::VFuncMap deviceRedirects = {
@@ -190,7 +239,7 @@ void OnVguiLoaded( const uintptr_t dwVguiBase )
         { uint16_t( 24 ), reinterpret_cast<uint64_t>( &hkWideCharToUtf8_2 ) },
     };
 
-    g_pStrTblHook = SetupVtableSwap( pTableInstance, deviceRedirects );
+    g_pStrTblHook = SetupVtableSwap( GetVGuiLocalize(), deviceRedirects );
     g_pStrTblHook->hook();
     g_StrTblOrig = g_pStrTblHook->getOriginals();
 }

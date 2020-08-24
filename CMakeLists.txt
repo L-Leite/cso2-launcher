@@ -31,7 +31,10 @@ endif()
 
 set(LAUNCHER_ROOT_DIR "${PROJECT_SOURCE_DIR}")
 set(LAUNCHER_GENERATED_DIR "${CMAKE_BINARY_DIR}/generated")
+set(LAUNCHER_LIB_FMT_DIR "${LAUNCHER_ROOT_DIR}/libs/fmt")
 set(LAUNCHER_LIB_PHOOK_DIR "${LAUNCHER_ROOT_DIR}/libs/PolyHook_2_0")
+
+set(LAUNCHER_LIB_FMT_INCLUDES "${LAUNCHER_LIB_FMT_DIR}/include")
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
 
@@ -106,16 +109,29 @@ set(FEATURE_INLINENTD
 
 add_subdirectory("${LAUNCHER_LIB_PHOOK_DIR}")
 
+# fmt
+add_subdirectory("${LAUNCHER_LIB_FMT_DIR}")
+
 #
 # add source files to the project
 #
 set(LAUNCHER_SOURCES_BASE
+    "sources/hooks/client.cpp"
+    "sources/hooks/engine.cpp"
+    "sources/hooks/filesystem.cpp"
+    "sources/hooks/shaderapidx9.cpp"
+    "sources/hooks/tier0.cpp"
+    "sources/hooks/vgui2.cpp"
+    "sources/hooks/winapi.cpp"
     "sources/platform/platform.cpp"
     "sources/source/appsystemgroup.cpp"
     "sources/source/appsystemtable.cpp"
     "sources/source/filesystem_util.cpp"
     "sources/source/sourcesystem.cpp"
     "sources/source/tierlibs.cpp"
+    "sources/utilities/log.cpp"
+    "sources/utilities/memorypatterns.cpp"
+    "sources/utilities/PatternSearch.cpp"
     "sources/console.cpp"
     "sources/launcher.cpp"
     "sources/main.cpp"
@@ -129,15 +145,6 @@ elseif(UNIX)
   set(LAUNCHER_SOURCES_BASE "sources/platform/platform_unix.cpp"
                             ${LAUNCHER_SOURCES_BASE})
 endif()
-
-set(LAUNCHER_SOURCES_HOOKS
-    "sources/hooks/client.cpp"
-    "sources/hooks/engine.cpp"
-    "sources/hooks/filesystem.cpp"
-    "sources/hooks/shaderapidx9.cpp"
-    "sources/hooks/tier0.cpp"
-    "sources/hooks/vgui2.cpp"
-    "sources/hooks/winapi.cpp")
 
 set(LAUNCHER_SOURCES_IMGUIS
     "sources/imgui/imgui.cpp"
@@ -163,6 +170,9 @@ set(LAUNCHER_HEADERS_BASE
     "headers/source/filesystem_util.hpp"
     "headers/source/sourcesystem.hpp"
     "headers/source/tierlibs.hpp"
+    "headers/utilities/log.hpp"
+    "headers/utilities/memorypatterns.hpp"
+    "headers/utilities/PatternSearch.hpp"
     "headers/console.hpp"
     "headers/hooks.hpp"
     "headers/leakdump.hpp"
@@ -181,14 +191,12 @@ file(
   GLOB
   LAUNCHER_ALL_SOURCES
   ${LAUNCHER_SOURCES_BASE}
-  ${LAUNCHER_SOURCES_HOOKS}
   ${LAUNCHER_SOURCES_IMGUIS}
   ${LAUNCHER_HEADERS_BASE}
   ${LAUNCHER_HEADERS_IMGUIS}
   ${LAUNCHER_RESOURCES_WIN32})
 
 source_group("Source Files" FILES ${LAUNCHER_SOURCES_BASE})
-source_group("Source Files\\Hooks" FILES ${LAUNCHER_SOURCES_HOOKS})
 source_group("Source Files\\ImGui" FILES ${LAUNCHER_SOURCES_IMGUIS})
 source_group("Header Files" FILES ${LAUNCHER_HEADERS_BASE})
 source_group("Header Files\\ImGui" FILES ${LAUNCHER_HEADERS_IMGUIS})
@@ -211,7 +219,8 @@ endif()
 # macros
 #
 if(WIN32)
-  target_compile_definitions(launcher PRIVATE -DWIN32_LEAN_AND_MEAN -DWINVER=0x601)
+  target_compile_definitions(launcher PRIVATE -DWIN32_LEAN_AND_MEAN
+                                              -DWINVER=0x601)
 endif()
 
 # ensures compatibility with the game's std::string
@@ -239,8 +248,10 @@ set(LAUNCHER_SOURCE_SDK_INCLUDES "${LAUNCHER_ROOT_DIR}/minimal_sdk/public")
 set(LAUNCHER_IMGUI_INCLUDES "sources/imgui" "sources/imgui/imgui_impl")
 
 target_include_directories(
-  launcher PRIVATE "headers" ${LAUNCHER_SOURCE_SDK_INCLUDES}
-                   ${LAUNCHER_LIB_PHOOK_DIR} ${LAUNCHER_IMGUI_INCLUDES})
+  launcher
+  PRIVATE "headers" ${LAUNCHER_SOURCE_SDK_INCLUDES}
+          ${LAUNCHER_LIB_FMT_INCLUDES} ${LAUNCHER_LIB_PHOOK_DIR}
+          ${LAUNCHER_IMGUI_INCLUDES})
 
 # the generated version header's directory
 target_include_directories(launcher PRIVATE ${LAUNCHER_GENERATED_DIR})
@@ -248,9 +259,10 @@ target_include_directories(launcher PRIVATE ${LAUNCHER_GENERATED_DIR})
 #
 # library dependencies
 #
-target_link_libraries(launcher capstone-static PolyHook_2)
+target_link_libraries(launcher capstone-static fmt::fmt PolyHook_2)
 
 # make polyhook's std::string compatible with the game bin
+target_compile_definitions(fmt PRIVATE _ITERATOR_DEBUG_LEVEL=0)
 target_compile_definitions(PolyHook_2 PRIVATE _ITERATOR_DEBUG_LEVEL=0)
 
 if(WIN32)

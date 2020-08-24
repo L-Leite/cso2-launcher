@@ -18,6 +18,7 @@ void Proc_SetLowPriority();
 
 void* Sys_LoadLibrary( const char* moduleName );
 void Sys_FreeLibrary( void* moduleBase );
+void* Sys_GetModuleBase( const char* moduleName );
 void* Sys_GetModuleExport( void* moduleBase, const char* exportName );
 void Sys_InitPlatformSpecific();
 void Sys_DestroyPlatformSpecific();

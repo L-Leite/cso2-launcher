@@ -115,6 +115,11 @@ void Sys_DestroyPlatformSpecific()
     CoUninitialize();
 }
 
+void* Sys_GetModuleBase( const char* moduleName )
+{
+    return reinterpret_cast<void*>( GetModuleHandleA( moduleName ) );
+}
+
 void* Sys_GetModuleExport( void* moduleBase, const char* exportName )
 {
     return reinterpret_cast<void*>(

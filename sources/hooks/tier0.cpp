@@ -7,6 +7,8 @@
 #include "console.hpp"
 #include "hooks.hpp"
 #include "utilities.hpp"
+#include "utilities/log.hpp"
+#include "utilities/memorypatterns.hpp"
 
 static std::unique_ptr<PLH::EatHook> g_pTimestampedHook;
 static uint64_t g_pTimestampedOrig = 0;  // unused but needed by polyhook
@@ -54,17 +56,58 @@ NOINLINE void hkCOM_TimestampedLog( char const* fmt, ... )
     s_LastStamp = curStamp;
 }
 
-void BytePatchTier( const uintptr_t dwTierBase )
+bool LookupTierZeroAddresses()
 {
+    Log::Debug( "Looking up addresses in tier0.dll...\n" );
+
+    int results = 0;
+
+    MemoryPatterns& patterns = MemoryPatterns::Singleton();
+
+    results += !patterns.AddPattern(
+        "\x80\xBF\x0C\x04", "CmdArgCheck",
+        IMemoryPatternsOptions( -1, -1, -1, "tier0.dll" ) );
+
+    results += !patterns.AddPattern(
+        "\x53\xE8\xCC\xCC\xCC\xCC\x8B\x4F\x08", "CmdArgCheckTarget",
+        IMemoryPatternsOptions( -1, -1, -1, "tier0.dll" ) );
+
+    const bool foundAllAddresses = results == 0;
+
+    if ( foundAllAddresses == true )
+    {
+        Log::Debug( "Looked up tier0.dll addresses successfully\n" );
+    }
+    else
+    {
+        Log::Error( "Failed to find {} tier0.dll addresses\n", results );
+    }
+
+    return foundAllAddresses;
+}
+
+void BytePatchTier()
+{
+    MemoryPatterns& patterns = MemoryPatterns::Singleton();
+
     //
     // disable hard coded command line argument check
     //
-    // jmp near 0x1D8 bytes forward
-    const std::array<uint8_t, 5> addArgPatch = { 0xE9, 0xD8, 0x01, 0x00, 0x00 };
-    utils::WriteProtectedMemory( addArgPatch, ( dwTierBase + 0x1D63 ) );
+    const uintptr_t cmdCheckAddr = patterns.GetPattern( "CmdArgCheck" );
+    const uintptr_t cmdCheckTargetAddr =
+        patterns.GetPattern( "CmdArgCheckTarget" );
+
+    if ( cmdCheckAddr != 0 && cmdCheckTargetAddr != 0 )
+    {
+        // jmp near some bytes forward
+        std::array<uint8_t, 5> addArgPatch = { 0xE9, 0xD8, 0x01, 0x00, 0x00 };
+        *reinterpret_cast<uintptr_t*>( &addArgPatch[1] ) =
+            cmdCheckTargetAddr - cmdCheckAddr - 5;
+        utils::WriteProtectedMemory( addArgPatch, cmdCheckAddr );
+    }
 }
 
-void OnTierZeroLoaded( const uintptr_t dwTierBase )
+void OnTierZeroLoaded()
 {
     static bool bHasLoaded = false;
 
@@ -75,7 +118,8 @@ void OnTierZeroLoaded( const uintptr_t dwTierBase )
 
     bHasLoaded = true;
 
-    BytePatchTier( dwTierBase );
+    LookupTierZeroAddresses();
+    BytePatchTier();
 
     g_pTimestampedHook =
         SetupExportHook( "COM_TimestampedLog", L"tier0.dll",

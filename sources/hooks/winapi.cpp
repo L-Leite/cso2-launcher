@@ -5,12 +5,12 @@
 
 #include "hooks.hpp"
 
-extern void OnClientLoaded( const uintptr_t dwClientBase );
-extern void OnEngineLoaded( const uintptr_t dwEngineBase );
+extern void OnClientLoaded();
+extern void OnEngineLoaded();
 extern void OnFileSystemLoaded( const uintptr_t dwFilesystemBase );
-extern void OnShaderApiLoaded( const uintptr_t dwShaderApiBase );
-extern void OnTierZeroLoaded( const uintptr_t dwTierBase );
-extern void OnVguiLoaded( const uintptr_t dwVguiBase );
+extern void OnShaderApiLoaded();
+extern void OnTierZeroLoaded();
+extern void OnVguiLoaded();
 
 void OnLoadLibrary( HMODULE hLibrary, std::string_view libPathView )
 {
@@ -22,7 +22,7 @@ void OnLoadLibrary( HMODULE hLibrary, std::string_view libPathView )
 
     if ( szLibName == "engine.dll" )
     {
-        OnEngineLoaded( dwLibraryBase );
+        OnEngineLoaded();
     }
     else if ( szLibName == "filesystem_stdio.dll" )
     {
@@ -30,19 +30,19 @@ void OnLoadLibrary( HMODULE hLibrary, std::string_view libPathView )
     }
     else if ( szLibName == "shaderapidx9.dll" )
     {
-        OnShaderApiLoaded( dwLibraryBase );
+        OnShaderApiLoaded();
     }
     else if ( szLibName == "vgui2.dll" )
     {
-        OnVguiLoaded( dwLibraryBase );
+        OnVguiLoaded();
     }
     else if ( szLibName == "client.dll" )
     {
-        OnClientLoaded( dwLibraryBase );
+        OnClientLoaded();
     }
     else if ( szLibName == "tier0.dll" )
     {
-        OnTierZeroLoaded( dwLibraryBase );
+        OnTierZeroLoaded();
     }
 }
 
