@@ -48,19 +48,23 @@ NOINLINE bool __fastcall hkStrTblAddFile( void* ecx, void* edx,
     std::string szDesiredFile;
 
     // Verify if we want to replace the current language file
-    if ( fileNameView == "resource/cso2_koreana.txt" )
+    if ( fileNameView == "resource/cso2_koreana.txt" ||
+         fileNameView == "resource/cso2_china.txt" )
     {
         szDesiredFile = GetDesiredLangFile( "cso2", szDesiredLang );
     }
-    else if ( fileNameView == "resource/cstrike_korean.txt" )
+    else if ( fileNameView == "resource/cstrike_korean.txt" ||
+              fileNameView == "resource/cstrike_schinese.txt" )
     {
         szDesiredFile = GetDesiredLangFile( "cstrike", szDesiredLang );
     }
-    else if ( fileNameView == "resource/chat_korean.txt" )
+    else if ( fileNameView == "resource/chat_korean.txt" ||
+              fileNameView == "resource/chat_schinese.txt" )
     {
         szDesiredFile = GetDesiredLangFile( "chat", szDesiredLang );
     }
-    else if ( fileNameView == "resource/valve_korean.txt" )
+    else if ( fileNameView == "resource/valve_korean.txt" ||
+              fileNameView == "resource/valve_schinese.txt" )
     {
         szDesiredFile = GetDesiredLangFile( "valve", szDesiredLang );
     }
@@ -188,8 +192,7 @@ bool LookupVguiAddresses()
     return foundAllAddresses;
 }
 
-// we need this earlier than we link the tier libraries,
-// so get it through this way
+// we need this earlier than we link the tier libraries, so get it here
 vgui::ILocalize* GetVGuiLocalize()
 {
     auto factory = reinterpret_cast<CreateInterfaceFn>( Sys_GetModuleExport(
