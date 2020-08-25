@@ -149,7 +149,7 @@ void GameConsole::DrawConsole( void )
         }
         else
         {
-            g_pEngineClient->ClientCmd_Unrestricted( szCommand.c_str() );
+            g_pEngineClient->ClientCmd( szCommand.c_str() );
         }
 
         ClearInput();
