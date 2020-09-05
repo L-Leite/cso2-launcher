@@ -24,3 +24,10 @@ void Sys_InitPlatformSpecific();
 void Sys_DestroyPlatformSpecific();
 
 void User_MessageBox( const char* msg, const char* boxTitle );
+
+template <typename fnType>
+inline fnType Sys_GetModuleExport( void* moduleBase, const char* exportName )
+{
+    return reinterpret_cast<fnType>(
+        Sys_GetModuleExport( moduleBase, exportName ) );
+}

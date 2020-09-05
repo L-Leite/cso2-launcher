@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
+#include <string>
 
 #include "appframework/iappsystem.hpp"
 #include "containers/utlsymbol.hpp"
@@ -150,9 +151,10 @@ constexpr const char* FILESYSTEM_INTERFACE_VERSION = "VFileSystem019";
 class IBaseFileSystem
 {
 public:
-    virtual int BaseFileSystem00( int, int, int, int ) = 0;
-
     virtual int Read( void* pOutput, int size, FileHandle_t file ) = 0;
+    virtual int SpecialReadToBuffer( FileHandle_t fp, CUtlBuffer& buf,
+                                     int nMaxBytes, int fileOffset = 0,
+                                     FSAllocFunc_t pfnAlloc = nullptr ) = 0;
     virtual int Write( void const* pInput, int size, FileHandle_t file ) = 0;
 
     // if pathID is NULL, all paths will be searched for the file
@@ -193,11 +195,17 @@ public:
     virtual bool UnzipFile( const char* pFileName, const char* pPath,
                             const char* pDestination ) = 0;
 
-    virtual bool BaseFileSystem01( int, int, int, int, int, int ) = 0;
-    virtual int BaseFileSystem02( int, int ) = 0;
-    virtual int BaseFileSystem03( int ) = 0;
+    virtual bool ReadEncryptedFile( const char* szFilename,
+                                    const void* pInBuffer,
+                                    const uint32_t iInBufferLength,
+                                    int iMaxOutBufferLength, void* pOutBuffer,
+                                    uint32_t* outLen ) = 0;
+    virtual bool GetEncryptedFilename( const std::string& inFilename,
+                                       std::string& outEncFilename ) = 0;
+    virtual bool IsScriptEncrypted( const std::string& scriptFilename ) = 0;
+
     virtual CSO2FileSystem* GetCSO2FileSystem() = 0;
-    virtual bool BaseFileSystem04( int, int ) = 0;
+    virtual bool GetFsHash( char* outHashBuffer, size_t outBufferSize ) = 0;
 };
 
 class IFileSystem : public IAppSystem, public IBaseFileSystem

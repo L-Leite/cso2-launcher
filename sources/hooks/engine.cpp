@@ -423,6 +423,36 @@ void BytePatchEngine()
         const std::array<uint8_t, 1> canCheatPatch2 = { 0xEB };
         utils::WriteProtectedMemory( canCheatPatch2, canCheatTwoAddr );
     }
+
+    //
+    // load plain text weapon description files
+    //
+    if ( CommandLine()->CheckParm( "-unpackedfiles", nullptr ) )
+    {
+        const uintptr_t wpnFilesAddr =
+            patterns.GetPattern( "ResourceMgrWpnFiles" );
+
+        if ( wpnFilesAddr != 0 )
+        {
+            // "txt\0" string
+            const std::array<uint8_t, 4> patch = { 0x74, 0x78, 0x74, 0x00 };
+            utils::WriteProtectedMemory( patch, wpnFilesAddr );
+        }
+    }
+
+    //
+    // http logger that tries to connect to http://cso2dn.nexon.com
+    // it no longer works and slows down startup times when running under wine
+    //
+    const uintptr_t httpLoggerAddr =
+        patterns.GetPattern( "HttpStatsLoggerInit" );
+
+    if ( httpLoggerAddr != 0 )
+    {
+        // retn
+        const std::array<uint8_t, 1> patch = { 0xC3 };
+        utils::WriteProtectedMemory( patch, httpLoggerAddr );
+    }
 }
 
 void ApplyHooksEngine()
@@ -468,7 +498,7 @@ void ApplyHooksEngine()
     }
 }
 
-void OnEngineLoaded()
+void OnEngineLoaded( const uintptr_t dwEngineBase )
 {
     static bool bHasLoaded = false;
 
@@ -478,6 +508,10 @@ void OnEngineLoaded()
     }
 
     bHasLoaded = true;
+
+    MemoryPatterns& patterns = MemoryPatterns::Singleton();
+    patterns.SetPattern( "ResourceMgrWpnFiles", dwEngineBase + 0x61A2AE );
+    patterns.SetPattern( "HttpStatsLoggerInit", dwEngineBase + 0x108200 );
 
     LookupEngineAddresses();
     BytePatchEngine();

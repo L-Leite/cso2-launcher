@@ -1,6 +1,5 @@
 #include "console.hpp"
 #include "hooks.hpp"
-#include "utilities.hpp"
 #include "utilities/log.hpp"
 #include "utilities/memorypatterns.hpp"
 
@@ -9,7 +8,7 @@
 // member variable of the class there is only one instance of D3DDeviceWrapper,
 // and it starts in this address
 //
-LPDIRECT3DDEVICE9 GetD3dDevice( const uintptr_t base )
+LPDIRECT3DDEVICE9 GetD3dDevice()
 {
     MemoryPatterns& patterns = MemoryPatterns::Singleton();
     return *reinterpret_cast<LPDIRECT3DDEVICE9*>(
@@ -48,8 +47,7 @@ NOINLINE bool __fastcall hkCreateD3DDevice(
     // if the device was created successfully
     if ( res )
     {
-        LPDIRECT3DDEVICE9 pDevice =
-            GetD3dDevice( utils::GetModuleBase( "shaderapidx9.dll" ) );
+        LPDIRECT3DDEVICE9 pDevice = GetD3dDevice();
         g_GameConsole.Init( pDevice, reinterpret_cast<HWND>( pHWnd ) );
 
         // hook the game's d3d device endscene (its virtual function table index

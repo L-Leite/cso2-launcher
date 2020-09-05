@@ -5,6 +5,7 @@
 #include <polyhook2/CapstoneDisassembler.hpp>
 #include <polyhook2/Detour/x86Detour.hpp>
 #include <polyhook2/PE/EatHook.hpp>
+#include <polyhook2/Virtuals/VFuncSwapHook.hpp>
 #include <polyhook2/Virtuals/VTableSwapHook.hpp>
 
 #ifndef NOINLINE
@@ -37,4 +38,12 @@ inline auto SetupVtableSwap( VtableType* Class,
 {
     return std::make_unique<PLH::VTableSwapHook>(
         reinterpret_cast<const uint64_t>( Class ), redirectMap );
+}
+
+inline auto SetupVfuncSwap( void* vtableAddr, const PLH::VFuncMap& redirectMap,
+                            PLH::VFuncMap* origVFuncs )
+{
+    return std::make_unique<PLH::VFuncSwapHook>(
+        reinterpret_cast<const uint64_t>( vtableAddr ), redirectMap,
+        origVFuncs );
 }

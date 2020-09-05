@@ -166,4 +166,6 @@ public:
     }
 
     inline int NumAllocated() const { return m_nAllocationCount; }
+
+    inline bool IsExternallyAllocated() const { return m_nGrowSize < 0; }
 };

@@ -1,18 +1,18 @@
 #include "hooks.hpp"
+#include "utilities.hpp"
 
-#include <tier1/convar.h>
+#include <tier0/icommandline.hpp>
 
 void BytePatchServer( const uintptr_t dwServerBase )
 {
-    // remove FCVAR_CHEAT from ent_create until sv_cheats is fixed
-    /*
-    ConCommand* ent_create =
-        reinterpret_cast<ConCommand*>( dwServerBase + 0xA0875C );
-
-    if ( ent_create->IsFlagSet( FCVAR_CHEAT ) )
-        ent_create->RemoveFlags( FCVAR_CHEAT );
-    */
+    // treat surface prop file as encrypted (even if it's not)
+    // nops
+    const std::array<uint8_t, 8> surfPropPatch = { 0x90, 0x90, 0x90, 0x90,
+                                                   0x90, 0x90, 0x90, 0x90 };
+    utils::WriteProtectedMemory( surfPropPatch, dwServerBase + 0x41248C );
 }
+
+extern void ApplyLuaServerHooks( const uintptr_t dwServerBase );
 
 void OnServerLoaded( const uintptr_t dwServerBase )
 {
@@ -25,5 +25,9 @@ void OnServerLoaded( const uintptr_t dwServerBase )
 
     bHasLoaded = true;
 
-    BytePatchServer( dwServerBase );
+    if ( CommandLine()->CheckParm( "-unpackedfiles", nullptr ) )
+    {
+        BytePatchServer( dwServerBase );
+        ApplyLuaServerHooks( dwServerBase );
+    }
 }

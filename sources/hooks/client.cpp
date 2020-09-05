@@ -1,4 +1,5 @@
 #include "hooks.hpp"
+#include "utilities.hpp"
 #include "utilities/log.hpp"
 #include "utilities/memorypatterns.hpp"
 
@@ -49,7 +50,22 @@ bool LookupClientAddresses()
     return foundAllAddresses;
 }
 
-void OnClientLoaded()
+void BytePatchClient( const uintptr_t dwClientBase )
+{
+    if ( CommandLine()->CheckParm( "-unpackedfiles", nullptr ) )
+    {
+        // treat surface prop file as encrypted (even if it's not)
+        // nops
+        const std::array<uint8_t, 8> surfPropPatch = { 0x90, 0x90, 0x90, 0x90,
+                                                       0x90, 0x90, 0x90, 0x90 };
+        utils::WriteProtectedMemory( surfPropPatch, dwClientBase + 0x9040AC );
+    }
+}
+
+extern void ApplyLuaClientHooks( const uintptr_t dwClientBase );
+extern void ApplyScaleformHooks( const uintptr_t dwClientBase );
+
+void OnClientLoaded( const uintptr_t dwClientBase )
 {
     static bool bHasLoaded = false;
 
@@ -61,6 +77,7 @@ void OnClientLoaded()
     bHasLoaded = true;
 
     LookupClientAddresses();
+    BytePatchClient( dwClientBase );
 
     MemoryPatterns& patterns = MemoryPatterns::Singleton();
 
@@ -74,5 +91,11 @@ void OnClientLoaded()
         g_pInitUIHook = SetupDetourHook(
             initUiAddr, &hkCSO2UIManager_InitMainUI, &g_InitUIOrig, dis );
         g_pInitUIHook->hook();
+    }
+
+    if ( CommandLine()->CheckParm( "-unpackedfiles", nullptr ) )
+    {
+        ApplyLuaClientHooks( dwClientBase );
+        ApplyScaleformHooks( dwClientBase );
     }
 }

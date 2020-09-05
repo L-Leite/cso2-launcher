@@ -116,9 +116,16 @@ add_subdirectory("${LAUNCHER_LIB_FMT_DIR}")
 # add source files to the project
 #
 set(LAUNCHER_SOURCES_BASE
+    "sources/hooks/client/lua_hooks.cpp"
+    "sources/hooks/client/scaleform_hooks.cpp"
+    "sources/hooks/filesystem/cso2_filesystem_hooks.cpp"
+    "sources/hooks/lua/lua_client_hooks.cpp"
+    "sources/hooks/lua/lua_hooks.cpp"
+    "sources/hooks/lua/lua_server_hooks.cpp"
     "sources/hooks/client.cpp"
     "sources/hooks/engine.cpp"
     "sources/hooks/filesystem.cpp"
+    "sources/hooks/server.cpp"
     "sources/hooks/shaderapidx9.cpp"
     "sources/hooks/tier0.cpp"
     "sources/hooks/vgui2.cpp"

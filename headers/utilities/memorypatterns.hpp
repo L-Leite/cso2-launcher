@@ -45,6 +45,11 @@ public:
         return this->m_Results[patternName.data()];
     }
 
+    inline void SetPattern( std::string_view patternName, uintptr_t value )
+    {
+        this->m_Results[patternName.data()] = value;
+    }
+
     inline static MemoryPatterns& Singleton()
     {
         static MemoryPatterns instance;
