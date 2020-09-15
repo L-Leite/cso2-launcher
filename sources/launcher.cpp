@@ -17,7 +17,7 @@ Launcher::Launcher( void* instance, const char* cmdline )
 {
     HookWinapi();
 
-    CommandLine()->CreateCmdLine( cmdline );
+    CommandLine()->CreateCmdLine( Proc_GetCommandLine() );
     this->ParseCommandLine();
 
     SpewOutputFunc( LauncherDefaultSpewFunc );

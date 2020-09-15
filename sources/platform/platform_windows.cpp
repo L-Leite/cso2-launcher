@@ -95,6 +95,11 @@ void Proc_SetLowPriority()
     SetPriorityClass( GetCurrentProcess(), IDLE_PRIORITY_CLASS );
 }
 
+const char* Proc_GetCommandLine()
+{
+    return GetCommandLineA();
+}
+
 void* Sys_LoadLibrary( const char* moduleName )
 {
     return reinterpret_cast<void*>( LoadLibraryExA( moduleName, nullptr, 0 ) );

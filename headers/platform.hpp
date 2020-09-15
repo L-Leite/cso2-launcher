@@ -15,6 +15,7 @@ bool NET_Destroy();
 
 void Proc_SetHighPriority();
 void Proc_SetLowPriority();
+const char* Proc_GetCommandLine();
 
 void* Sys_LoadLibrary( const char* moduleName );
 void Sys_FreeLibrary( void* moduleBase );

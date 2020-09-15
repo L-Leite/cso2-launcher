@@ -45,6 +45,11 @@ void Proc_SetHighPriority() {}
 
 void Proc_SetLowPriority() {}
 
+const char* Proc_GetCommandLine()
+{
+    return nullptr;
+}
+
 void* Sys_LoadLibrary( const char* moduleName )
 {
     return dlopen( moduleName, RTLD_NOW );
