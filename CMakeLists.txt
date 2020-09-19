@@ -268,6 +268,9 @@ target_link_libraries(launcher capstone-static fmt::fmt PolyHook_2)
 target_compile_definitions(fmt PRIVATE _ITERATOR_DEBUG_LEVEL=0)
 target_compile_definitions(PolyHook_2 PRIVATE _ITERATOR_DEBUG_LEVEL=0)
 
+# enable exceptions in fmt
+target_compile_options(fmt PRIVATE /EHs)
+
 if(WIN32)
   target_link_libraries(launcher wsock32.lib)
 endif()
