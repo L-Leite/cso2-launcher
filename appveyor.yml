@@ -37,7 +37,7 @@ deploy:
 - provider: GitHub
   release: Version $(VERSION_STR)
   auth_token:
-    secure: XnUsE3jqzulQ4cWVkK2ALBR7qfnfwbBdoMDChmcnx1RcGtRgXV0QLMPo+GcIf8YU
+    secure: zFKThFJ7iaLK4Ou84pDrX0bpvlThqt6naZK//cneoJBdiAn3hKlzUA+Eq0qYqZ5g
   artifact: clang_binaries
   on:
     APPVEYOR_REPO_TAG: true
