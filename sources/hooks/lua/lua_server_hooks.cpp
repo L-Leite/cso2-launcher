@@ -3,7 +3,6 @@
 #include "platform.hpp"
 #include "utilities.hpp"
 #include "utilities/log.hpp"
-#include "utilities/memorypatterns.hpp"
 
 // duplicated code with lua_server_hooks.cpp
 // the module where the export is looked up must match the caller's module

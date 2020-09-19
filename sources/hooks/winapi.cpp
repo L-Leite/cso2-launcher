@@ -9,9 +9,9 @@ extern void OnClientLoaded( const uintptr_t dwClientBase );
 extern void OnEngineLoaded( const uintptr_t dwEngineBase );
 extern void OnFileSystemLoaded( const uintptr_t dwFsBase );
 extern void OnServerLoaded( const uintptr_t dwServerBase );
-extern void OnShaderApiLoaded();
-extern void OnTierZeroLoaded();
-extern void OnVguiLoaded();
+extern void OnShaderApiLoaded( const uintptr_t dwShaderApiBase );
+extern void OnTierZeroLoaded( const uintptr_t dwTierBase );
+extern void OnVguiLoaded( const uintptr_t dwVguiBase );
 
 void OnLoadLibrary( HMODULE hLibrary, std::string_view libPathView )
 {
@@ -32,11 +32,11 @@ void OnLoadLibrary( HMODULE hLibrary, std::string_view libPathView )
     }
     else if ( szLibName == "shaderapidx9.dll" )
     {
-        OnShaderApiLoaded();
+        OnShaderApiLoaded( dwLibraryBase );
     }
     else if ( szLibName == "vgui2.dll" )
     {
-        OnVguiLoaded();
+        OnVguiLoaded( dwLibraryBase );
     }
     else if ( szLibName == "client.dll" )
     {
@@ -48,7 +48,7 @@ void OnLoadLibrary( HMODULE hLibrary, std::string_view libPathView )
     }
     else if ( szLibName == "tier0.dll" )
     {
-        OnTierZeroLoaded();
+        OnTierZeroLoaded( dwLibraryBase );
     }
 }
 

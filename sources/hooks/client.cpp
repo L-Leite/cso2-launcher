@@ -1,7 +1,5 @@
 #include "hooks.hpp"
 #include "utilities.hpp"
-#include "utilities/log.hpp"
-#include "utilities/memorypatterns.hpp"
 
 #include <engine/cso2/icso2msgmanager.hpp>
 #include <tier0/icommandline.hpp>
@@ -20,34 +18,6 @@ NOINLINE bool __fastcall hkCSO2UIManager_InitMainUI( void* ecx, void* edx )
     }
 
     return PLH::FnCast( g_InitUIOrig, &hkCSO2UIManager_InitMainUI )( ecx, edx );
-}
-
-bool LookupClientAddresses()
-{
-    Log::Debug( "Looking up addresses in client.dll...\n" );
-
-    int results = 0;
-
-    MemoryPatterns& patterns = MemoryPatterns::Singleton();
-
-    results += !patterns.AddPattern(
-        "\xE8\xCC\xCC\xCC\xCC\x84\xC0\x0F\x84\xCC\xCC\xCC\xCC\xB9\xCC\xCC\xCC"
-        "\xCC\xE8\xCC\xCC\xCC\xCC\x8B\x47\x20",
-        "CSO2UIManagerInitMainUI",
-        IMemoryPatternsOptions( -1, 1, 5, "client.dll", 0, true ) );
-
-    const bool foundAllAddresses = results == 0;
-
-    if ( foundAllAddresses == true )
-    {
-        Log::Debug( "Looked up client.dll addresses successfully\n" );
-    }
-    else
-    {
-        Log::Error( "Failed to find {} client.dll addresses\n", results );
-    }
-
-    return foundAllAddresses;
 }
 
 void BytePatchClient( const uintptr_t dwClientBase )
@@ -76,22 +46,14 @@ void OnClientLoaded( const uintptr_t dwClientBase )
 
     bHasLoaded = true;
 
-    LookupClientAddresses();
     BytePatchClient( dwClientBase );
-
-    MemoryPatterns& patterns = MemoryPatterns::Singleton();
 
     PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
 
-    const uintptr_t initUiAddr =
-        patterns.GetPattern( "CSO2UIManagerInitMainUI" );
-
-    if ( initUiAddr != 0 )
-    {
-        g_pInitUIHook = SetupDetourHook(
-            initUiAddr, &hkCSO2UIManager_InitMainUI, &g_InitUIOrig, dis );
-        g_pInitUIHook->hook();
-    }
+    g_pInitUIHook =
+        SetupDetourHook( dwClientBase + 0xAE4610, &hkCSO2UIManager_InitMainUI,
+                         &g_InitUIOrig, dis );
+    g_pInitUIHook->hook();
 
     if ( CommandLine()->CheckParm( "-unpackedfiles", nullptr ) )
     {

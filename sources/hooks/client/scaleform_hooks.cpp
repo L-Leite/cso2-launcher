@@ -1,7 +1,6 @@
 #include "hooks.hpp"
 #include "utilities.hpp"
 #include "utilities/log.hpp"
-#include "utilities/memorypatterns.hpp"
 
 #include "source/tierlibs.hpp"
 
@@ -9,10 +8,12 @@
 #include <scaleform/cso2_gfxfile.hpp>
 #include <scaleform/sf_memoryheap.hpp>
 
+static uintptr_t g_dwClientBase = 0;
+
 Scaleform::MemoryHeap* GetGfxMemoryHeap()
 {
-    return *reinterpret_cast<Scaleform::MemoryHeap**>(
-        MemoryPatterns::Singleton().GetPattern( "GfxMemoryHeap" ) );
+    return *reinterpret_cast<Scaleform::MemoryHeap**>( g_dwClientBase +
+                                                       0x1CDF0D0 );
 }
 
 CSO2GfxFile* CreateCSO2GfxFile( const char* szFilename,
@@ -21,8 +22,13 @@ CSO2GfxFile* CreateCSO2GfxFile( const char* szFilename,
     using fn_t =
         CSO2GfxFile*(__thiscall*)( CSO2GfxFile*, const char*, FileHandle_t );
 
-    auto constructor = reinterpret_cast<fn_t>(
-        MemoryPatterns::Singleton().GetPattern( "CSO2GfxFileConstructor" ) );
+    static fn_t constructor = nullptr;
+
+    if ( constructor == nullptr )
+    {
+        constructor = reinterpret_cast<fn_t>( g_dwClientBase + 0x2883E0 );
+    }
+
     auto pHeap = GetGfxMemoryHeap();
 
     return constructor( pHeap->Alloc<CSO2GfxFile>(), szFilename, fileHandle );
@@ -89,12 +95,9 @@ NOINLINE int64_t __fastcall hkCSO2GFxFileOpener_GetFileModifyTime(
 
 void ApplyScaleformHooks( const uintptr_t dwClientBase )
 {
-    MemoryPatterns& patterns = MemoryPatterns::Singleton();
-
     PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
 
-    patterns.SetPattern( "CSO2GfxFileConstructor", dwClientBase + 0x2883E0 );
-    patterns.SetPattern( "GfxMemoryHeap", dwClientBase + 0x1CDF0D0 );
+    g_dwClientBase = dwClientBase;
 
     g_pGfxOpenFileHook =
         SetupDetourHook( dwClientBase + 0xA27700, &hkCSO2GFxFileOpener_OpenFile,

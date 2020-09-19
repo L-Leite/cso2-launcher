@@ -1,6 +1,5 @@
 #include "hooks.hpp"
 #include "utilities.hpp"
-#include "utilities/memorypatterns.hpp"
 
 std::unique_ptr<PLH::VFuncSwapHook> g_pCFsHook;
 PLH::VFuncMap g_StrTblOrig;
