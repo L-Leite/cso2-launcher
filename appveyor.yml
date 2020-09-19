@@ -41,4 +41,3 @@ deploy:
   artifact: clang_binaries
   on:
     APPVEYOR_REPO_TAG: true
-    configuration: Release
