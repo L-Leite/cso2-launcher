@@ -11,9 +11,7 @@ environment:
     - BUILD_COMBO: windows-msvc
     - BUILD_COMBO: windows-clang_cl
 
-configuration:
-  - Debug
-  - Release
+configuration: Release
 
 install:
   - ps: ./ci/setup.ps1
