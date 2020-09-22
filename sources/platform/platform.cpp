@@ -18,3 +18,9 @@ fs::path Game_GetBaseDirectory()
         return std::filesystem::current_path();
     }
 }
+
+CreateInterfaceFn Sys_GetFactory( const char* pModuleName )
+{
+    return Sys_GetModuleExport<CreateInterfaceFn>(
+        Sys_GetModuleBase( pModuleName ), CREATEINTERFACE_PROCNAME );
+}

@@ -32,5 +32,6 @@ extern class vgui::ILocalize* g_pVGuiLocalize;
 //
 extern class IVEngineClient* g_pEngineClient;
 extern class ICSO2MsgHandlerEngine* g_pCSO2MsgHandler;
+extern class IEngineVGui* g_pEngineVGui;
 
 void ConnectAllLibraries( CreateInterfaceFn factory );

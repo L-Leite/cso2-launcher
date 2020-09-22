@@ -8,6 +8,7 @@
 #include <engine/cso2/icso2msgmanager.hpp>
 #include <filesystem/filesystem.hpp>
 #include <icvar.hpp>
+#include <ienginevgui.hpp>
 #include <inputsystem/iinputsystem.hpp>
 #include <materialsystem/imaterialsystem.hpp>
 #include <tier0/cso2/iloadingsplash.hpp>
@@ -68,6 +69,7 @@ void ConnectTier3Libraries( CreateInterfaceFn factory )
 //
 IVEngineClient* g_pEngineClient = nullptr;
 ICSO2MsgHandlerEngine* g_pCSO2MsgHandler = nullptr;
+IEngineVGui* g_pEngineVGui = nullptr;
 
 void ConnectNonTierLibraries( CreateInterfaceFn factory )
 {
@@ -76,6 +78,9 @@ void ConnectNonTierLibraries( CreateInterfaceFn factory )
 
     g_pCSO2MsgHandler = FactoryCast<ICSO2MsgHandlerEngine>(
         factory, CSO2_MSGHANDLER_ENGINE_VERSION, NULL );
+
+    g_pEngineVGui =
+        FactoryCast<IEngineVGui>( factory, VENGINE_VGUI_VERSION, NULL );
 }
 
 void ConnectAllLibraries( CreateInterfaceFn factory )
@@ -214,4 +219,9 @@ double Plat_FloatTime()
     }
 
     return pFunc();
+}
+
+IEngineVGuiInternal* EngineVGui()
+{
+    return static_cast<IEngineVGuiInternal*>( g_pEngineVGui );
 }

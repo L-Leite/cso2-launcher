@@ -105,15 +105,22 @@ public:
 
     virtual void Dispatch( const CCommand& /*command*/ ) {}
 
+    inline void SetVoidCallback( FnCommandCallbackVoid_t newCallback )
+    {
+        this->m_fnCommandCallbackV1 = newCallback;
+    }
+
 private:
     // Call this function when executing the command
-    union {
+    union
+    {
         FnCommandCallbackVoid_t m_fnCommandCallbackV1;
         FnCommandCallback_t m_fnCommandCallback;
         ICommandCallback* m_pCommandCallback;
     };
 
-    union {
+    union
+    {
         FnCommandCompletionCallback m_fnCompletionCallback;
         ICommandCompletionCallback* m_pCommandCompletionCallback;
     };

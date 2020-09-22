@@ -4,6 +4,8 @@
 #include <engine/cso2/icso2msgmanager.hpp>
 #include <tier0/icommandline.hpp>
 
+uintptr_t g_dwClientBase = 0;
+
 static std::unique_ptr<PLH::x86Detour> g_pInitUIHook;
 static uint64_t g_InitUIOrig = 0;
 
@@ -45,6 +47,8 @@ void OnClientLoaded( const uintptr_t dwClientBase )
     }
 
     bHasLoaded = true;
+
+    g_dwClientBase = dwClientBase;
 
     BytePatchClient( dwClientBase );
 

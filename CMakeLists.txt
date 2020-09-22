@@ -118,6 +118,8 @@ add_subdirectory("${LAUNCHER_LIB_FMT_DIR}")
 set(LAUNCHER_SOURCES_BASE
     "sources/hooks/client/lua_hooks.cpp"
     "sources/hooks/client/scaleform_hooks.cpp"
+    "sources/hooks/engine/enginevgui.cpp"
+    "sources/hooks/engine/keyevents.cpp"
     "sources/hooks/filesystem/cso2_filesystem_hooks.cpp"
     "sources/hooks/lua/lua_client_hooks.cpp"
     "sources/hooks/lua/lua_hooks.cpp"
@@ -246,7 +248,8 @@ endif()
 #
 # project's include directories
 #
-set(LAUNCHER_SOURCE_SDK_INCLUDES "${LAUNCHER_ROOT_DIR}/minimal_sdk/public")
+set(LAUNCHER_SOURCE_SDK_INCLUDES "${LAUNCHER_ROOT_DIR}/minimal_sdk/common"
+                                 "${LAUNCHER_ROOT_DIR}/minimal_sdk/public")
 
 set(LAUNCHER_IMGUI_INCLUDES "sources/imgui" "sources/imgui/imgui_impl")
 

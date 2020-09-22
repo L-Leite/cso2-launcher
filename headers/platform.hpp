@@ -4,6 +4,7 @@
 namespace fs = std::filesystem;
 
 #include <tier0/dbg.hpp>
+#include <tier1/interface.hpp>
 
 fs::path Game_GetBaseDirectory();
 
@@ -32,3 +33,5 @@ inline fnType Sys_GetModuleExport( void* moduleBase, const char* exportName )
     return reinterpret_cast<fnType>(
         Sys_GetModuleExport( moduleBase, exportName ) );
 }
+
+CreateInterfaceFn Sys_GetFactory( const char* pModuleName );

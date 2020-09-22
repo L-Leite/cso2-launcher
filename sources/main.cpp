@@ -1,6 +1,8 @@
 #include "launcher.hpp"
 #include "platform.hpp"
 
+#include <tier1/interface.hpp>
+
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -15,12 +17,6 @@ extern "C"
 #endif
 
 #ifdef _WIN32
-
-enum Sys_Flags
-{
-    SYS_NOFLAGS = 0x00,
-    SYS_NOLOAD = 0x01
-};
 
 // exported by the original launcher
 // and used in engine.dll

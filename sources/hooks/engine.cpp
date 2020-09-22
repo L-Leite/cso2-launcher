@@ -9,6 +9,7 @@
 
 #include "console.hpp"
 #include "hooks.hpp"
+#include "platform.hpp"
 #include "utilities.hpp"
 
 #include "source/tierlibs.hpp"
@@ -20,6 +21,8 @@ struct IpAddressInfo
     std::string szIpAddress;
     uint16_t iPort;
 };
+
+uintptr_t g_dwEngineBase = 0;
 
 static std::unique_ptr<PLH::x86Detour> g_pServerAddrHook;
 static uint64_t g_ServerAddrOrig = 0;
@@ -269,6 +272,9 @@ void ApplyHooksEngine( const uintptr_t dwEngineBase )
     g_pColorPrintHook->hook();
 }
 
+extern void ApplyEngineVguiHooks( const uintptr_t dwEngineBase );
+extern void ApplyKeyEventsHooks( const uintptr_t dwEngineBase );
+
 void OnEngineLoaded( const uintptr_t dwEngineBase )
 {
     static bool bHasLoaded = false;
@@ -280,6 +286,11 @@ void OnEngineLoaded( const uintptr_t dwEngineBase )
 
     bHasLoaded = true;
 
+    g_dwEngineBase = dwEngineBase;
+
     BytePatchEngine( dwEngineBase );
     ApplyHooksEngine( dwEngineBase );
+
+    ApplyEngineVguiHooks( dwEngineBase );
+    ApplyKeyEventsHooks( dwEngineBase );
 }
