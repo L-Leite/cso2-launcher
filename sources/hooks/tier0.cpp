@@ -4,7 +4,6 @@
 #include <tier0/icommandline.hpp>
 #include <tier0/platform.hpp>
 
-#include "console.hpp"
 #include "hooks.hpp"
 #include "utilities.hpp"
 

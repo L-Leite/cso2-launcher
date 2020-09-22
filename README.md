@@ -24,8 +24,8 @@ This might be avoidable in the future once a dedicated server launcher is develo
 
 You can grab a copy of **Nexon's Counter-Strike: Online 2** through:
 
-- BitTorrent, magnet link: `magnet:?xt=urn:btih:7BUJS77RR2AYAXCFPF7TSSSRF2NWUOU6`
-- IPFS, [download here](https://ipfs.io/ipfs/QmQcam3bRr2xBDC81dJAYEoKz8tr32RoDsZNjb7rA6iEjL) (hash: `QmQcam3bRr2xBDC81dJAYEoKz8tr32RoDsZNjb7rA6iEjL`)
+- [BitTorrent](magnet:?xt=urn:btih:7BUJS77RR2AYAXCFPF7TSSSRF2NWUOU6), magnet link: `magnet:?xt=urn:btih:7BUJS77RR2AYAXCFPF7TSSSRF2NWUOU6`
+- [IPFS](https://ipfs.io/ipfs/QmQcam3bRr2xBDC81dJAYEoKz8tr32RoDsZNjb7rA6iEjL) (hash: `QmQcam3bRr2xBDC81dJAYEoKz8tr32RoDsZNjb7rA6iEjL`)
 - [MEGA](https://mega.nz/#!nhgnBJgD!iR57D5Mf3_1GCcAR36tqFQ7H7KN_F0e3XicD2JBoSN4);
 - [Google Drive](https://drive.google.com/open?id=1y0diL2nTERlOaJZQTA3xPb8owx82GjtB). 
 
@@ -61,8 +61,7 @@ You **may open a CoD styled console by pressing the *~*** (*tilde*) **key**.
 - ```-lang [some language]``` - Sets the game's language to *some language*'s (considering you have the language files)
 - ```-masterip [some ip]``` - Sets the master server's IP address to *some ip*
 - ```-masterport [some port]``` - Sets the master server's port number to *some port*
-- ```-decryptedfiles``` - Tell the game to consider every game file as decrypted
-- ```-enablecustom``` - Enables the use of a custom directory `custom` in the root directory of your game's files
+- ```-unpackedfiles``` - Uses unpacked game files extracted in the Data directory
 - ```-username [your username]``` - Specify login user name, in order to skip the login screen. **Must** be used with ```-password```
 - ```-password [your password]``` - Specify login password , in order to skip the login screen. **Must** be used with ```-username```
 
@@ -97,7 +96,6 @@ If built successfully, you will find the launcher inside ```out/bin/Win32/[your 
 
 ## Libraries used
 
-- **[Dear ImGui](https://github.com/ocornut/imgui)** by [Omar Cornut](https://github.com/sakra)
 - **[fmt](https://github.com/fmtlib/fmt)**
 - **[PolyHook 2.0](https://github.com/stevemk14ebr/PolyHook_2_0)** by [Stephen Eckels](https://github.com/stevemk14ebr)
 

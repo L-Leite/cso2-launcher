@@ -128,7 +128,6 @@ set(LAUNCHER_SOURCES_BASE
     "sources/hooks/engine.cpp"
     "sources/hooks/filesystem.cpp"
     "sources/hooks/server.cpp"
-    "sources/hooks/shaderapidx9.cpp"
     "sources/hooks/tier0.cpp"
     "sources/hooks/vgui2.cpp"
     "sources/hooks/winapi.cpp"
@@ -139,7 +138,6 @@ set(LAUNCHER_SOURCES_BASE
     "sources/source/sourcesystem.cpp"
     "sources/source/tierlibs.cpp"
     "sources/utilities/log.cpp"
-    "sources/console.cpp"
     "sources/launcher.cpp"
     "sources/main.cpp"
     "sources/modulecache.cpp"
@@ -153,24 +151,6 @@ elseif(UNIX)
                             ${LAUNCHER_SOURCES_BASE})
 endif()
 
-set(LAUNCHER_SOURCES_IMGUIS
-    "sources/imgui/imgui.cpp"
-    "sources/imgui/imgui_draw.cpp"
-    "sources/imgui/imgui_widgets.cpp"
-    "sources/imgui/Consolas_Unicode.cpp"
-    "sources/imgui/imgui_impl/imgui_impl_dx9.cpp"
-    "sources/imgui/imgui_impl/imgui_impl_win32.cpp")
-
-set(LAUNCHER_HEADERS_IMGUIS
-    "sources/imgui/imconfig.h"
-    "sources/imgui/imgui.h"
-    "sources/imgui/imgui_internal.h"
-    "sources/imgui/imstb_rectpack.h"
-    "sources/imgui/imstb_textedit.h"
-    "sources/imgui/imstb_truetype.h"
-    "sources/imgui/imgui_impl/imgui_impl_dx9.h"
-    "sources/imgui/imgui_impl/imgui_impl_win32.h")
-
 set(LAUNCHER_HEADERS_BASE
     "headers/source/appsystemgroup.hpp"
     "headers/source/appsystemtable.hpp"
@@ -178,7 +158,6 @@ set(LAUNCHER_HEADERS_BASE
     "headers/source/sourcesystem.hpp"
     "headers/source/tierlibs.hpp"
     "headers/utilities/log.hpp"
-    "headers/console.hpp"
     "headers/hooks.hpp"
     "headers/leakdump.hpp"
     "headers/modulecache.hpp"
@@ -192,19 +171,11 @@ else()
   set(LAUNCHER_RESOURCES_WIN32)
 endif()
 
-file(
-  GLOB
-  LAUNCHER_ALL_SOURCES
-  ${LAUNCHER_SOURCES_BASE}
-  ${LAUNCHER_SOURCES_IMGUIS}
-  ${LAUNCHER_HEADERS_BASE}
-  ${LAUNCHER_HEADERS_IMGUIS}
-  ${LAUNCHER_RESOURCES_WIN32})
+file(GLOB LAUNCHER_ALL_SOURCES ${LAUNCHER_SOURCES_BASE}
+     ${LAUNCHER_HEADERS_BASE} ${LAUNCHER_RESOURCES_WIN32})
 
 source_group("Source Files" FILES ${LAUNCHER_SOURCES_BASE})
-source_group("Source Files\\ImGui" FILES ${LAUNCHER_SOURCES_IMGUIS})
 source_group("Header Files" FILES ${LAUNCHER_HEADERS_BASE})
-source_group("Header Files\\ImGui" FILES ${LAUNCHER_HEADERS_IMGUIS})
 source_group("Resource Files" FILES ${LAUNCHER_RESOURCES_BASE})
 
 # force c++17 standard
@@ -251,13 +222,9 @@ endif()
 set(LAUNCHER_SOURCE_SDK_INCLUDES "${LAUNCHER_ROOT_DIR}/minimal_sdk/common"
                                  "${LAUNCHER_ROOT_DIR}/minimal_sdk/public")
 
-set(LAUNCHER_IMGUI_INCLUDES "sources/imgui" "sources/imgui/imgui_impl")
-
 target_include_directories(
-  launcher
-  PRIVATE "headers" ${LAUNCHER_SOURCE_SDK_INCLUDES}
-          ${LAUNCHER_LIB_FMT_INCLUDES} ${LAUNCHER_LIB_PHOOK_DIR}
-          ${LAUNCHER_IMGUI_INCLUDES})
+  launcher PRIVATE "headers" ${LAUNCHER_SOURCE_SDK_INCLUDES}
+                   ${LAUNCHER_LIB_FMT_INCLUDES} ${LAUNCHER_LIB_PHOOK_DIR})
 
 # the generated version header's directory
 target_include_directories(launcher PRIVATE ${LAUNCHER_GENERATED_DIR})

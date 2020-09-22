@@ -7,7 +7,6 @@
 #include <tier0/icommandline.hpp>
 #include <tier1/convar.hpp>
 
-#include "console.hpp"
 #include "hooks.hpp"
 #include "platform.hpp"
 #include "utilities.hpp"
@@ -67,51 +66,6 @@ NOINLINE bool __fastcall hkCanCheat()
     }
 
     return sv_cheats->GetBool();
-}
-
-static std::unique_ptr<PLH::x86Detour> g_pColorPrintHook;
-static uint64_t g_ColorPrintOrig = 0;
-
-NOINLINE void __fastcall hkCon_ColorPrint( Color& clr, const char* msg )
-{
-    if ( clr.r() > clr.g() + clr.b() )  // Error
-    {
-        g_GameConsole.Error( msg );
-    }
-    else if ( clr.r() + clr.g() > clr.g() + clr.b() )  // Warn
-    {
-        g_GameConsole.Warning( msg );
-    }
-    else if ( clr.g() > clr.r() + clr.b() )  // Green message idk
-    {
-        g_GameConsole.DevInfo( msg );
-    }
-    else if ( clr.g() < 255 && clr.r() < 255 && clr.b() < 255 )  // Grey
-    {
-        g_GameConsole.WriteLine( "^6%s", msg );
-    }
-    else
-    {
-        g_GameConsole.WriteLine( msg );
-    }
-
-    return PLH::FnCast( g_ColorPrintOrig, &hkCon_ColorPrint )( clr, msg );
-}
-
-static std::unique_ptr<PLH::x86Detour> g_pEngineWinHook;
-static uint64_t g_EngineWinOrig = 0;
-
-NOINLINE LRESULT WINAPI hkHLEngineWindowProc( HWND hWnd, UINT Msg,
-                                              WPARAM wParam, LPARAM lParam )
-{
-    const bool conRes =
-        g_GameConsole.OnWindowCallback( hWnd, Msg, wParam, lParam );
-
-    if ( !conRes )
-        return 0;
-
-    return PLH::FnCast( g_EngineWinOrig, &hkHLEngineWindowProc )(
-        hWnd, Msg, wParam, lParam );
 }
 
 void BytePatchEngine( const uintptr_t dwEngineBase )
@@ -262,14 +216,6 @@ void ApplyHooksEngine( const uintptr_t dwEngineBase )
     g_pCanCheatHook = SetupDetourHook( dwEngineBase + 0xCE8B0, &hkCanCheat,
                                        &g_CanCheatOrig, dis );
     g_pCanCheatHook->hook();
-
-    g_pEngineWinHook = SetupDetourHook(
-        dwEngineBase + 0x15EAF0, &hkHLEngineWindowProc, &g_EngineWinOrig, dis );
-    g_pEngineWinHook->hook();
-
-    g_pColorPrintHook = SetupDetourHook(
-        dwEngineBase + 0x1C4B40, &hkCon_ColorPrint, &g_ColorPrintOrig, dis );
-    g_pColorPrintHook->hook();
 }
 
 extern void ApplyEngineVguiHooks( const uintptr_t dwEngineBase );
