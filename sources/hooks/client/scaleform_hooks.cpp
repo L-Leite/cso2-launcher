@@ -8,7 +8,7 @@
 #include <scaleform/cso2_gfxfile.hpp>
 #include <scaleform/sf_memoryheap.hpp>
 
-static uintptr_t g_dwClientBase = 0;
+extern uintptr_t g_dwClientBase;
 
 Scaleform::MemoryHeap* GetGfxMemoryHeap()
 {
