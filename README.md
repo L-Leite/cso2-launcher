@@ -14,12 +14,6 @@ You may find a [custom CSO2 master server here](https://github.com/L-Leite/cso2-
 
 You ***must*** **allow `launcher.exe` in your firewall** and, either **port forward ports 27015 to 27020** or **open your router's NAT**, in order to play with others.
 
-If you host a room match, **your IP will be known to other clients**.
-
-If you join a host's room match, **your IP will be known to the host**.
-
-This might be avoidable in the future once a dedicated server launcher is developed.
-
 ### Obtaining CSO2
 
 You can grab a copy of **Nexon's Counter-Strike: Online 2** through:
@@ -38,23 +32,7 @@ SHA-256 of `cso2_nexon_v24406.7z`: `02F76DBDD083EF78ECC92EB963C7C7A7576FF2E2C695
 
 ## Starting the game
 
-*Note: **someone must be running a master server**.*
-
 Run ```start-cso2.bat``` and enter the master server's IP address to start the game.
-
-### Lauching
-
-*The translations are courtesy of **[Frostie](#thank-yous)**.*
-
-- When the game loads enter some login information - only your username will be used, so you can use any password ([image](https://puu.sh/Bw7hu/ffba6ca218.png));
-- Select *커스텀모드* (*custom mode*) to go to the channel menu ([image](https://puu.sh/C1Nno/7122e0fefd.png));
-- Pick a channel ([image](https://puu.sh/C1NpM/adead9596e.png))
-- Create your own room by pressing *방만들기* (*create a room*) ([image](https://puu.sh/C1NrH/5cbaa524f8.png)) then choosing game mode ([image](https://puu.sh/C1NSv/8023bd39e8.png));
-- You can now start the match by pressing *게임 시작* (*game start*) ([image](https://puu.sh/Bw7M3/9209eb7637.png)).
-
-You can access your inventory by pressing *인벤토리* (*inventory*) in the bottom menu bar.
-
-You **may open a CoD styled console by pressing the *~*** (*tilde*) **key**.
 
 ### Available command line arguments
 
@@ -96,19 +74,14 @@ If built successfully, you will find the launcher inside ```out/bin/Win32/[your 
 
 ## Libraries used
 
-- **[fmt](https://github.com/fmtlib/fmt)**
+- **[fmt](https://github.com/fmtlib/fmt)** by [Victor Zverovich](https://github.com/vitaut)
 - **[PolyHook 2.0](https://github.com/stevemk14ebr/PolyHook_2_0)** by [Stephen Eckels](https://github.com/stevemk14ebr)
+- **[Source SDK](https://github.com/ValveSoftware/source-sdk-2013)** by Valve Software
 
 ## Contributors
 
-Thank you for your contributions.
-
 - [GEEKiDoS](https://github.com/GEEKiDoS)
 - [cs-student101](https://github.com/cs-student101)
-
-## Credits
-
-- [Valve Software](https://github.com/ValveSoftware/source-sdk-2013)
 
 ## Thank you's
 
