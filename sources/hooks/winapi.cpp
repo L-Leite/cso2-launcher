@@ -61,7 +61,7 @@ NOINLINE HMODULE WINAPI hkLoadLibraryExA( LPCSTR lpLibFileName, HANDLE hFile,
 
 void HookWinapi()
 {
-    PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
+    auto dis = HookDisassembler();
 
     g_pLoadLibExHook =
         SetupDetourHook( reinterpret_cast<uintptr_t>( &LoadLibraryExA ),

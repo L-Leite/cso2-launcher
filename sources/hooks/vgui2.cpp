@@ -190,7 +190,7 @@ void OnVguiLoaded( const uintptr_t dwVguiBase )
 
     bHasLoaded = true;
 
-    PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
+    auto dis = HookDisassembler();
 
     g_pStrTblAddHook = SetupDetourHook( dwVguiBase + 0x8D90, &hkStrTblAddFile,
                                         &g_StrTblAddOrig, dis );

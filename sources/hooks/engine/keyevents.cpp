@@ -180,7 +180,7 @@ NOINLINE void __fastcall hkKey_Event( const InputEvent_t& event )
 
 void ApplyKeyEventsHooks( const uintptr_t dwEngineBase )
 {
-    PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
+    auto dis = HookDisassembler();
 
     g_pKeyEventHook = SetupDetourHook( dwEngineBase + 0xE61B0, &hkKey_Event,
                                        &g_KeyEventOrig, dis );

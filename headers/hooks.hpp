@@ -2,15 +2,21 @@
 
 #include <memory>
 
-#include <polyhook2/CapstoneDisassembler.hpp>
 #include <polyhook2/Detour/x86Detour.hpp>
 #include <polyhook2/PE/EatHook.hpp>
 #include <polyhook2/Virtuals/VFuncSwapHook.hpp>
 #include <polyhook2/Virtuals/VTableSwapHook.hpp>
+#include <polyhook2/ZydisDisassembler.hpp>
 
 #ifndef NOINLINE
 #define NOINLINE __declspec( noinline )
 #endif
+
+inline auto HookDisassembler()
+{
+    PLH::ZydisDisassembler dis( PLH::Mode::x86 );
+    return dis;
+}
 
 template <typename DetourDestType>
 inline auto SetupDetourHook( const uintptr_t fnAddress,

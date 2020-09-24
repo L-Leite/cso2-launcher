@@ -128,7 +128,7 @@ NOINLINE bool __fastcall hkLoadServerLuaFile( lua_State* pLuaState,
 
 void ApplyLuaServerHooks( const uintptr_t dwServerBase )
 {
-    PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
+    auto dis = HookDisassembler();
 
     g_pLoadLuaFileHook =
         SetupDetourHook( dwServerBase + 0x5D8510, &hkLoadServerLuaFile,

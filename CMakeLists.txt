@@ -94,16 +94,16 @@ endif()
 
 # PolyHook
 
-# force PolyHook to build as a library
-set(BUILD_DLL
-    ON
+# use zydis over capstone
+set(POLYHOOK_DISASM_CAPSTONE
+    OFF
     CACHE BOOL "")
 
 # disable unused polyhook features
-set(FEATURE_EXCEPTION
+set(POLYHOOK_FEATURE_EXCEPTION
     OFF
     CACHE BOOL "")
-set(FEATURE_INLINENTD
+set(POLYHOOK_FEATURE_INLINENTD
     OFF
     CACHE BOOL "")
 
@@ -232,7 +232,7 @@ target_include_directories(launcher PRIVATE ${LAUNCHER_GENERATED_DIR})
 #
 # library dependencies
 #
-target_link_libraries(launcher capstone-static fmt::fmt PolyHook_2)
+target_link_libraries(launcher fmt::fmt PolyHook_2 "Zydis")
 
 # make polyhook's std::string compatible with the game bin
 target_compile_definitions(fmt PRIVATE _ITERATOR_DEBUG_LEVEL=0)
@@ -240,6 +240,13 @@ target_compile_definitions(PolyHook_2 PRIVATE _ITERATOR_DEBUG_LEVEL=0)
 
 # enable exceptions in fmt
 target_compile_options(fmt PRIVATE /EHs)
+
+# don't treat polyhook warnings as errors
+if(MSVC)
+  get_target_property(PH_COMPILE_FLAGS PolyHook_2 COMPILE_FLAGS)
+  string(REGEX REPLACE "/WX" "" PH_COMPILE_FLAGS ${PH_COMPILE_FLAGS})
+  set_target_properties(PolyHook_2 PROPERTIES COMPILE_FLAGS ${PH_COMPILE_FLAGS})
+endif()
 
 if(WIN32)
   target_link_libraries(launcher wsock32.lib)

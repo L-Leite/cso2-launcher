@@ -205,7 +205,7 @@ hkDoesGamemodeExist( /* int16_t modType,  const char* modName, */
 
 void ApplyLuaClientHooks( const uintptr_t dwClientBase )
 {
-    PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
+    auto dis = HookDisassembler();
 
     g_pLoadLuaFileHook =
         SetupDetourHook( dwClientBase + 0xB0B9B0, &hkClientLoadLuaFile,

@@ -52,7 +52,7 @@ void OnClientLoaded( const uintptr_t dwClientBase )
 
     BytePatchClient( dwClientBase );
 
-    PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
+    auto dis = HookDisassembler();
 
     g_pInitUIHook =
         SetupDetourHook( dwClientBase + 0xAE4610, &hkCSO2UIManager_InitMainUI,

@@ -82,7 +82,7 @@ NOINLINE void __fastcall hkEngineVGuiInit( void* thisptr )
 
 void ApplyEngineVguiHooks( const uintptr_t dwEngineBase )
 {
-    PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
+    auto dis = HookDisassembler();
 
     g_pEngineVGuiInitHook =
         SetupDetourHook( dwEngineBase + 0x27A300, &hkEngineVGuiInit,

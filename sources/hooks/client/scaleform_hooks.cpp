@@ -95,7 +95,7 @@ NOINLINE int64_t __fastcall hkCSO2GFxFileOpener_GetFileModifyTime(
 
 void ApplyScaleformHooks( const uintptr_t dwClientBase )
 {
-    PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
+    auto dis = HookDisassembler();
 
     g_dwClientBase = dwClientBase;
 

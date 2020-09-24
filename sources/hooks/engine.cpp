@@ -207,7 +207,7 @@ void BytePatchEngine( const uintptr_t dwEngineBase )
 
 void ApplyHooksEngine( const uintptr_t dwEngineBase )
 {
-    PLH::CapstoneDisassembler dis( PLH::Mode::x86 );
+    auto dis = HookDisassembler();
 
     g_pServerAddrHook = SetupDetourHook(
         dwEngineBase + 0x285FE0, &hkGetServerInfo, &g_ServerAddrOrig, dis );
