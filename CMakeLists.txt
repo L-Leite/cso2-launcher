@@ -59,19 +59,6 @@ generate_launcher_version(
   GIT_DIR
   ${LAUNCHER_GIT_DIR})
 
-#
-# setup MSVC runtime lib
-#
-if(MSVC)
-  # force static lib
-  set(CompilerFlags
-      CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
-      CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE)
-  foreach(CompilerFlag ${CompilerFlags})
-    string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
-  endforeach()
-endif()
-
 message(STATUS "CMAKE_MSVC_RUNTIME_LIBRARY: ${CMAKE_MSVC_RUNTIME_LIBRARY}")
 
 #
@@ -96,6 +83,11 @@ endif()
 
 # use zydis over capstone
 set(POLYHOOK_DISASM_CAPSTONE
+    OFF
+    CACHE BOOL "")
+
+# use shared c runtime
+set(POLYHOOK_BUILD_STATIC_RUNTIME
     OFF
     CACHE BOOL "")
 
