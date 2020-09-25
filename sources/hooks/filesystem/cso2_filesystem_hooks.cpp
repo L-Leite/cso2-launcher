@@ -4,9 +4,9 @@
 std::unique_ptr<PLH::VFuncSwapHook> g_pCFsHook;
 PLH::VFuncMap g_StrTblOrig;
 
-NOINLINE bool __fastcall CFS_InitFs( void* )
+NOINLINE int __fastcall CFS_InitFs( void* )
 {
-    return true;
+    return 1;
 }
 
 NOINLINE bool __fastcall CFS_FileExists( void*, void*, const std::wstring& )
