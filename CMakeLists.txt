@@ -230,11 +230,14 @@ target_link_libraries(launcher fmt::fmt PolyHook_2 "Zydis")
 target_compile_definitions(fmt PRIVATE _ITERATOR_DEBUG_LEVEL=0)
 target_compile_definitions(PolyHook_2 PRIVATE _ITERATOR_DEBUG_LEVEL=0)
 
-# enable exceptions in fmt
-target_compile_options(fmt PRIVATE /EHs)
-
-# don't treat polyhook warnings as errors
 if(MSVC)
+  # enable exceptions in fmt
+  target_compile_options(fmt PRIVATE /EHs)
+
+  # enable exceptions in polyhook
+  target_compile_options(PolyHook_2 PRIVATE /EHs)
+
+  # don't treat polyhook warnings as errors
   get_target_property(PH_COMPILE_FLAGS PolyHook_2 COMPILE_FLAGS)
   string(REGEX REPLACE "/WX" "" PH_COMPILE_FLAGS ${PH_COMPILE_FLAGS})
   set_target_properties(PolyHook_2 PROPERTIES COMPILE_FLAGS ${PH_COMPILE_FLAGS})
