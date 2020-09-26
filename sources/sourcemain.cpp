@@ -11,13 +11,11 @@
 
 bool InitRequiredSystems( AppSystemsTable& appSysTable, IFileSystem*& outFs )
 {
-    fs::path fsPath = FS_GetFileSystemLibPath();
-    std::string szFsPath = fsPath.generic_string();
-
     auto cvarModule = appSysTable.LoadModuleByName( "vstdlib.dll" );
     appSysTable.AddSystem( cvarModule, CVAR_INTERFACE_VERSION );
 
-    auto fileSystemModule = appSysTable.LoadModuleByName( szFsPath.c_str() );
+    auto fileSystemModule =
+        appSysTable.LoadModuleByName( "FileSystem_Stdio.dll" );
     outFs = static_cast<IFileSystem*>( appSysTable.AddSystem(
         fileSystemModule, FILESYSTEM_INTERFACE_VERSION ) );
 

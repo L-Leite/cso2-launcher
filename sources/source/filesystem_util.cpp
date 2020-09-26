@@ -8,14 +8,6 @@ const char* FS_GetBinDirectory()
     return GetCSO2PreCommandLineParser()->GetAnsiBinDirectory();
 }
 
-fs::path FS_GetFileSystemLibPath()
-{
-    fs::path path = FS_GetBinDirectory();
-    path /= "FileSystem_Stdio.dll";
-    path.make_preferred();
-    return path;
-}
-
 void FS_SetBasePaths( IFileSystem* pFileSystem )
 {
     pFileSystem->RemoveSearchPaths( "EXECUTABLE_PATH" );
