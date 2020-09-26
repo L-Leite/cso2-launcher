@@ -9,6 +9,8 @@
 #include <filesystem/filesystem.hpp>
 #include <icvar.hpp>
 
+#include <stdexcept>
+
 bool InitRequiredSystems( AppSystemsTable& appSysTable, IFileSystem*& outFs )
 {
     auto cvarModule = appSysTable.LoadModuleByName( "vstdlib.dll" );
@@ -25,6 +27,7 @@ bool InitRequiredSystems( AppSystemsTable& appSysTable, IFileSystem*& outFs )
     }
 
     FS_SetBasePaths( outFs );
+    FS_SetCustomPaths( outFs );
 
     return appSysTable.ConnectSystems() == true &&
            appSysTable.InitSystems() == INIT_OK;
@@ -43,10 +46,18 @@ void SourceMain( void* pInstance )
 
         IFileSystem* pFileSystem = nullptr;
 
-        if ( InitRequiredSystems( appSystemsTable, pFileSystem ) == false )
+        try
         {
-            User_MessageBox( "Failed to init required launcher systems",
-                             "Error" );
+            if ( InitRequiredSystems( appSystemsTable, pFileSystem ) == false )
+            {
+                User_MessageBox( "Failed to init required launcher systems",
+                                 "Error" );
+                return;
+            }
+        }
+        catch ( const std::exception& e )
+        {
+            User_MessageBox( e.what(), "Unhandled exception" );
             return;
         }
 
