@@ -4,6 +4,7 @@
 #include <string_view>
 
 #define _LogAssert_STR( x ) #x
+#ifdef _DEBUG
 #define LogAssert( x )                                         \
     if ( !( x ) )                                              \
     {                                                          \
@@ -11,6 +12,9 @@
                     _LogAssert_STR( x ), __FILE__, __LINE__ ); \
         abort();                                               \
     }
+#else
+#define LogAssert( x )
+#endif
 
 class Log
 {
