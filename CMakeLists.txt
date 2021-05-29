@@ -108,10 +108,13 @@ add_subdirectory("${LAUNCHER_LIB_FMT_DIR}")
 # add source files to the project
 #
 set(LAUNCHER_SOURCES_BASE
+    "sources/buffer/view.cpp"
     "sources/hooks/client/lua_hooks.cpp"
     "sources/hooks/client/scaleform_hooks.cpp"
+    "sources/hooks/engine/custompacket.cpp"
     "sources/hooks/engine/enginevgui.cpp"
     "sources/hooks/engine/keyevents.cpp"
+    "sources/hooks/engine/msghandler.cpp"
     "sources/hooks/filesystem/cso2_filesystem_hooks.cpp"
     "sources/hooks/lua/lua_client_hooks.cpp"
     "sources/hooks/lua/lua_hooks.cpp"
@@ -130,6 +133,7 @@ set(LAUNCHER_SOURCES_BASE
     "sources/source/sourcesystem.cpp"
     "sources/source/tierlibs.cpp"
     "sources/utilities/log.cpp"
+    "sources/cso2_options.cpp"
     "sources/launcher.cpp"
     "sources/main.cpp"
     "sources/modulecache.cpp"
@@ -144,12 +148,16 @@ elseif(UNIX)
 endif()
 
 set(LAUNCHER_HEADERS_BASE
+    "headers/buffer/view.hpp"
+    "headers/hooks/engine/custompacket.hpp"
+    "headers/hooks/lua/lua_hooks.hpp"
     "headers/source/appsystemgroup.hpp"
     "headers/source/appsystemtable.hpp"
     "headers/source/filesystem_util.hpp"
     "headers/source/sourcesystem.hpp"
     "headers/source/tierlibs.hpp"
     "headers/utilities/log.hpp"
+    "headers/cso2_options.hpp"
     "headers/hooks.hpp"
     "headers/leakdump.hpp"
     "headers/modulecache.hpp"

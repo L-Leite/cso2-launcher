@@ -21,7 +21,6 @@ SpaceBeforeParens: ControlStatements
 SpaceInEmptyParentheses: 'false'
 SpacesInAngles: 'false'
 SpacesInCStyleCastParentheses: 'false'
-SpacesInParentheses: 'true'
 Standard: Cpp11
 TabWidth: '4'
 

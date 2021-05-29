@@ -4,6 +4,10 @@
 #include <array>
 #include <string>
 
+#ifdef _WIN32
+#include <Windows.h>
+#endif
+
 namespace utils
 {
 #ifdef _WIN32
@@ -48,8 +52,8 @@ inline void WriteProtectedMemory( const std::array<uint8_t, iDataSize>& data,
 
 inline void ToLower( std::string& str )
 {
-    std::transform( str.begin(), str.end(), str.begin(), []( unsigned char c ) {
-        return static_cast<char>( std::tolower( c ) );
-    } );
+    std::transform( str.begin(), str.end(), str.begin(),
+                    []( unsigned char c )
+                    { return static_cast<char>( std::tolower( c ) ); } );
 }
 }  // namespace utils
