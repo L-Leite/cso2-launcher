@@ -195,6 +195,14 @@ void BytePatchEngine(const uintptr_t dwEngineBase)
     }
 
     //
+    // Bypass host check to send hostcrash data under Zombie-zeta or Hide'n'Seek2 etc
+    //
+    // nops
+    const std::array<uint8_t, 6> sendHostCrash = { 0x90, 0x90, 0x90,
+                                                    0x90, 0x90, 0x90 };
+    utils::WriteProtectedMemory(sendHostCrash, dwEngineBase + 0xD200A);
+
+    //
     // http logger that tries to connect to http://cso2dn.nexon.com
     // it no longer works and it slows down startup times when running under
     // wine
