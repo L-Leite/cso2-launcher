@@ -202,6 +202,13 @@ void BytePatchEngine(const uintptr_t dwEngineBase)
     // retn
     const std::array<uint8_t, 1> httpLoggerPatch = { 0xC3 };
     utils::WriteProtectedMemory(httpLoggerPatch, dwEngineBase + 0x108200);
+    
+    // 
+    // Bypass whitelist binds
+    // 
+    // mov eax, esi; nop
+    const std::array<uint8_t, 3> bindPatch = { 0x89, 0xF0, 0x90 };
+    utils::WriteProtectedMemory( bindPatch, dwEngineBase + 0xE5720 );
 }
 
 void ApplyHooksEngine(const uintptr_t dwEngineBase)
